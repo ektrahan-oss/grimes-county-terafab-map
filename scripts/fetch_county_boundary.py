@@ -11,7 +11,7 @@ import sys
 
 import geopandas as gpd
 
-from common import COUNTY_FIPS, DATA, fetch, fetch_json, record_layer, write_geojson
+from common import COUNTY_FIPS, DATA, fetch, fetch_json, publish_geojson
 
 SERVICE = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
 SIMPLIFY_DEGREES = 0.0001        # about 35 feet; the rivers on the county line stay recognisable
@@ -37,8 +37,7 @@ def main():
     county["description"] = "County boundary, U.S. Census Bureau"
     county["geometry"] = county.geometry.simplify(SIMPLIFY_DEGREES, preserve_topology=True)
 
-    size = write_geojson(OUT, county)
-    record_layer("county", url, len(county))
+    size = publish_geojson("county", "County boundary", OUT, county, url, ("boundary", "boundaries"), key="name")
     points = len(county.geometry.iloc[0].exterior.coords)
     print(f"Wrote {OUT.name}: {county['name'].iloc[0]}, {points:,} points, {size / 1024:.0f} KB.")
 

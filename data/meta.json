@@ -35,6 +35,16 @@
       "updated": "2026-10-01",
       "source": "https://news.google.com/rss/search",
       "feature_count": 50
+    },
+    "traffic": {
+      "updated": "2026-10-01",
+      "source": "https://services.arcgis.com/KTcxiTD9dsQw4r7Z/arcgis/rest/services/TxDOT_AADT_Annuals_(Public_View)/FeatureServer/0/query",
+      "feature_count": 145
+    },
+    "documents": {
+      "updated": "2026-10-01",
+      "source": "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627",
+      "feature_count": 4
     }
   }
 }

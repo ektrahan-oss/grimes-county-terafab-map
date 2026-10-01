@@ -12,7 +12,7 @@ import sys
 
 import geopandas as gpd
 
-from common import COUNTY_NAME, DATA, WORK_CRS, county_boundary, fetch_json, record_layer, write_geojson
+from common import COUNTY_NAME, DATA, WORK_CRS, county_boundary, fetch_json, publish_geojson
 
 SERVICE = "https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer"
 PAGE_SIZE = 500
@@ -79,8 +79,7 @@ def main():
     lines["geometry"] = lines.geometry.simplify(SIMPLIFY_FEET)
     lines = lines.sort_values(["Commodity", "Operator", "Type"]).reset_index(drop=True)
 
-    size = write_geojson(OUT, lines)
-    record_layer("pipelines", url, len(lines))
+    size = publish_geojson("pipelines", "Pipelines", OUT, lines, url, ("segment", "segments"))
     miles = lines.length / 5280
     print(f"Downloaded {len(raw)} segments; wrote {len(lines)} to {OUT.name} ({size / 1e6:.2f} MB, {miles.sum():,.0f} miles).")
     summary = miles.groupby([lines["Commodity"], lines["Type"], lines["Status"]]).agg(["count", "sum"])

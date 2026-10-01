@@ -1,0 +1,145 @@
+{
+  "documents": {
+    "https://grimescountytexas.gov/vertical/sites/%7B958238D0-27E6-4F6C-919E-F1D98542C5FD%7D/uploads/Order_Designating_SpaceX_Reinvestment_Zone_No.l_01-2026-001_(06.03.2026).pdf": {
+      "title": "Order Designating SpaceX Reinvestment_Zone No. 01-2026-001 (06.03.2026).pdf",
+      "sha256": "31d8c88934ea3c37464433f5a0c00639cbff25253794448746c1afa5e79942df",
+      "etag": "\"c62ebc32f6f4dc1:0\"",
+      "modified": "Fri, 05 Jun 2026 14:18:36 GMT",
+      "bytes": 3726914,
+      "first_seen": "2026-10-01"
+    },
+    "https://grimescountytexas.gov/vertical/sites/%7B958238D0-27E6-4F6C-919E-F1D98542C5FD%7D/uploads/Tax_Abatement_Agreement_-_SpaceX_-_Grimes_County_(FULLY_EXECUTED).pdf": {
+      "title": "312 Tax Abatement Agreement - SpaceX - Grimes County (FULLY EXECUTED)",
+      "sha256": "e6df1dc7d55e4698d9916d8aaced4bcc49ce2f819ffa304966cefb7dc249f9eb",
+      "etag": "\"2950c3b7532dd1:0\"",
+      "modified": "Mon, 22 Jun 2026 14:30:47 GMT",
+      "bytes": 1593591,
+      "first_seen": "2026-10-01"
+    },
+    "https://grimescountytexas.gov/vertical/sites/%7B958238D0-27E6-4F6C-919E-F1D98542C5FD%7D/uploads/Section_381.004_EDA_-_SpaceX_-_Grimes_County_(FULLY_EXECUTED).pdf": {
+      "title": "Section 381.004 EDA - SpaceX-Grimes County (FULLY EXECUTED)",
+      "sha256": "a966bd1b25bf5875c1dd0b76754a72b59623d94ee1a6b1dc3328cb99d801f8d5",
+      "etag": "\"19cfe3d5532dd1:0\"",
+      "modified": "Mon, 22 Jun 2026 14:31:38 GMT",
+      "bytes": 429941,
+      "first_seen": "2026-10-01"
+    }
+  },
+  "agendas": {
+    "6627": {
+      "title": "Commissioners Court Regular Agenda 10/07/2026",
+      "kind": "Agenda",
+      "meeting": "2026-10-07",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6627,plainText=false)",
+      "sha256": "e2ae0db986cdc3ce08da219d64cc4cdd6bd376818c5e796267bdd2073d0a0caa",
+      "mentions": []
+    },
+    "6626": {
+      "title": "Commissioners Court Public Hearing Agenda 10/07/2026",
+      "kind": "Agenda",
+      "meeting": "2026-10-07",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6626,plainText=false)",
+      "sha256": "4a7492433bc8b3e481d83408b03e59b3fdcd1846a2c7329e78453ac50e8c20c5",
+      "mentions": []
+    },
+    "6614": {
+      "title": "Commissioners Court Second Amended Regular Agenda 09/23/2026",
+      "kind": "Agenda",
+      "meeting": "2026-09-23",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6614,plainText=false)",
+      "sha256": "5a38bff0ca6c2aac7a51aba91555b55cf9368815f50c159ad01f011438b25f04",
+      "mentions": []
+    },
+    "6598": {
+      "title": "Commissioners Court Regular Agenda 09/16/2026",
+      "kind": "Agenda",
+      "meeting": "2026-09-16",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6598,plainText=false)",
+      "sha256": "5f1f8a30ca118ba23d407d2b13cbc6910367d3b3e672384b420b2622c9c6478b",
+      "mentions": []
+    },
+    "6585": {
+      "title": "Commissioners Court Regular Agenda 09/09/2026",
+      "kind": "Agenda",
+      "meeting": "2026-09-09",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6585,plainText=false)",
+      "sha256": "3f4dd8c4cc5236da8ed3f0f0ef5524c4f75110aad0b3bb1cf6b865d76768258e",
+      "mentions": []
+    },
+    "6601": {
+      "title": "minutes 9-9",
+      "kind": "Minutes",
+      "meeting": "2026-09-09",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6601,plainText=false)",
+      "sha256": "91f86b7ca331e7af4a9a84594dcdd8a381d7a4ce0716cad426eb7f76d5cdd1bd",
+      "mentions": []
+    },
+    "6578": {
+      "title": "Commissioners Court Regular Agenda 09/02/2026",
+      "kind": "Agenda",
+      "meeting": "2026-09-02",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6578,plainText=false)",
+      "sha256": "5fcb960295c7c1a63a773f73755df67aa5644431e143fab592d129d89c60b4de",
+      "mentions": []
+    },
+    "6623": {
+      "title": "minutes 9-2 rm",
+      "kind": "Minutes",
+      "meeting": "2026-09-02",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6623,plainText=false)",
+      "sha256": "9d18acc668860ac634d69ab1a0e90d3d3c990b3b4b911b174d0b30f3a299fff8",
+      "mentions": []
+    },
+    "6567": {
+      "title": "Commissioners Court Public Hearing Agenda 09/02/2026",
+      "kind": "Agenda",
+      "meeting": "2026-09-02",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6567,plainText=false)",
+      "sha256": "babcae38d00873af17bc27258b6c1074517687da8debce1e764e60b6e2b417d1",
+      "mentions": []
+    },
+    "6590": {
+      "title": "minutes 9-2 ph",
+      "kind": "Minutes",
+      "meeting": "2026-09-02",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6590,plainText=false)",
+      "sha256": "bfe71afebdbc889187b3308e5122ed85b60a902b57b447230ed63fa3a02a100e",
+      "mentions": [
+        "SpaceX",
+        "Terafab"
+      ]
+    },
+    "6569": {
+      "title": "Commissioners Court Regular Agenda 08/26/2026",
+      "kind": "Agenda",
+      "meeting": "2026-08-26",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6569,plainText=false)",
+      "sha256": "f177101cb8fece4faa75191ccc821b314c973dd99ba130be44d2a79d73f6ee80",
+      "mentions": []
+    },
+    "6581": {
+      "title": "8-26",
+      "kind": "Minutes",
+      "meeting": "2026-08-26",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6581,plainText=false)",
+      "sha256": "4cd572cac3bc00457020827b60383aa91ff765f0186841845be2c56c775b9747",
+      "mentions": []
+    },
+    "5564": {
+      "title": "Commissioners Court Regular Agenda 08/19/2026",
+      "kind": "Agenda",
+      "meeting": "2026-08-19",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=5564,plainText=false)",
+      "sha256": "a6e12e320bb65fc3a9db5f9d88dc024510fbd1edd5dc70a882286133d8c81e07",
+      "mentions": []
+    },
+    "6573": {
+      "title": "minutes 8-19",
+      "kind": "Minutes",
+      "meeting": "2026-08-19",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6573,plainText=false)",
+      "sha256": "5c4cfa50af876abfaac7b67278311492e0b64b849dfe48ec99f401188680c8b4",
+      "mentions": []
+    }
+  }
+}

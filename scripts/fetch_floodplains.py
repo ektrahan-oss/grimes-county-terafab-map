@@ -14,7 +14,7 @@ import sys
 import geopandas as gpd
 import pandas as pd
 
-from common import COUNTY_FIPS, DATA, WORK_CRS, county_boundary, fetch, fetch_json, record_layer, write_geojson
+from common import COUNTY_FIPS, DATA, WORK_CRS, county_boundary, fetch, fetch_json, publish_geojson
 
 SERVICE = "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer"
 LAYER_NAME = "Flood Hazard Zones"
@@ -88,8 +88,7 @@ def main():
     zones["geometry"] = zones.geometry.simplify(SIMPLIFY_FEET, preserve_topology=True)
     zones = zones[zones.area >= MIN_ACRES * 43560]
 
-    size = write_geojson(OUT, zones)
-    record_layer("flood", url, len(zones))
+    size = publish_geojson("flood", "Floodplains", OUT, zones, url, ("flood area", "flood areas"))
     print(f"Downloaded {downloaded} FEMA polygons; wrote {len(zones)} flood areas to {OUT.name} ({size / 1e6:.2f} MB).")
     acres = (zones.area / 43560).groupby(zones["name"]).agg(["count", "sum"]).round(0)
     for name, row in acres.iterrows():

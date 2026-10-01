@@ -72,7 +72,15 @@ def main():
 
     unique = dedupe(found)
     news = sorted(unique, key=lambda i: i["date"], reverse=True)[:KEEP]
+    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else None
+    # Google sometimes gives a publisher as a name and sometimes as a web address. Keep the entry
+    # already on file for a known link, so the file does not flip back and forth between runs.
+    known = {n["link"]: n for n in old or []}
+    news = [known.get(n["link"], n) for n in news]
     OUT.write_text("[\n" + ",\n".join("  " + json.dumps(n, ensure_ascii=False) for n in news) + "\n]\n", encoding="utf-8")
+    # New stories are not written to data/changes.json: the News tab already shows them, and
+    # daily entries would crowd out layer and document changes.
+    print(f"  {len({n['link'] for n in news} - set(known))} new since the last run.")
     record_layer("news", FEED, len(news))
     print(f"{len(found)} results, {len(unique)} after removing duplicates; wrote the newest {len(news)} to {OUT.name} "
           f"({OUT.stat().st_size / 1024:.0f} KB), dated {news[-1]['date'][:10]} to {news[0]['date'][:10]}.")
