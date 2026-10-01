@@ -12,7 +12,7 @@ import sys
 import geopandas as gpd
 import shapely
 
-from common import DATA, WORK_CRS, county_boundary, fetch_json, record_layer, write_geojson
+from common import DATA, WORK_CRS, county_boundary, fetch_json, publish_geojson
 
 SERVICE = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
 LAYER_NAME = "Unified School Districts"
@@ -56,8 +56,8 @@ def main():
     districts["name"] = districts["NAME"].map(short_name)
     districts = districts.rename(columns={"NAME": "description"}).sort_values("sq_miles", ascending=False)
 
-    size = write_geojson(OUT, districts[["name", "description", "geometry"]])
-    record_layer("schools", url, len(districts))
+    size = publish_geojson("schools", "School districts", OUT, districts[["name", "description", "geometry"]], url,
+                           ("district", "districts"), key="name")
     print(f"{len(nearby)} districts near the county; wrote {len(districts)} to {OUT.name} ({size / 1024:.0f} KB).")
     for _, d in districts.iterrows():
         print(f"  {d['sq_miles']:>6.1f} sq miles in Grimes County  {d['name']}")

@@ -19,7 +19,7 @@ import sys
 
 import geopandas as gpd
 
-from common import DATA, WORK_CRS, county_boundary, fetch_json, record_layer, write_geojson
+from common import DATA, WORK_CRS, county_boundary, fetch_json, publish_geojson
 
 SERVICE = ("https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/"
            "US_Electric_Power_Transmission_Lines/FeatureServer/0/query")
@@ -71,8 +71,7 @@ def main():
     lines["geometry"] = lines.geometry.simplify(SIMPLIFY_FEET)
     lines = lines.sort_values(["Voltage (kV)", "Owner"], ascending=[False, True], na_position="last").reset_index(drop=True)
 
-    size = write_geojson(OUT, lines)
-    record_layer("power", SERVICE, len(lines))
+    size = publish_geojson("power", "Power lines", OUT, lines, SERVICE, ("line", "lines"))
     miles = lines.length / 5280
     print(f"Downloaded {len(raw)} lines; wrote {len(lines)} to {OUT.name} ({size / 1024:.0f} KB, {miles.sum():,.0f} miles).")
     by_voltage = miles.groupby(lines["name"]).agg(["count", "sum"]).sort_values("sum", ascending=False)

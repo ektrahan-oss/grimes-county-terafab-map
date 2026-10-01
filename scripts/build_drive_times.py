@@ -17,7 +17,7 @@ import time
 import geopandas as gpd
 from shapely.geometry import LineString
 
-from common import DATA, WORK_CRS, fetch_json, record_layer, write_geojson
+from common import DATA, WORK_CRS, fetch_json, publish_geojson
 
 OSRM = "https://router.project-osrm.org/route/v1/driving"
 PAUSE_SECONDS = 2                # the demo server asks for light use
@@ -72,8 +72,7 @@ def main():
 
     routes = gpd.GeoDataFrame(rows, crs=4326).to_crs(WORK_CRS)
     routes["geometry"] = routes.geometry.simplify(SIMPLIFY_FEET)
-    size = write_geojson(OUT, routes)
-    record_layer("drive", OSRM, len(routes))
+    size = publish_geojson("drive", "Drive times", OUT, routes, OSRM, ("route", "routes"), key="Destination")
     print(f"Wrote {len(routes)} routes to {OUT.name} ({size / 1024:.0f} KB).")
 
 

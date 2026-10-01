@@ -13,8 +13,8 @@ import re
 import sys
 import urllib.parse
 import urllib.request
-from datetime import date
-from pathlib import Path
+
+from common import DATA, publish_features
 
 SERVICE = (
     "https://services.arcgis.com/KTcxiTD9dsQw4r7Z/arcgis/rest/services/"
@@ -24,9 +24,7 @@ COUNTY = "Grimes"
 YEARS = 5        # how many years of counts to keep per station, newest first
 PAGE_SIZE = 1000
 
-DATA = Path(__file__).resolve().parent.parent / "data"
 OUT = DATA / "traffic_counts.geojson"
-META = DATA / "meta.json"
 
 # TxDOT road prefixes, spelled the way people say them
 PREFIXES = {"IH": "I-", "US": "US ", "SH": "SH ", "SL": "Loop ", "SS": "Spur ",
@@ -104,16 +102,10 @@ def main():
 
     features = sorted((simplify(f) for f in stations),
                       key=lambda f: natural(f["properties"]["Station"] or ""))
-    lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False) for f in features)
-    OUT.write_text('{\n  "type": "FeatureCollection",\n  "features": [\n' + lines + "\n  ]\n}\n",
-                   encoding="utf-8")
-
-    meta = json.loads(META.read_text(encoding="utf-8")) if META.exists() else {}
-    meta["updated"] = date.today().isoformat()
-    META.write_text(json.dumps(meta) + "\n", encoding="utf-8")
+    size = publish_features("traffic", "Traffic counts", OUT, features, SERVICE, ("station", "stations"), key="Station")
 
     year = max(f["properties"]["AADT_RPT_YEAR"] for f in stations)
-    print(f"Wrote {len(features)} stations to {OUT} (latest count year {year}).")
+    print(f"Wrote {len(features)} stations to {OUT.name} ({size / 1024:.0f} KB, latest count year {year}).")
 
 
 if __name__ == "__main__":
