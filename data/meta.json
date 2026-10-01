@@ -20,6 +20,11 @@
       "updated": "2026-10-01",
       "source": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0/query",
       "feature_count": 52
+    },
+    "schools": {
+      "updated": "2026-10-01",
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query",
+      "feature_count": 5
     }
   }
 }
