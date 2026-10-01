@@ -15,6 +15,11 @@
       "updated": "2026-10-01",
       "source": "https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer/13/query",
       "feature_count": 820
+    },
+    "power": {
+      "updated": "2026-10-01",
+      "source": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0/query",
+      "feature_count": 52
     }
   }
 }
