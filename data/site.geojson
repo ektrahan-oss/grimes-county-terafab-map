@@ -1,0 +1,13 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gibbons Creek Reservoir",
+        "description": "Approximate Terafab site, on the former Gibbons Creek power plant property."
+      },
+      "geometry": { "type": "Point", "coordinates": [-96.065, 30.625] }
+    }
+  ]
+}

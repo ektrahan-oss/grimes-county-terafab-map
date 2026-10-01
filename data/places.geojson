@@ -1,0 +1,11 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Anderson", "description": "Grimes County seat" }, "geometry": { "type": "Point", "coordinates": [-95.987, 30.487] } },
+    { "type": "Feature", "properties": { "name": "Navasota" }, "geometry": { "type": "Point", "coordinates": [-96.088, 30.388] } },
+    { "type": "Feature", "properties": { "name": "Iola" }, "geometry": { "type": "Point", "coordinates": [-96.075, 30.772] } },
+    { "type": "Feature", "properties": { "name": "Bedias" }, "geometry": { "type": "Point", "coordinates": [-95.949, 30.777] } },
+    { "type": "Feature", "properties": { "name": "Bryan" }, "geometry": { "type": "Point", "coordinates": [-96.370, 30.674] } },
+    { "type": "Feature", "properties": { "name": "College Station" }, "geometry": { "type": "Point", "coordinates": [-96.334, 30.628] } }
+  ]
+}
