@@ -12,6 +12,7 @@ CACHE = ROOT / ".cache"          # downloads; not committed
 
 COUNTY_NAME = "Grimes"
 COUNTY_FIPS = "48185"
+WORK_CRS = 2277                  # Texas State Plane Central, US feet; used for measuring and simplifying
 
 # Names the project in the form some public data servers require before they will answer
 USER_AGENT = "Mozilla/5.0 (compatible; grimes-county-terafab-map/1.0)"
@@ -58,3 +59,18 @@ def record_layer(layer_id, source, feature_count):
     meta["updated"] = today
     meta.setdefault("layers", {})[layer_id] = {"updated": today, "source": source, "feature_count": feature_count}
     path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+
+
+def county_boundary(buffer_miles=0):
+    """Grimes County as a one-row GeoDataFrame in EPSG:4326, optionally grown by a buffer."""
+    import geopandas as gpd
+
+    path = DATA / "grimes_county.geojson"
+    if not path.exists():
+        raise SystemExit("data/grimes_county.geojson is missing. Run scripts/fetch_county_boundary.py first.")
+    county = gpd.read_file(path)[["geometry"]]
+    if buffer_miles:
+        county = county.to_crs(WORK_CRS)
+        county["geometry"] = county.buffer(buffer_miles * 5280)
+        county = county.to_crs(4326)
+    return county
