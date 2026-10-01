@@ -1,0 +1,16 @@
+{
+  "proposed_packet": {
+    "title": "Proposed Reinvestment Zone map packet",
+    "url": "https://grimescountytx.govoffice.com/vertical/Sites/%7B958238D0-27E6-4F6C-919E-F1D98542C5FD%7D/uploads/SpaceX_Proposed_Reinvestment_Zone_Maps_-_Rendered_based_on_submitted_R-numbers.pdf",
+    "sha256": "ab631797bfb49ddf0008b55b031af456c3e3050b75b181adb6015420c187133c",
+    "bytes": 2715440,
+    "checked": "2026-10-01"
+  },
+  "final_order": {
+    "title": "Order Designating SpaceX Reinvestment Zone No. 01-2026-001",
+    "url": "https://grimescountytexas.gov/vertical/sites/%7B958238D0-27E6-4F6C-919E-F1D98542C5FD%7D/uploads/Order_Designating_SpaceX_Reinvestment_Zone_No.l_01-2026-001_(06.03.2026).pdf",
+    "sha256": "31d8c88934ea3c37464433f5a0c00639cbff25253794448746c1afa5e79942df",
+    "bytes": 3726914,
+    "checked": "2026-10-01"
+  }
+}
