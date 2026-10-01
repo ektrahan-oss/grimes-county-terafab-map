@@ -10,6 +10,11 @@
       "updated": "2026-10-01",
       "source": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query",
       "feature_count": 56
+    },
+    "pipelines": {
+      "updated": "2026-10-01",
+      "source": "https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer/13/query",
+      "feature_count": 820
     }
   }
 }
