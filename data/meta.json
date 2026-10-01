@@ -1,1 +1,10 @@
-{"updated": "2026-10-01"}
+{
+  "updated": "2026-10-01",
+  "layers": {
+    "county": {
+      "updated": "2026-10-01",
+      "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query",
+      "feature_count": 1
+    }
+  }
+}

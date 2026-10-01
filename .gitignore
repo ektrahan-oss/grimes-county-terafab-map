@@ -1,2 +1,13 @@
+# Downloaded source files and caches
 .cache/
+/sources/
+
+# Python
 __pycache__/
+*.pyc
+.venv/
+
+# Temporary files
+*.tmp
+*.bak
+.claude/

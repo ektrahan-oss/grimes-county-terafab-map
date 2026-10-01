@@ -120,7 +120,8 @@
 <script>
   // ---- Layer settings. Add a layer by adding a line here and a file in /data ----
   const LAYERS = [
-    { id: "site",      name: "Terafab site",       desc: "Gibbons Creek Reservoir, approximate",     url: "data/site.geojson",             color: "#2F7AA8", on: true },
+    { id: "county",    name: "County boundary",    desc: "Grimes County, U.S. Census Bureau",        url: "data/grimes_county.geojson",    color: "#5F6E68", on: true, outline: true },
+    { id: "site",     name: "Terafab site",       desc: "Gibbons Creek Reservoir, approximate",     url: "data/site.geojson",             color: "#2F7AA8", on: true },
     { id: "zone",      name: "Reinvestment zone",  desc: "About 22,000 acres approved June 2026",     url: "data/reinvestment_zone.geojson", color: "#C8962E", on: true },
     { id: "places",    name: "Towns",              desc: "Nearby communities",                       url: "data/places.geojson",           color: "#22302C", on: true, labels: true },
     { id: "traffic",   name: "Traffic counts",     desc: "TxDOT annual average daily traffic",       url: "data/traffic_counts.geojson",   color: "#B23A48", on: false },
@@ -155,7 +156,9 @@
 
   function makeLayer(cfg, geojson) {
     return L.geoJSON(geojson, {
-      style: () => ({ color: cfg.color, weight: 2, fillColor: cfg.color, fillOpacity: 0.2 }),
+      style: () => cfg.outline
+        ? { color: cfg.color, weight: 1.5, fill: false, interactive: false }
+        : { color: cfg.color, weight: 2, fillColor: cfg.color, fillOpacity: 0.2 },
       pointToLayer: (f, latlng) => L.circleMarker(latlng, {
         radius: cfg.labels ? 4 : 8, color: "#fff", weight: 2, fillColor: cfg.color, fillOpacity: 1
       }),
