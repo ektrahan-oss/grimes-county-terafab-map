@@ -30,6 +30,11 @@
       "updated": "2026-10-01",
       "source": "https://router.project-osrm.org/route/v1/driving",
       "feature_count": 6
+    },
+    "news": {
+      "updated": "2026-10-01",
+      "source": "https://news.google.com/rss/search",
+      "feature_count": 50
     }
   }
 }

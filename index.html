@@ -62,6 +62,8 @@
   .event time { font-size: 0.78rem; font-weight: 600; color: var(--reservoir); }
   .event h3 { margin: 2px 0 4px; font-size: 0.95rem; }
   .event p { margin: 0 0 6px; font-size: 0.88rem; line-height: 1.5; }
+  .event h3 a { color: var(--ink); }
+  .event .source { margin: 0; color: var(--muted); font-size: 0.8rem; }
   .event-links { display: flex; gap: 14px; font-size: 0.82rem; }
   .event-links a, .event-links button { color: var(--pine); font-weight: 600; }
   .linkish { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
@@ -102,11 +104,16 @@
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" aria-selected="true" data-view="layers">Layers</button>
         <button class="tab" role="tab" aria-selected="false" data-view="timeline">Timeline</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="news">News</button>
         <button class="tab" role="tab" aria-selected="false" data-view="about">About</button>
       </div>
       <div class="panel-body">
         <section class="view" id="view-layers"><div id="layer-list"></div></section>
         <section class="view" id="view-timeline" hidden><div id="event-list"><p class="empty">Loading timeline</p></div></section>
+        <section class="view" id="view-news" hidden>
+          <p class="meta">Recent headlines from Google News. Links open the publisher's site.</p>
+          <div id="news-list"><p class="empty">Loading news</p></div>
+        </section>
         <section class="view about" id="view-about" hidden>
           <p>A free public map of what's changing around the SpaceX Terafab site in Grimes County, Texas. Layers refresh from public sources, and the timeline tracks major decisions as they happen.</p>
           <p>Locations marked approximate are for context only. This map is not a survey or legal boundary.</p>
@@ -231,6 +238,24 @@
       }));
     })
     .catch(() => { document.getElementById("event-list").innerHTML = '<p class="empty">Timeline unavailable.</p>'; });
+
+  // ---- News ----
+  fetch("data/news.json")
+    .then(r => r.json())
+    .then(news => {
+      const el = document.getElementById("news-list");
+      news = news.filter(n => /^https?:\/\//.test(n.link));
+      if (!news.length) { el.innerHTML = '<p class="empty">No news yet.</p>'; return; }
+      el.innerHTML = news.map(n => {
+        const d = new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        return `<article class="event">
+          <time datetime="${esc(n.date)}">${d}</time>
+          <h3><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a></h3>
+          <p class="source">${esc(n.source)}</p>
+        </article>`;
+      }).join("");
+    })
+    .catch(() => { document.getElementById("news-list").innerHTML = '<p class="empty">News unavailable.</p>'; });
 
   fetch("data/meta.json").then(r => r.json()).then(m => {
     if (m.updated) document.getElementById("updated").textContent =
