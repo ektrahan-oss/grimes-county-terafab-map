@@ -5,6 +5,11 @@
       "updated": "2026-10-01",
       "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query",
       "feature_count": 1
+    },
+    "flood": {
+      "updated": "2026-10-01",
+      "source": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query",
+      "feature_count": 56
     }
   }
 }
