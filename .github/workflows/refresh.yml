@@ -1,7 +1,11 @@
 name: Data refresh
 
 # Daily:   stream gauges, news feed, county documents, permits and company records  (run_all.py --frequent)
-# Monthly: every layer except drive times           (run_all.py --all)
+# Monthly: the daily ones plus every layer that refreshes itself                      (run_all.py --all)
+#          Yearly sources are checked here too: population and housing rebuilds only when a new
+#          survey release is out, and school enrollment picks up a new school year when it is published.
+# By hand, on your own computer: project holdings, land values, parcel lines, drive times and the
+#          reinvestment zone. Their parcel downloads are refused from GitHub's servers, or they are one-time layers.
 # Manual:  Actions tab > Data refresh > Run workflow, and pick which of the two to run
 
 on:
