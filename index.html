@@ -29,6 +29,9 @@
   .contact-btn { font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--pine); background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 6px 14px; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 2px 8px rgba(30, 59, 52, 0.2); }
   .contact-note { position: absolute; right: 0; top: calc(100% + 8px); z-index: 1100; width: 220px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 16px rgba(30, 59, 52, 0.18); padding: 10px 12px; font-size: 0.82rem; line-height: 1.45; }
   .contact-note[hidden] { display: none; }
+  .newsletter-btn { box-shadow: none; background: var(--soft); }
+  #newsletter-note { display: block; margin-top: 6px; }
+  #newsletter-note[hidden] { display: none; }
 
   .main { position: relative; min-height: 0; }
   #map { position: absolute; inset: 0; }
@@ -206,7 +209,7 @@
       </div>
       <div class="panel-body">
         <section class="view" id="view-layers"><div id="layer-list"></div>
-          <p class="meta" style="margin:14px 0 0">Owners are not named on this map. To look up a property, use the <a href="https://gis.bisclient.com/grimescad/" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Grimes Central Appraisal District map</a>.</p>
+          <p class="meta" style="margin:14px 0 0">Individual property owners are not named on this map. Only companies connected to the Terafab project are. To look up a property, use the <a href="https://gis.bisclient.com/grimescad/" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Grimes Central Appraisal District map</a>.</p>
           <p class="meta" style="margin:8px 0 0">Live traffic is not shown on this map. <a href="https://www.google.com/maps/@30.61,-96.03,11z/data=!5m1!1e1" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Open Google Maps with traffic</a></p></section>
         <section class="view" id="view-selection" hidden>
           <div class="selection-head"><h2 class="section" id="selection-title">Selection</h2><button class="linkish" id="selection-close" type="button">Close</button></div>
@@ -224,6 +227,12 @@
         <section class="view about" id="view-about" hidden>
           <p>A free public map of what's changing around the SpaceX Terafab site in Grimes County, Texas. Layers refresh from public sources, and the timeline tracks major decisions as they happen.</p>
           <p>Locations marked approximate are for context only. This map is not a survey or legal boundary.</p>
+          <h2 class="section">About me and this map</h2>
+          <p>I'm a market intelligence and GIS professional based in the Houston area. My family owns land in Grimes County, which is part of why I started following this project closely. I built this map to understand what Terafab means for the county, and I'm sharing it for free so others can too. Nothing here is legal, financial or investment advice.</p>
+          <p><button class="contact-btn newsletter-btn" id="newsletter-btn" type="button" aria-expanded="false">Sign up for the newsletter</button>
+            <span class="meta" id="newsletter-note" role="status" hidden>A newsletter signup is coming soon, for updates when something changes around the site.</span></p>
+          <h2 class="section">Ownership policy</h2>
+          <p>This map never shows the names of individual property owners. Ownership is shown only for companies connected to the Terafab project. Parcel lines show property ID and acreage only.</p>
           <h2 class="section">Layers and data sources</h2>
           <ul class="sources" id="source-list"></ul>
           <p class="meta">Data last updated: <span id="updated">not yet</span></p>
@@ -522,16 +531,23 @@
     return `<span class="sym"><i style="width:22px;height:13px;border-radius:2px;border:1px solid ${color};background:${color};opacity:${Math.min(1, (cfg.fillOpacity ?? 0.2) + 0.35)}"></i></span>`;
   }
 
-  // Contact: a placeholder until the form's address is filled in here
+  // Contact and Newsletter: placeholders until each address is filled in here.
+  // Put the full link between the quotes, for example "https://example.com/signup". Left empty, the button shows its "coming soon" note.
   const CONTACT_URL = "";
-  const contactBtn = document.getElementById("contact-btn"), contactNote = document.getElementById("contact-note");
-  contactBtn.addEventListener("click", e => {
-    if (CONTACT_URL) { window.open(CONTACT_URL, "_blank", "noopener"); return; }
-    e.stopPropagation();
-    contactNote.hidden = !contactNote.hidden;
-    contactBtn.setAttribute("aria-expanded", String(!contactNote.hidden));
-  });
-  document.addEventListener("click", () => { contactNote.hidden = true; contactBtn.setAttribute("aria-expanded", "false"); });
+  const NEWSLETTER_URL = "";
+  // Each button opens its link in a new tab, or shows its "coming soon" note while the link is empty
+  const linkButton = (button, note, url) => {
+    button.addEventListener("click", e => {
+      if (/^https?:\/\//.test(url)) { window.open(url, "_blank", "noopener"); return; }
+      e.stopPropagation();
+      note.hidden = !note.hidden;
+      button.setAttribute("aria-expanded", String(!note.hidden));
+    });
+    return () => { note.hidden = true; button.setAttribute("aria-expanded", "false"); };
+  };
+  const closeContactNote = linkButton(document.getElementById("contact-btn"), document.getElementById("contact-note"), CONTACT_URL);
+  linkButton(document.getElementById("newsletter-btn"), document.getElementById("newsletter-note"), NEWSLETTER_URL);   // in the About tab
+  document.addEventListener("click", closeContactNote);
 
   const list = document.getElementById("layer-list");
   const states = [];           // one per loaded layer, used by the select tool
