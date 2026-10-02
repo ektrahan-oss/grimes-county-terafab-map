@@ -1,0 +1,68 @@
+name: Data refresh
+
+# Daily:   news feed and county document watching   (run_all.py --frequent)
+# Monthly: every layer except drive times           (run_all.py --all)
+# Manual:  Actions tab > Data refresh > Run workflow, and pick which of the two to run
+
+on:
+  schedule:
+    - cron: "0 12 * * *"      # daily, 12:00 UTC (early morning in Texas)
+    - cron: "0 13 1 * *"      # 1st of each month, 13:00 UTC, an hour after that day's daily run
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: What to refresh
+        type: choice
+        options: [frequent, all]
+        default: frequent
+
+permissions:
+  contents: write             # to push the refreshed data
+
+concurrency:
+  group: data-refresh         # never two refreshes at once
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: America/Chicago     # so "today" in the data matches Grimes County
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Refresh data
+        id: refresh
+        continue-on-error: true   # keep the layers that worked; the job is failed at the end instead
+        env:
+          MODE: ${{ github.event.schedule == '0 13 1 * *' && 'all' || github.event.inputs.mode || 'frequent' }}
+        run: python scripts/run_all.py --$MODE
+
+      - name: Commit and push changed data
+        run: |
+          # meta.json records the run date, so it changes on every run. On its own that is not a change worth a commit.
+          if git diff --quiet -- data ':(exclude)data/meta.json' && [ -z "$(git ls-files --others --exclude-standard data)" ]; then
+            echo "No data changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "Data refresh $(date +%F)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Report failed layers
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "One or more layers failed. See the Refresh data step above for which ones."
+          exit 1
