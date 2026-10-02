@@ -79,5 +79,10 @@
     "date": "2026-10-02",
     "layer": "census",
     "summary": "Population and housing: new, with 240 census tracts"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "schools",
+    "summary": "School districts: enrollment history added for all 5 districts, 2011-12 to 2025-26"
   }
 ]
