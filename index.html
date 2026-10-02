@@ -22,6 +22,13 @@
   header { background: var(--pine); color: #fff; padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px; }
   header h1 { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
   header p { margin: 2px 0 0; font-size: 0.8rem; opacity: 0.8; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+  /* Contact: in the header on phones, bottom right of the map on wider screens */
+  .contact { position: relative; flex: none; }
+  .contact-btn { font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--pine); background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 6px 14px; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 2px 8px rgba(30, 59, 52, 0.2); }
+  .contact-note { position: absolute; right: 0; top: calc(100% + 8px); z-index: 1100; width: 220px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 16px rgba(30, 59, 52, 0.18); padding: 10px 12px; font-size: 0.82rem; line-height: 1.45; }
+  .contact-note[hidden] { display: none; }
 
   .main { position: relative; min-height: 0; }
   #map { position: absolute; inset: 0; }
@@ -157,6 +164,8 @@
     .select-hint, .measure-box { left: calc(50% + 178px); }
     .panel { top: 16px; bottom: 16px; left: 16px; right: auto; width: 340px; max-height: none; border: 1px solid var(--line); border-radius: 10px; }
     .handle { display: none; }
+    .contact { position: fixed; right: 10px; bottom: 30px; z-index: 900; }
+    .contact-note { top: auto; bottom: calc(100% + 8px); }
     .panel.collapsed .panel-body { display: block; }
   }
 </style>
@@ -164,8 +173,14 @@
 <body>
 <div class="app">
   <header>
-    <h1>Grimes County Terafab Map</h1>
-    <p>Tracking change around Gibbons Creek</p>
+    <div>
+      <h1>Grimes County Terafab Map</h1>
+      <p>Tracking change around Gibbons Creek</p>
+    </div>
+    <div class="contact">
+      <button class="contact-btn" id="contact-btn" type="button" aria-expanded="false">Contact</button>
+      <div class="contact-note" id="contact-note" hidden>A contact form is coming soon, for questions, corrections and requests for more analysis.</div>
+    </div>
   </header>
 
   <div class="main">
@@ -188,7 +203,8 @@
       </div>
       <div class="panel-body">
         <section class="view" id="view-layers"><div id="layer-list"></div>
-          <p class="meta" style="margin:14px 0 0">Live traffic is not shown on this map. <a href="https://www.google.com/maps/@30.61,-96.03,11z/data=!5m1!1e1" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Open Google Maps with traffic</a></p></section>
+          <p class="meta" style="margin:14px 0 0">Owners are not named on this map. To look up a property, use the <a href="https://gis.bisclient.com/grimescad/" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Grimes Central Appraisal District map</a>.</p>
+          <p class="meta" style="margin:8px 0 0">Live traffic is not shown on this map. <a href="https://www.google.com/maps/@30.61,-96.03,11z/data=!5m1!1e1" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Open Google Maps with traffic</a></p></section>
         <section class="view" id="view-selection" hidden>
           <div class="selection-head"><h2 class="section" id="selection-title">Selection</h2><button class="linkish" id="selection-close" type="button">Close</button></div>
           <div id="selection-list"></div>
@@ -236,6 +252,8 @@
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
+    { id: "parcels", name: "Parcel lines", desc: "Property boundaries as of January 2025", tiles: "data/parcels", kind: "outline", color: "#7A6A55", minZoom: 13,
+      note: "Parcel map as of January 2025. Tracts split or sold since then are not shown, and owners are not named. Click inside a parcel for its property ID." },
     { id: "places", one: "town", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
     { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78" },
     { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", color: "#4A90C8", weight: 1, fillOpacity: 0.45, counts: false,
@@ -375,6 +393,7 @@
   }
 
   // One Leaflet layer for one legend class (or for the whole layer when it has no classes)
+  let lastFeatureClick = 0;
   const CLUSTER_UNTIL_ZOOM = 13;                 // from this zoom inward, clustered layers show every point
   const canvas = L.canvas({ padding: 0.3 });     // much faster than the default for layers with thousands of points
   function makeLayer(cfg, cls, features) {
@@ -392,6 +411,7 @@
       onEachFeature: (f, layer) => {
         layer.layerName = cfg.name;
         layer.layerCfg = cfg;
+        layer.on("click", () => { lastFeatureClick = Date.now(); });
         layer.bindPopup(popupHtml(cfg, f.properties || {}));
         if (cfg.labels && f.properties?.name) {
           const point = f.geometry.type === "Point";
@@ -418,12 +438,105 @@
     return `<span class="sym"><i style="width:22px;height:13px;border-radius:2px;border:1px solid ${color};background:${color};opacity:${Math.min(1, (cfg.fillOpacity ?? 0.2) + 0.35)}"></i></span>`;
   }
 
+  // Contact: a placeholder until the form's address is filled in here
+  const CONTACT_URL = "";
+  const contactBtn = document.getElementById("contact-btn"), contactNote = document.getElementById("contact-note");
+  contactBtn.addEventListener("click", e => {
+    if (CONTACT_URL) { window.open(CONTACT_URL, "_blank", "noopener"); return; }
+    e.stopPropagation();
+    contactNote.hidden = !contactNote.hidden;
+    contactBtn.setAttribute("aria-expanded", String(!contactNote.hidden));
+  });
+  document.addEventListener("click", () => { contactNote.hidden = true; contactBtn.setAttribute("aria-expanded", "false"); });
+
   const list = document.getElementById("layer-list");
   const states = [];           // one per loaded layer, used by the select tool
 
+  // Is a place inside a GeoJSON polygon or multipolygon? Coordinates are [lng, lat].
+  function insideGeometry(geom, lng, lat) {
+    const inRing = ring => {
+      let hit = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const a = ring[i], b = ring[j];
+        if ((a[1] > lat) !== (b[1] > lat) && lng < (b[0] - a[0]) * (lat - a[1]) / (b[1] - a[1]) + a[0]) hit = !hit;
+      }
+      return hit;
+    };
+    const inPolygon = rings => inRing(rings[0]) && !rings.slice(1).some(inRing);
+    return geom.type === "Polygon" ? inPolygon(geom.coordinates) : geom.type === "MultiPolygon" && geom.coordinates.some(inPolygon);
+  }
+
+  // A layer too big for one file, cut into tiles. Only the tiles in view are loaded, and only once zoomed in.
+  function tiledLayer(cfg, ui) {
+    const shown = new Map();     // tile name -> drawn layer
+    const loaded = new Map();    // tile name -> its features, kept so panning back is instant
+    let on = !!cfg.on, index = null;
+    map.createPane(cfg.id).style.zIndex = 350;            // under every other layer
+    const renderer = L.canvas({ pane: cfg.id, padding: 0.3 });
+    const say = text => { ui.legend.innerHTML = `<p class="note">${esc(text)}</p>`; ui.legend.hidden = !on; };
+    const clear = () => { shown.forEach(layer => map.removeLayer(layer)); shown.clear(); };
+
+    const refresh = () => {
+      if (!index) return;
+      if (!on) { clear(); ui.legend.hidden = true; return; }
+      if (map.getZoom() < cfg.minZoom) { clear(); say(`Zoom in to see parcel lines. ${cfg.note}`); return; }
+      say(cfg.note);
+      const n = 2 ** index.zoom, b = map.getBounds();
+      const tx = lng => Math.floor((lng + 180) / 360 * n);
+      const ty = lat => Math.floor((1 - Math.asinh(Math.tan(lat * Math.PI / 180)) / Math.PI) / 2 * n);
+      const wanted = new Set();
+      // One tile of margin: a parcel sits in the tile holding its middle, so a big one can reach into view from next door
+      for (let x = tx(b.getWest()) - 1; x <= tx(b.getEast()) + 1; x++)
+        for (let y = ty(b.getNorth()) - 1; y <= ty(b.getSouth()) + 1; y++)
+          if (index.tiles.has(`${x}_${y}`)) wanted.add(`${x}_${y}`);
+      shown.forEach((layer, name) => { if (!wanted.has(name)) { map.removeLayer(layer); shown.delete(name); } });
+      wanted.forEach(name => {
+        if (shown.has(name)) return;
+        const draw = features => {
+          if (!on || shown.has(name) || map.getZoom() < cfg.minZoom) return;
+          shown.set(name, L.geoJSON({ type: "FeatureCollection", features }, {
+            renderer, interactive: false, style: { color: cfg.color, weight: 1, fill: false, pane: cfg.id }
+          }).addTo(map));
+        };
+        if (loaded.has(name)) draw(loaded.get(name));
+        else fetch(`${cfg.tiles}/${name}.json`).then(r => r.json()).then(d => { loaded.set(name, d.features); draw(d.features); }).catch(() => {});
+      });
+    };
+
+    fetch(`${cfg.tiles}/index.json`)
+      .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
+      .then(i => {
+        index = { zoom: i.zoom, tiles: new Set(i.tiles) };
+        ui.box.disabled = false;
+        ui.box.addEventListener("change", () => { on = ui.box.checked; refresh(); ui.sync(); });
+        map.on("moveend", refresh);
+        // Parcels are not clickable shapes, so they never block another layer. A click on empty map looks one up instead.
+        map.on("click", e => {
+          if (!on || measuring || selecting || map.getZoom() < cfg.minZoom || Date.now() - lastFeatureClick < 80) return;
+          for (const name of shown.keys()) {
+            const hit = (loaded.get(name) || []).find(f => insideGeometry(f.geometry, e.latlng.lng, e.latlng.lat));
+            if (!hit) continue;
+            L.popup().setLatLng(e.latlng).setContent(`<strong>Property ${esc(hit.properties.id)}</strong>
+              <table><tr><td>Size</td><td>${esc(hit.properties.acres.toLocaleString())} acres (measured from the map)</td></tr>
+              <tr><td>Parcel map</td><td>January 2025</td></tr></table>
+              <div style="margin-top:4px"><a href="https://gis.bisclient.com/grimescad/" target="_blank" rel="noopener">Look it up at the appraisal district</a></div>`).openOn(map);
+            return;
+          }
+        });
+        refresh();
+        ui.sync();
+      })
+      .catch(() => {
+        ui.row.classList.add("unavailable");
+        ui.box.checked = false;
+        ui.small.textContent = cfg.desc + ". Coming soon.";
+        ui.sync();
+      });
+  }
+
   // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
   const TOPICS = [
-    { name: "Site and boundaries", open: true, ids: ["zone", "county", "places", "schools"] },
+    { name: "Site and boundaries", open: true, ids: ["zone", "county", "parcels", "places", "schools"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
     { name: "Water", ids: ["flood", "streams", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
@@ -472,6 +585,7 @@
     sync();
     const small = row.querySelector("small");
     const legend = item.querySelector(".legend");
+    if (cfg.tiles) { tiledLayer(cfg, { row, box, small, legend, sync }); return; }
 
     fetch(cfg.url)
       .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
@@ -847,6 +961,7 @@
   // id matches the layer's entry in data/meta.json, which holds its last updated date
   const SOURCES = [
     { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
+    { id: "parcels",   name: "Parcel lines",       why: "So a landowner can find their own tract and see how it sits against the zone and the other layers. Owners are not named; the appraisal district's own map is the place to look one up.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District, as of January 2025", url: "https://gis.bisclient.com/grimescad/" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },

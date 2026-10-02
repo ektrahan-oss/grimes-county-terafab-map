@@ -90,6 +90,11 @@
       "updated": "2026-10-02",
       "source": "https://services.twdb.texas.gov/arcgis/rest/services/Base/BaseLayerQueryService/MapServer/1/query",
       "feature_count": 6
+    },
+    "parcels": {
+      "updated": "2026-10-02",
+      "source": "https://data.geographic.texas.gov/ (StratMap Land Parcels, Grimes County)",
+      "feature_count": 26990
     }
   }
 }

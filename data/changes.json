@@ -53,5 +53,10 @@
     "date": "2026-10-02",
     "layer": "water_rights",
     "summary": "Surface water rights: gallons added alongside acre-feet"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "parcels",
+    "summary": "Parcel lines: built from the January 2025 parcel map, 26,990 parcels"
   }
 ]
