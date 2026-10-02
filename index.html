@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
 <style>
   :root {
     --pine: #1E3B34; --reservoir: #2F7AA8; --ink: #22302C; --muted: #5F6E68;
@@ -55,6 +56,10 @@
   .layer strong { display: block; font-size: 0.92rem; }
   .layer small { display: block; color: var(--muted); font-size: 0.8rem; line-height: 1.4; }
   .layer.unavailable { cursor: default; opacity: 0.55; }
+  /* Numbered circle standing for many points */
+  .cluster { background: rgba(31, 120, 180, 0.88); border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    color: #fff; font: 700 0.74rem "Public Sans", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; }
+
   /* Topics: a heading with its own switch, and the layers under it */
   .topic { border-bottom: 1px solid var(--line); }
   .topic:last-child { border-bottom: 0; }
@@ -210,6 +215,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
   // ---- Layer settings. Add a layer by adding an entry here and a file in /data ----
   // kind:    "fill", "line", "point" or "outline" (no fill, not clickable).
@@ -297,8 +303,8 @@
         { label: "Brazos River Alluvium", color: "#E6AB02", test: p => /^Brazos/.test(p.name || "") },
         { label: "Other aquifer", color: "#8C8C8C", test: () => true }
       ] },
-    { id: "wells", one: "water well", name: "Water wells", desc: "Wells drilled since about 2001, from drillers' reports", url: "data/water_wells.geojson", kind: "point", color: "#1F78B4", canvas: true,
-      note: "From the report a driller files with the state. Older wells are missing, and locations are as accurate as the driller recorded them.",
+    { id: "wells", one: "water well", name: "Water wells", desc: "Wells drilled since about 2001, from drillers' reports", url: "data/water_wells.geojson", kind: "point", color: "#1F78B4", canvas: true, cluster: true,
+      note: "Numbered circles count the wells in an area; zoom in and they split into single wells. From the report a driller files with the state: older wells are missing, and locations are as accurate as the driller recorded them.",
       classes: [
         { label: "Household", color: "#1F78B4", radius: 4, test: p => p.Use === "Household" },
         { label: "Livestock or irrigation", color: "#33A02C", radius: 4, test: p => p.Use === "Livestock or irrigation" },
@@ -369,6 +375,7 @@
   }
 
   // One Leaflet layer for one legend class (or for the whole layer when it has no classes)
+  const CLUSTER_UNTIL_ZOOM = 13;                 // from this zoom inward, clustered layers show every point
   const canvas = L.canvas({ padding: 0.3 });     // much faster than the default for layers with thousands of points
   function makeLayer(cfg, cls, features) {
     const color = cls.color || cfg.color;
@@ -474,8 +481,23 @@
         states.push(state);
         refreshMeasureTargets();
 
+        // A layer with thousands of points is held in a cluster group: numbered circles that split as you zoom in.
+        // Its classes go into the group; the group itself goes on and off the map with the layer.
+        const group = cfg.cluster && L.markerClusterGroup ? L.markerClusterGroup({
+          disableClusteringAtZoom: CLUSTER_UNTIL_ZOOM, maxClusterRadius: 60, showCoverageOnHover: false, spiderfyOnMaxZoom: false, chunkedLoading: true,
+          iconCreateFunction: c => {
+            const n = c.getChildCount(), size = n < 20 ? 30 : n < 150 ? 38 : 46;
+            return L.divIcon({ html: `<span>${n.toLocaleString()}</span>`, className: "cluster", iconSize: [size, size] });
+          }
+        }) : null;
+        const host = group || map;
+        const place = () => {
+          state.subs.slice().reverse().forEach(s => (group ? s.on : state.on && s.on) ? host.addLayer(s.layer) : host.removeLayer(s.layer));
+          if (group) state.on ? map.addLayer(group) : map.removeLayer(group);
+        };
+
         const draw = () => {
-          state.subs.forEach(s => map.removeLayer(s.layer));
+          state.subs.forEach(s => host.removeLayer(s.layer));
           const mode = cfg.modes ? cfg.modes[state.mode] : cfg;
           const classes = mode.classes || [{}];
           const taken = new Set();
@@ -483,8 +505,7 @@
             const mine = features.filter((f, i) => !taken.has(i) && (!cls.test || cls.test(f.properties || {})) && taken.add(i));
             return { cls, count: mine.length, on: true, layer: makeLayer(cfg, cls, mine) };
           }).filter(s => s.count);
-          // Add the last class first so the first legend row is drawn on top
-          if (state.on) state.subs.slice().reverse().forEach(s => s.layer.addTo(map));
+          place();      // adds the last class first, so the first legend row is drawn on top
 
           const hasLegend = !!(mode.classes || cfg.note);
           legend.innerHTML =
@@ -497,7 +518,7 @@
           legend.querySelectorAll("input[data-sub]").forEach(b => b.addEventListener("change", () => {
             const s = state.subs[b.dataset.sub];
             s.on = b.checked;
-            if (state.on && s.on) s.layer.addTo(map); else map.removeLayer(s.layer);
+            place();
           }));
           legend.querySelectorAll("button[data-mode]").forEach(b => b.addEventListener("click", () => { state.mode = +b.dataset.mode; draw(); }));
         };
@@ -506,7 +527,7 @@
         box.disabled = false;
         box.addEventListener("change", () => {
           state.on = box.checked;
-          state.subs.slice().reverse().forEach(s => state.on && s.on ? s.layer.addTo(map) : map.removeLayer(s.layer));
+          place();
           legend.hidden = !(state.on && legend.innerHTML);
           sync();
         });
