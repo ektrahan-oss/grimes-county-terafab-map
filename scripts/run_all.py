@@ -1,6 +1,6 @@
 """Run the map's data scripts from one place.
 
-    python scripts/run_all.py --frequent     news feed and document watching only
+    python scripts/run_all.py --frequent     news feed, document watching and permit watching only
     python scripts/run_all.py --all          every layer except drive times
                                              (on GitHub the reinvestment zone is skipped too)
     python scripts/run_all.py --only NAME    one layer, for example --only pipelines
@@ -63,6 +63,7 @@ LAYERS = {
     "drive":     (module_main("build_drive_times"), False, False),      # one-time layer: --only drive
     "news":      (module_main("build_news"), True, True),
     "documents": (module_main("watch_documents"), True, True),
+    "permits":   (module_main("watch_permits"), True, True),
 }
 
 
@@ -86,7 +87,7 @@ def run(name):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = ap.add_mutually_exclusive_group(required=True)
-    group.add_argument("--frequent", action="store_true", help="news feed and document watching only")
+    group.add_argument("--frequent", action="store_true", help="news feed, document watching and permit watching only")
     group.add_argument("--all", action="store_true", help="every layer except drive times")
     group.add_argument("--only", metavar="NAME", choices=LAYERS, help="one of: " + ", ".join(LAYERS))
     args = ap.parse_args()

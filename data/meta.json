@@ -50,6 +50,11 @@
       "updated": "2026-10-01",
       "source": "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627",
       "feature_count": 1
+    },
+    "permits": {
+      "updated": "2026-10-01",
+      "source": "https://www15.tceq.texas.gov/crpub/index.cfm",
+      "feature_count": 3
     }
   }
 }

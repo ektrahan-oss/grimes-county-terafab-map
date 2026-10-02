@@ -1,0 +1,20 @@
+{
+  "air:412457": {
+    "what": "Air permit near the site: Knife River Corporation-South, concrete batch plant (permit 184781, received 07/23/2026). Location: From the intersection of fm 244 and hwy 30 travel 1.7 mile east on hwy 30 to site on south side",
+    "status": "pending",
+    "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start",
+    "first_seen": "2026-10-01"
+  },
+  "tceq-permit:RN112483532:TXR1535YT": {
+    "what": "TCEQ stormwater permit TXR1535YT for SpaceX's Gibbons Creek Project Site",
+    "status": "active",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
+    "first_seen": "2026-10-01"
+  },
+  "tceq-site:RN112483532": {
+    "what": "SpaceX site registered with TCEQ, Gibbons Creek Project Site (Located south of gibbons creek reservoir and north of state hwy 30 and east of fm 171)",
+    "status": "listed",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
+    "first_seen": "2026-10-01"
+  }
+}
