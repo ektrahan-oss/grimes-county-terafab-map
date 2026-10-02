@@ -1,8 +1,280 @@
 {
+  "_recorded": [
+    "air",
+    "county",
+    "rrc",
+    "tceq",
+    "tdlr",
+    "txdot"
+  ],
   "air:412457": {
     "what": "Air permit near the site: Knife River Corporation-South, concrete batch plant (permit 184781, received 07/23/2026). Location: From the intersection of fm 244 and hwy 30 travel 1.7 mile east on hwy 30 to site on south side",
     "status": "pending",
     "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start",
+    "first_seen": "2026-10-01"
+  },
+  "county:2c7627a1381d": {
+    "what": "Commissioners Court agenda item for 2026-10-07: Discuss and take action to approve a professional services contract with HR Green for pipeline permitting and inspection services, no cost to Grimes County.",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6627,plainText=false)",
+    "first_seen": "2026-10-01"
+  },
+  "county:93b6b3791f31": {
+    "what": "Commissioners Court agenda item for 2026-09-16: Discuss and take action to approve a professional services agreement with 5engineering, LLC for private development permit application review, no cost to Grimes County. Grimes County Auditor - Jessi Murphy (CM)",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6598,plainText=false)",
+    "first_seen": "2026-10-01"
+  },
+  "county:f2e1e9a649bd": {
+    "what": "Commissioners Court agenda item for 2026-09-16: Request authorization to negotiate a professional services contract with HR Green, Inc for pipeline permitting and inspection, no cost to Grimes County.",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6598,plainText=false)",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00018:EXPLORER PIPELINE COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 00018 in Grimes County, EXPLORER PIPELINE COMPANY (refined liquid product)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00401:BP PIPELINES (NORTH AMERICA),INC": {
+    "what": "Railroad Commission pipeline permit T-4 00401 in Grimes County, BP PIPELINES (NORTH AMERICA),INC (crude oil)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00503:COPANO PIPELINES/UP GLFCOAST LLC": {
+    "what": "Railroad Commission pipeline permit T-4 00503 in Grimes County, COPANO PIPELINES/UP GLFCOAST LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00561:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 00561 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00578:ATMOS PIPELINE - TEXAS": {
+    "what": "Railroad Commission pipeline permit T-4 00578 in Grimes County, ATMOS PIPELINE - TEXAS (natural gas)",
+    "status": "abandoned and in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00774:KINDER MORGAN TEJAS PIPELINE LLC": {
+    "what": "Railroad Commission pipeline permit T-4 00774 in Grimes County, KINDER MORGAN TEJAS PIPELINE LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:00941:EXXONMOBIL PIPELINE COMPANY LLC": {
+    "what": "Railroad Commission pipeline permit T-4 00941 in Grimes County, EXXONMOBIL PIPELINE COMPANY LLC (refined liquid product)",
+    "status": "abandoned and in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:02105:ENERGY TRANSFER COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 02105 in Grimes County, ENERGY TRANSFER COMPANY (natural gas)",
+    "status": "abandoned and in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:02160:DCP OPERATING COMPANY, LP": {
+    "what": "Railroad Commission pipeline permit T-4 02160 in Grimes County, DCP OPERATING COMPANY, LP (natural gas)",
+    "status": "abandoned and in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:02259:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 02259 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:02883:WILDFIRE ENERGY OPERATING LLC": {
+    "what": "Railroad Commission pipeline permit T-4 02883 in Grimes County, WILDFIRE ENERGY OPERATING LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:04226:GIBBONS LAKE AND LAND, LLC": {
+    "what": "Railroad Commission pipeline permit T-4 04226 in Grimes County, GIBBONS LAKE AND LAND, LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:04568:ENTERPRISE CRUDE PIPELINE LLC": {
+    "what": "Railroad Commission pipeline permit T-4 04568 in Grimes County, ENTERPRISE CRUDE PIPELINE LLC (crude oil)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:04972:BLACKHAWK PIPELINE LP": {
+    "what": "Railroad Commission pipeline permit T-4 04972 in Grimes County, BLACKHAWK PIPELINE LP (crude oil)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:05161:ENTERPRISE CRUDE PIPELINE LLC": {
+    "what": "Railroad Commission pipeline permit T-4 05161 in Grimes County, ENTERPRISE CRUDE PIPELINE LLC (crude oil)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:05207:COPANO FLD SER/UP GULF COAST LLC": {
+    "what": "Railroad Commission pipeline permit T-4 05207 in Grimes County, COPANO FLD SER/UP GULF COAST LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:06117:GALLOWAY ENERGY CO.": {
+    "what": "Railroad Commission pipeline permit T-4 06117 in Grimes County, GALLOWAY ENERGY CO. (natural gas)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:06155:DOMINION GAS VENTURES, LP": {
+    "what": "Railroad Commission pipeline permit T-4 06155 in Grimes County, DOMINION GAS VENTURES, LP (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:06415:PROLINE ENERGY RESOURCES INC": {
+    "what": "Railroad Commission pipeline permit T-4 06415 in Grimes County, PROLINE ENERGY RESOURCES INC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:06469:TRANS BRAZOS ENERGY CORP.": {
+    "what": "Railroad Commission pipeline permit T-4 06469 in Grimes County, TRANS BRAZOS ENERGY CORP. (natural gas)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:06812:ENERGY TRANSFER COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 06812 in Grimes County, ENERGY TRANSFER COMPANY (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:07195:GALLOWAY ENERGY CO.": {
+    "what": "Railroad Commission pipeline permit T-4 07195 in Grimes County, GALLOWAY ENERGY CO. (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:07797:TRAILBLAZER ENERGY RESOURCES,LLC": {
+    "what": "Railroad Commission pipeline permit T-4 07797 in Grimes County, TRAILBLAZER ENERGY RESOURCES,LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:08551:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 08551 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid (hvl))",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:08625:ENERGY TRANSFER COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 08625 in Grimes County, ENERGY TRANSFER COMPANY (crude oil)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:08692:ALLIED OPERATING TEXAS, LLC": {
+    "what": "Railroad Commission pipeline permit T-4 08692 in Grimes County, ALLIED OPERATING TEXAS, LLC (natural gas)",
+    "status": "revoke",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:08804:MAGELLAN PIPELINE COMPANY, L.P.": {
+    "what": "Railroad Commission pipeline permit T-4 08804 in Grimes County, MAGELLAN PIPELINE COMPANY, L.P. (crude oil)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09167:PRIDE ENERGY COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 09167 in Grimes County, PRIDE ENERGY COMPANY (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09210:NAVITAS PIPELINE TEXAS, LLC": {
+    "what": "Railroad Commission pipeline permit T-4 09210 in Grimes County, NAVITAS PIPELINE TEXAS, LLC (natural gas)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09419:KNIGHT WARRIOR LLC": {
+    "what": "Railroad Commission pipeline permit T-4 09419 in Grimes County, KNIGHT WARRIOR LLC (crude oil)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09581:PARDUS OIL & GAS OPERATING, LP": {
+    "what": "Railroad Commission pipeline permit T-4 09581 in Grimes County, PARDUS OIL & GAS OPERATING, LP (natural gas)",
+    "status": "abandoned",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09625:ENERGY TRANSFER COMPANY": {
+    "what": "Railroad Commission pipeline permit T-4 09625 in Grimes County, ENERGY TRANSFER COMPANY (crude oil)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09696:IRON RIDGE OPERATING, LLC": {
+    "what": "Railroad Commission pipeline permit T-4 09696 in Grimes County, IRON RIDGE OPERATING, LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09743:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 09743 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:09798:MAGELLAN PIPELINE COMPANY, L.P.": {
+    "what": "Railroad Commission pipeline permit T-4 09798 in Grimes County, MAGELLAN PIPELINE COMPANY, L.P. (refined liquid product)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10259:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 10259 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10395:MAGNOLIA OIL & GAS OPERATING LLC": {
+    "what": "Railroad Commission pipeline permit T-4 10395 in Grimes County, MAGNOLIA OIL & GAS OPERATING LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10428:TWIN OAKS RENEWABLES, LLC": {
+    "what": "Railroad Commission pipeline permit T-4 10428 in Grimes County, TWIN OAKS RENEWABLES, LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10486:ENTERPRISE PRODUCTS OPERATINGLLC": {
+    "what": "Railroad Commission pipeline permit T-4 10486 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10662:TRIDENT INTRASTATE PIPELINE LLC": {
+    "what": "Railroad Commission pipeline permit T-4 10662 in Grimes County, TRIDENT INTRASTATE PIPELINE LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-10-01"
+  },
+  "rrc:10686:MILLENNIUM POWER OF TEXAS, INC.": {
+    "what": "Railroad Commission pipeline permit T-4 10686 in Grimes County, MILLENNIUM POWER OF TEXAS, INC. (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
     "first_seen": "2026-10-01"
   },
   "tceq-permit:RN112483532:TXR1535YT": {
@@ -15,6 +287,66 @@
     "what": "SpaceX site registered with TCEQ, Gibbons Creek Project Site (Located south of gibbons creek reservoir and north of state hwy 30 and east of fm 171)",
     "status": "listed",
     "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021201041": {
+    "what": "TxDOT project near the site: SH 30, widen road - add lanes, SH 90 to FM 2620, estimated $28,194,854",
+    "status": "construction begins within 4 years",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021201042": {
+    "what": "TxDOT project near the site: SH 30, install traffic signal, At SH 90, estimated $3,048,970",
+    "status": "construction begins within 4 years",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021204039": {
+    "what": "TxDOT project near the site: SH 30, bridge replacement, AT GIBBONS CREEK, estimated $9,446,098",
+    "status": "construction underway or begins soon",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021204048": {
+    "what": "TxDOT project near the site: SH 30, widen road - add lanes, 0.38 Mi W of CR 190 to 0.7 Mi E of CR 190, estimated $1,890,691",
+    "status": "construction underway or begins soon",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021204049": {
+    "what": "TxDOT project near the site: SH 30, drainage improvements, CR 171 to 0.1 Mi E of FM 244, estimated $1,381,357",
+    "status": "construction underway or begins soon",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021204051": {
+    "what": "TxDOT project near the site: SH 30, donation, 0.5 Mi W of FM 244, estimated $98,523",
+    "status": "construction begins within 4 years",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:021204055": {
+    "what": "TxDOT project near the site: SH 30, mitigation, At Gibbons Creek, estimated $127,886",
+    "status": "construction begins within 4 years",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:064304037": {
+    "what": "TxDOT project near the site: FM 244, install traffic signal, 0.5 miles north of CR 174 to 0.5 miles south of CR 174, estimated $36,485",
+    "status": "construction underway or begins soon",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:064305062": {
+    "what": "TxDOT project near the site: FM 244, install traffic signal, 0.5 miles north of FM 3090 to 0.1 miles north of FM 3090, estimated $16,430",
+    "status": "construction underway or begins soon",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
+    "first_seen": "2026-10-01"
+  },
+  "txdot:064305069": {
+    "what": "TxDOT project near the site: FM 3090, hazard elimination & safety, FM 244 to FM 3455, estimated $383,498",
+    "status": "construction begins within 4 years",
+    "link": "https://www.txdot.gov/projects/project-tracker.html",
     "first_seen": "2026-10-01"
   }
 }
