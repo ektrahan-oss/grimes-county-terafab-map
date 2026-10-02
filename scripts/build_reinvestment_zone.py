@@ -76,6 +76,7 @@ EXPECTED_ACRES = 22000
 ACRES_TOLERANCE = 0.05           # warn if the outline is more than 5% off
 SIMPLIFY_FEET = 15
 MIN_HOLE_ACRES = 1               # smaller gaps are slivers between parcels, not real exclusions
+CLOSE_GAPS_FEET = 60             # fills road strips up to 120 feet wide between listed parcels
 WORK_CRS = 2277                  # Texas State Plane Central, US feet
 
 # data.geographic.texas.gov rejects requests that don't look like this
@@ -240,12 +241,18 @@ def drop_small_holes(geom):
 
 def build_outline(matched):
     """Dissolve parcels into one outline. Returns (web outline in EPSG:4326, acres before simplifying)."""
-    outline = drop_small_holes(matched.to_crs(WORK_CRS).geometry.union_all())
+    parcels = matched.to_crs(WORK_CRS).geometry.union_all()
+    # The parcel map leaves thin strips with no parcel where roads run between listed tracts. Left
+    # alone they show as stray lines inside the zone, so strips narrower than twice CLOSE_GAPS_FEET
+    # are filled in. Acreage is still measured from the parcels themselves.
+    closed = parcels.buffer(CLOSE_GAPS_FEET, join_style="mitre").buffer(-CLOSE_GAPS_FEET, join_style="mitre")
+    outline = drop_small_holes(shapely.unary_union([closed, parcels]))
     # Simplifying and rounding can each make neighbouring pieces touch or cross, so repair after both.
     simple = shapely.make_valid(outline.simplify(SIMPLIFY_FEET, preserve_topology=True))
     wgs = gpd.GeoSeries([outline, simple], crs=WORK_CRS).to_crs(4326)
     web = shapely.make_valid(shapely.set_precision(wgs.iloc[1], 1e-6))
-    acres = abs(Geod(ellps="WGS84").geometry_area_perimeter(wgs.iloc[0])[0]) / 4046.8564224
+    measured = gpd.GeoSeries([drop_small_holes(parcels)], crs=WORK_CRS).to_crs(4326).iloc[0]
+    acres = abs(Geod(ellps="WGS84").geometry_area_perimeter(measured)[0]) / 4046.8564224
     return MultiPolygon(polygons(web)), acres
 
 
@@ -261,6 +268,7 @@ def write_geojson(outline, acres, n_parcels, n_skipped, parcel_label):
     if n_skipped:
         which = f"{n_parcels - n_skipped} of the {n_parcels} parcels"
         left_off = "Left off: listed land far from the rest that is on none of the county's maps. "
+    left_off += "Road strips between listed parcels are filled in for readability. "
     props = {
         "name": "SpaceX Reinvestment Zone No. 01-2026-001",
         "approved_date": APPROVED_DATE,

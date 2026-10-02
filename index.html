@@ -55,6 +55,37 @@
   .layer strong { display: block; font-size: 0.92rem; }
   .layer small { display: block; color: var(--muted); font-size: 0.8rem; line-height: 1.4; }
   .layer.unavailable { cursor: default; opacity: 0.55; }
+  .layer-item { border-bottom: 1px solid var(--soft); }
+  .layer-item:last-child { border-bottom: 0; }
+  .layer-item .layer { border-bottom: 0; }
+
+  /* Legend under a layer: one row per class, each can be switched off */
+  .legend { margin: -2px 0 10px 28px; font-size: 0.8rem; }
+  .legend[hidden] { display: none; }
+  .legend label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; line-height: 1.3; }
+  .legend input { width: 15px; height: 15px; margin: 0; accent-color: var(--pine); flex: none; }
+  .legend em { margin-left: auto; padding-left: 8px; color: var(--muted); font-style: normal; white-space: nowrap; }
+  .legend .note { margin: 4px 0 0; color: var(--muted); line-height: 1.4; }
+  .sym { flex: none; width: 24px; height: 14px; display: inline-flex; align-items: center; justify-content: center; }
+  .sym i { display: block; }
+  .modes { display: flex; gap: 0; margin: 2px 0 6px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .modes button { flex: 1; font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: var(--bg); border: 0; padding: 6px 8px; cursor: pointer; }
+  .modes button[aria-pressed="true"] { background: var(--pine); color: #fff; }
+
+  /* Select tool */
+  .select-tool { width: 34px; height: 34px; background: #fff; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+  .select-tool[aria-pressed="true"] { background: var(--pine); }
+  .select-tool i { display: block; width: 16px; height: 13px; border: 2px dashed var(--ink); }
+  .select-tool[aria-pressed="true"] i { border-color: #fff; }
+  #map.selecting { cursor: crosshair; touch-action: none; }
+  #map.selecting .leaflet-interactive { cursor: crosshair; }
+  .select-hint { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 900; background: var(--pine); color: #fff; font-size: 0.8rem; padding: 6px 12px; border-radius: 14px; pointer-events: none; }
+  .select-hint[hidden] { display: none; }
+  .selection-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .selection-head h2 { margin: 0; }
+  .sel-group { margin: 12px 0 2px; font-size: 0.82rem; font-weight: 700; color: var(--pine); }
+  .sel-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 0.84rem; line-height: 1.4; background: none; border: 0; border-bottom: 1px solid var(--soft); padding: 7px 0; cursor: pointer; color: var(--ink); }
+  .sel-item small { display: block; color: var(--muted); font-size: 0.78rem; }
 
   /* Timeline */
   .event { padding: 12px 0; border-bottom: 1px solid var(--soft); }
@@ -93,6 +124,7 @@
   .leaflet-popup-content td:first-child { color: var(--muted); }
 
   @media (min-width: 800px) {
+    .select-hint { left: calc(50% + 178px); }
     .panel { top: 16px; bottom: 16px; left: 16px; right: auto; width: 340px; max-height: none; border: 1px solid var(--line); border-radius: 10px; }
     .handle { display: none; }
     .panel.collapsed .panel-body { display: block; }
@@ -108,6 +140,7 @@
 
   <div class="main">
     <div id="map" role="region" aria-label="Map of Grimes County"></div>
+    <div class="select-hint" id="select-hint" hidden>Drag a box on the map to list what is inside</div>
 
     <aside class="panel collapsed" id="panel">
       <button class="handle" id="handle" aria-label="Expand or collapse panel" aria-expanded="false"><span></span></button>
@@ -119,6 +152,10 @@
       </div>
       <div class="panel-body">
         <section class="view" id="view-layers"><div id="layer-list"></div></section>
+        <section class="view" id="view-selection" hidden>
+          <div class="selection-head"><h2 class="section" id="selection-title">Selection</h2><button class="linkish" id="selection-close" type="button">Close</button></div>
+          <div id="selection-list"></div>
+        </section>
         <section class="view" id="view-timeline" hidden><div id="event-list"><p class="empty">Loading timeline</p></div></section>
         <section class="view" id="view-news" hidden>
           <h2 class="section">Latest news</h2>
@@ -131,7 +168,7 @@
         <section class="view about" id="view-about" hidden>
           <p>A free public map of what's changing around the SpaceX Terafab site in Grimes County, Texas. Layers refresh from public sources, and the timeline tracks major decisions as they happen.</p>
           <p>Locations marked approximate are for context only. This map is not a survey or legal boundary.</p>
-          <h2 class="section">Data sources</h2>
+          <h2 class="section">Layers and data sources</h2>
           <ul class="sources" id="source-list"></ul>
           <p class="meta">Data last updated: <span id="updated">not yet</span></p>
         </section>
@@ -142,19 +179,82 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-  // ---- Layer settings. Add a layer by adding a line here and a file in /data ----
+  // ---- Layer settings. Add a layer by adding an entry here and a file in /data ----
+  // kind:    "fill", "line", "point" or "outline" (no fill, not clickable).
+  // classes: legend rows. A feature goes in the first class whose test passes; each row can be switched off.
+  // modes:   alternative sets of classes, with a switch in the legend.
   // Colours were checked to stay distinguishable under the common forms of colour blindness.
+
+  // Traffic counts carry one "AADT <year>" value per year; work out the latest two.
+  const countYears = p => Object.keys(p).filter(k => /^AADT \d{4}$/.test(k)).map(k => +k.slice(5)).sort((x, y) => y - x);
+  const latestCount = p => p["AADT " + countYears(p)[0]];
+  const yearChange = p => {
+    const [now, before] = countYears(p);
+    // Only a true year-on-year comparison counts; a station that skipped a year has no figure
+    return now && before === now - 1 && p["AADT " + before] ? (p["AADT " + now] / p["AADT " + before] - 1) * 100 : null;
+  };
+  const inService = p => /in service/i.test(p.Status || "");
+
   const LAYERS = [
-    { id: "county",    name: "County boundary",    desc: "Grimes County, U.S. Census Bureau",        url: "data/grimes_county.geojson",    color: "#5F6E68", on: true, outline: true },
-    { id: "site",     name: "Terafab site",       desc: "Gibbons Creek Reservoir, approximate",     url: "data/site.geojson",             color: "#2F7AA8", on: true },
-    { id: "zone",      name: "Reinvestment zone",  desc: "About 22,000 acres approved June 2026",     url: "data/reinvestment_zone.geojson", color: "#C8962E", on: true },
-    { id: "places",    name: "Towns",              desc: "Nearby communities",                       url: "data/places.geojson",           color: "#22302C", on: true, labels: true },
-    { id: "schools",   name: "School districts",   desc: "District boundaries within the county",    url: "data/school_districts.geojson", color: "#D27FB0", on: false, outline: true, dash: "6 4", labels: true },
-    { id: "drive",     name: "Drive times",        desc: "Approximate routes to nearby cities",      url: "data/drive_times.geojson",      color: "#0B3D66", on: false, weight: 3 },
-    { id: "traffic",  name: "Traffic counts",     desc: "TxDOT annual average daily traffic",       url: "data/traffic_counts.geojson",   color: "#B23A48", on: false },
-    { id: "pipelines", name: "Pipelines",          desc: "Texas Railroad Commission",                url: "data/pipelines.geojson",        color: "#5B3A9E", on: false },
-    { id: "power",     name: "Power lines",        desc: "Transmission lines, federal data to 2024", url: "data/power_lines.geojson",      color: "#00A383", on: false },
-    { id: "flood",    name: "Floodplains",        desc: "FEMA flood hazard zones",                  url: "data/floodplains.geojson",      color: "#7CC4EE", on: false, weight: 0.5, fillOpacity: 0.45 }
+    { id: "county", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
+    { id: "zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
+    { id: "places", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
+    { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true },
+    { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", weight: 1, fillOpacity: 0.45, counts: false,
+      note: "Estimated without traffic, from the site's frontage on State Highway 30. Darker means a longer drive.",
+      classes: [
+        { label: "15 minutes or less", color: "#DCEBF7", test: p => p.minutes <= 15 },
+        { label: "15 to 30 minutes", color: "#9CC7E6", test: p => p.minutes <= 30 },
+        { label: "30 minutes to 1 hour", color: "#4A90C8", test: p => p.minutes <= 60 },
+        { label: "1 to 1.5 hours", color: "#0A4A8F", test: () => true }
+      ] },
+    { id: "routes", name: "Likely routes", desc: "Probable routes to nearby cities, approximate", url: "data/drive_routes.geojson", kind: "line", color: "#0B3D66", weight: 3 },
+    { id: "traffic", name: "Traffic counts", desc: "TxDOT average vehicles per day", url: "data/traffic_counts.geojson", kind: "point", color: "#B23A48",
+      popupExtra: p => { const c = yearChange(p), y = countYears(p); return c == null ? [] : [[`Change ${y[1]} to ${y[0]}`, (c > 0 ? "+" : "") + c.toFixed(1) + "%"]]; },
+      modes: [
+        { label: "Vehicles per day", note: "Latest yearly count at each station. Darker and larger means busier.", classes: [
+          { label: "Over 35,000", color: "#67000D", radius: 10, test: p => latestCount(p) >= 35000 },
+          { label: "20,000 to 35,000", color: "#CB181D", radius: 9, test: p => latestCount(p) >= 20000 },
+          { label: "12,000 to 20,000", color: "#EF3B2C", radius: 8, test: p => latestCount(p) >= 12000 },
+          { label: "5,000 to 12,000", color: "#FC9272", radius: 7, test: p => latestCount(p) >= 5000 },
+          { label: "Under 5,000", color: "#FCCFBE", radius: 6, test: () => true }
+        ] },
+        { label: "Change in a year", note: "Latest count compared with the year before. Single-year swings can reflect how a count was taken as much as real change.", classes: [
+          { label: "Up more than 10%", color: "#B2182B", radius: 8, test: p => yearChange(p) > 10 },
+          { label: "Up 3% to 10%", color: "#F4A582", radius: 7, test: p => yearChange(p) > 3 },
+          { label: "Within 3% either way", color: "#D9D9D9", radius: 6, test: p => yearChange(p) != null && yearChange(p) >= -3 },
+          { label: "Down 3% to 10%", color: "#92C5DE", radius: 7, test: p => yearChange(p) != null && yearChange(p) >= -10 },
+          { label: "Down more than 10%", color: "#2166AC", radius: 8, test: p => yearChange(p) != null },
+          { label: "No count for the year before", color: "#FFFFFF", radius: 5, test: () => true }
+        ] }
+      ] },
+    { id: "pipelines", name: "Pipelines", desc: "Texas Railroad Commission", url: "data/pipelines.geojson", kind: "line", color: "#5B3A9E",
+      note: "Thick lines are transmission lines. Thin lines are gathering lines from wells.",
+      weightBy: p => p.Type === "Transmission" ? 3 : 1.5,
+      classes: [
+        { label: "Not in service", color: "#8C8C8C", dash: "5 5", test: p => !inService(p) },
+        { label: "Natural gas", color: "#5B3A9E", test: p => p.Commodity === "Natural gas" },
+        { label: "Crude oil", color: "#1A1A1A", test: p => p.Commodity === "Crude oil" },
+        { label: "Refined products", color: "#E08214", test: p => p.Commodity === "Refined products" },
+        { label: "Highly volatile liquids", color: "#C51B7D", test: p => /volatile/i.test(p.Commodity || "") },
+        { label: "Other", color: "#5F6E68", test: () => true }
+      ] },
+    { id: "power", name: "Power lines", desc: "Transmission lines, federal data to 2024", url: "data/power_lines.geojson", kind: "line", color: "#00A383",
+      note: "Thicker and darker means higher voltage.",
+      classes: [
+        { label: "345 kV", color: "#00543F", weight: 4.5, test: p => p["Voltage (kV)"] >= 300 },
+        { label: "138 kV", color: "#00A383", weight: 3, test: p => p["Voltage (kV)"] >= 100 },
+        { label: "Under 100 kV", color: "#66C9B2", weight: 2, test: p => p["Voltage (kV)"] > 0 },
+        { label: "Voltage not recorded", color: "#66C9B2", weight: 2, dash: "4 4", test: () => true }
+      ] },
+    { id: "flood", name: "Floodplains", desc: "FEMA flood hazard zones", url: "data/floodplains.geojson", kind: "fill", weight: 0.5, fillOpacity: 0.55,
+      note: "Land outside these areas is mapped by FEMA as minimal flood hazard and is not drawn.",
+      classes: [
+        { label: "Floodway", color: "#08306B", test: p => /^Floodway/.test(p.name || "") },
+        { label: "1% annual chance (100-year)", color: "#2B8CBE", test: p => /^1%/.test(p.name || "") },
+        { label: "0.2% annual chance (500-year)", color: "#A6CEE3", test: p => /^0\.2%/.test(p.name || "") },
+        { label: "Other flood zone", color: "#BDBDBD", test: () => true }
+      ] }
   ];
 
   const center = [30.6, -96.1];
@@ -172,27 +272,38 @@
 
   const shortDate = d => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show"];
 
-  function popupHtml(props) {
-    const title = props.name || props.NAME || "Feature";
-    const rows = Object.entries(props)
-      .filter(([k, v]) => !["name", "NAME", "description"].includes(k) && v !== null && v !== "")
-      .map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
-    return `<strong>${esc(title)}</strong>` +
+  function popupRows(cfg, props) {
+    return Object.entries(props)
+      .filter(([k, v]) => !HIDDEN_PROPS.includes(k) && v !== null && v !== "")
+      .concat(cfg.popupExtra ? cfg.popupExtra(props) : []);
+  }
+
+  function popupHtml(cfg, props) {
+    const rows = popupRows(cfg, props).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+    return `<strong>${esc(props.name || props.NAME || cfg.name)}</strong>` +
       (props.description ? `<div>${esc(props.description)}</div>` : "") +
       (rows ? `<table>${rows}</table>` : "");
   }
 
-  function makeLayer(cfg, geojson) {
-    return L.geoJSON(geojson, {
-      style: () => cfg.outline
-        ? { color: cfg.color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
-        : { color: cfg.color, weight: cfg.weight ?? 2, fillColor: cfg.color, fillOpacity: cfg.fillOpacity ?? 0.2 },
+  // One Leaflet layer for one legend class (or for the whole layer when it has no classes)
+  function makeLayer(cfg, cls, features) {
+    const color = cls.color || cfg.color;
+    return L.geoJSON({ type: "FeatureCollection", features }, {
+      style: f => cfg.kind === "outline"
+        ? { color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
+        : cfg.kind === "line"
+          ? { color, weight: cls.weight ?? (cfg.weightBy ? cfg.weightBy(f.properties) : cfg.weight ?? 2), dashArray: cls.dash }
+          : { color, weight: cfg.weight ?? 2, fillColor: color, fillOpacity: cfg.fillOpacity ?? 0.2 },
       pointToLayer: (f, latlng) => L.circleMarker(latlng, {
-        radius: cfg.labels ? 4 : 8, color: "#fff", weight: 2, fillColor: cfg.color, fillOpacity: 1
+        radius: cls.radius ?? (cfg.labels ? 4 : 8), color: color === "#FFFFFF" ? "#5F6E68" : "#fff", weight: color === "#FFFFFF" ? 1.5 : 2,
+        fillColor: color, fillOpacity: 1
       }),
       onEachFeature: (f, layer) => {
-        layer.bindPopup(popupHtml(f.properties || {}));
+        layer.layerName = cfg.name;
+        layer.layerCfg = cfg;
+        layer.bindPopup(popupHtml(cfg, f.properties || {}));
         if (cfg.labels && f.properties?.name) {
           const point = f.geometry.type === "Point";
           layer.bindTooltip(f.properties.name, point
@@ -203,31 +314,200 @@
     });
   }
 
+  // The little drawing shown beside a legend row
+  function symbol(cfg, cls) {
+    const color = cls.color || cfg.color;
+    if (cfg.kind === "line" || cfg.kind === "outline") {
+      const w = Math.max(2, Math.round(cls.weight ?? cfg.weight ?? 2.5));
+      return `<span class="sym"><i style="width:24px;border-top:${w}px ${cls.dash || cfg.dash ? "dashed" : "solid"} ${color}"></i></span>`;
+    }
+    if (cfg.kind === "point") {
+      const d = (cls.radius ?? 6) * 1.6;
+      return `<span class="sym"><i style="width:${d}px;height:${d}px;border-radius:50%;background:${color};border:1.5px solid ${color === "#FFFFFF" ? "#5F6E68" : "#fff"};box-shadow:0 0 0 1px rgba(0,0,0,.15)"></i></span>`;
+    }
+    return `<span class="sym"><i style="width:22px;height:13px;border-radius:2px;border:1px solid ${color};background:${color};opacity:${Math.min(1, (cfg.fillOpacity ?? 0.2) + 0.35)}"></i></span>`;
+  }
+
   const list = document.getElementById("layer-list");
+  const states = [];           // one per loaded layer, used by the select tool
 
   LAYERS.forEach(cfg => {
-    const row = document.createElement("label");
-    row.className = "layer";
-    row.innerHTML = `<input type="checkbox" ${cfg.on ? "checked" : ""} disabled>
-      <span class="swatch" style="background:${cfg.color}"></span>
-      <span><strong>${esc(cfg.name)}</strong><small>${esc(cfg.desc)}</small></span>`;
-    list.appendChild(row);
+    const item = document.createElement("div");
+    item.className = "layer-item";
+    item.innerHTML = `<label class="layer"><input type="checkbox" ${cfg.on ? "checked" : ""} disabled>
+      ${symbol(cfg, {}).replace('class="sym"', 'class="sym swatch-sym" style="margin-top:2px"')}
+      <span><strong>${esc(cfg.name)}</strong><small>${esc(cfg.desc)}</small></span></label>
+      <div class="legend" hidden></div>`;
+    list.appendChild(item);
+    const row = item.querySelector(".layer");
     const box = row.querySelector("input");
     const small = row.querySelector("small");
+    const legend = item.querySelector(".legend");
 
     fetch(cfg.url)
       .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
       .then(data => {
-        const layer = makeLayer(cfg, data);
-        if (cfg.on) layer.addTo(map);
+        const features = data.features.filter(f => f.properties?.show !== false);
+        const state = { cfg, on: !!cfg.on, mode: 0, subs: [] };
+        states.push(state);
+
+        const draw = () => {
+          state.subs.forEach(s => map.removeLayer(s.layer));
+          const mode = cfg.modes ? cfg.modes[state.mode] : cfg;
+          const classes = mode.classes || [{}];
+          const taken = new Set();
+          state.subs = classes.map(cls => {
+            const mine = features.filter((f, i) => !taken.has(i) && (!cls.test || cls.test(f.properties || {})) && taken.add(i));
+            return { cls, count: mine.length, on: true, layer: makeLayer(cfg, cls, mine) };
+          }).filter(s => s.count);
+          // Add the last class first so the first legend row is drawn on top
+          if (state.on) state.subs.slice().reverse().forEach(s => s.layer.addTo(map));
+
+          const hasLegend = !!(mode.classes || cfg.note);
+          legend.innerHTML =
+            (cfg.modes ? `<div class="modes" role="group" aria-label="Colour by">${cfg.modes.map((m, i) =>
+              `<button type="button" data-mode="${i}" aria-pressed="${i === state.mode}">${esc(m.label)}</button>`).join("")}</div>` : "") +
+            (mode.classes ? state.subs.map((s, i) => `<label><input type="checkbox" data-sub="${i}" checked>${symbol(cfg, s.cls)}
+              <span>${esc(s.cls.label)}</span>${cfg.counts === false ? "" : `<em>${s.count.toLocaleString()}</em>`}</label>`).join("") : "") +
+            (mode.note || cfg.note ? `<p class="note">${esc(mode.note || cfg.note)}</p>` : "");
+          legend.hidden = !(state.on && hasLegend);
+          legend.querySelectorAll("input[data-sub]").forEach(b => b.addEventListener("change", () => {
+            const s = state.subs[b.dataset.sub];
+            s.on = b.checked;
+            if (state.on && s.on) s.layer.addTo(map); else map.removeLayer(s.layer);
+          }));
+          legend.querySelectorAll("button[data-mode]").forEach(b => b.addEventListener("click", () => { state.mode = +b.dataset.mode; draw(); }));
+        };
+        draw();
+
         box.disabled = false;
-        box.addEventListener("change", () => box.checked ? layer.addTo(map) : map.removeLayer(layer));
+        box.addEventListener("change", () => {
+          state.on = box.checked;
+          state.subs.slice().reverse().forEach(s => state.on && s.on ? s.layer.addTo(map) : map.removeLayer(s.layer));
+          legend.hidden = !(state.on && legend.innerHTML);
+        });
       })
       .catch(() => {
         row.classList.add("unavailable");
         box.checked = false;
         small.textContent = cfg.desc + ". Coming soon.";
       });
+  });
+
+  // ---- Select tool: drag a box, list what is inside ----
+  const mapEl = document.getElementById("map");
+  const hint = document.getElementById("select-hint");
+  let selecting = false, boxStart = null, boxShape = null;
+
+  const SelectControl = L.Control.extend({
+    options: { position: "topright" },
+    onAdd() {
+      const wrap = L.DomUtil.create("div", "leaflet-bar");
+      wrap.innerHTML = '<button class="select-tool" id="select-tool" type="button" aria-pressed="false" title="Select: drag a box to list features" aria-label="Select features by dragging a box"><i></i></button>';
+      L.DomEvent.disableClickPropagation(wrap);
+      wrap.querySelector("button").addEventListener("click", () => setSelecting(!selecting));
+      return wrap;
+    }
+  });
+  map.addControl(new SelectControl());
+
+  function setSelecting(on) {
+    selecting = on;
+    document.getElementById("select-tool").setAttribute("aria-pressed", on);
+    mapEl.classList.toggle("selecting", on);
+    hint.hidden = !on;
+    map.dragging[on ? "disable" : "enable"]();
+    map.boxZoom[on ? "disable" : "enable"]();
+    if (map.tap) map.tap[on ? "disable" : "enable"]();
+    if (!on && boxShape) { map.removeLayer(boxShape); boxShape = null; }
+  }
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && selecting) setSelecting(false); });
+
+  mapEl.addEventListener("pointerdown", e => {
+    if (!selecting || e.target.closest(".leaflet-control")) return;
+    e.preventDefault();
+    mapEl.setPointerCapture(e.pointerId);
+    boxStart = map.mouseEventToLatLng(e);
+    if (boxShape) map.removeLayer(boxShape);
+    boxShape = L.rectangle([boxStart, boxStart], { color: "#1E3B34", weight: 2, dashArray: "5 4", fillOpacity: 0.08, interactive: false }).addTo(map);
+  });
+  mapEl.addEventListener("pointermove", e => {
+    if (selecting && boxStart) boxShape.setBounds(L.latLngBounds(boxStart, map.mouseEventToLatLng(e)));
+  });
+  mapEl.addEventListener("pointerup", e => {
+    if (!selecting || !boxStart) return;
+    const bounds = L.latLngBounds(boxStart, map.mouseEventToLatLng(e));
+    boxStart = null;
+    const a = map.latLngToContainerPoint(bounds.getSouthWest()), b = map.latLngToContainerPoint(bounds.getNorthEast());
+    if (Math.abs(a.x - b.x) < 6 || Math.abs(a.y - b.y) < 6) return;      // a tap, not a drag
+    showSelection(bounds);
+    setSelecting(false);
+    boxShape = L.rectangle(bounds, { color: "#1E3B34", weight: 2, dashArray: "5 4", fill: false, interactive: false }).addTo(map);
+  });
+
+  // Does a GeoJSON geometry touch a box? Coordinates are [lng, lat].
+  function touchesBox(geom, w, s, e, n) {
+    const inBox = c => c[0] >= w && c[0] <= e && c[1] >= s && c[1] <= n;
+    const cross = (p, q, r, t) => {            // do segments pq and rt cross?
+      const d = (x, y, z) => (y[0] - x[0]) * (z[1] - x[1]) - (y[1] - x[1]) * (z[0] - x[0]);
+      return d(p, q, r) * d(p, q, t) < 0 && d(r, t, p) * d(r, t, q) < 0;
+    };
+    const corners = [[w, s], [e, s], [e, n], [w, n]];
+    const lineHits = line => line.some(inBox) || line.some((c, i) => i && corners.some((k, j) => cross(line[i - 1], c, k, corners[(j + 1) % 4])));
+    const inside = (pt, ring) => {             // is a point inside a ring?
+      let hit = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        if ((ring[i][1] > pt[1]) !== (ring[j][1] > pt[1]) &&
+            pt[0] < (ring[j][0] - ring[i][0]) * (pt[1] - ring[i][1]) / (ring[j][1] - ring[i][1]) + ring[i][0]) hit = !hit;
+      }
+      return hit;
+    };
+    const polyHits = rings => rings.some(lineHits) || (inside(corners[0], rings[0]) && !rings.slice(1).some(h => inside(corners[0], h)));
+    switch (geom.type) {
+      case "Point": return inBox(geom.coordinates);
+      case "MultiPoint": return geom.coordinates.some(inBox);
+      case "LineString": return lineHits(geom.coordinates);
+      case "MultiLineString": return geom.coordinates.some(lineHits);
+      case "Polygon": return polyHits(geom.coordinates);
+      case "MultiPolygon": return geom.coordinates.some(polyHits);
+      default: return false;
+    }
+  }
+
+  function showSelection(bounds) {
+    const [w, s, e, n] = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+    const groups = [];
+    states.filter(st => st.on && st.cfg.kind !== "outline").forEach(st => {
+      const hits = [];
+      st.subs.filter(sub => sub.on).forEach(sub => sub.layer.eachLayer(l => { if (touchesBox(l.feature.geometry, w, s, e, n)) hits.push(l); }));
+      if (hits.length) groups.push({ cfg: st.cfg, hits });
+    });
+    const total = groups.reduce((sum, g) => sum + g.hits.length, 0);
+    const listEl = document.getElementById("selection-list");
+    const picked = [];
+    document.getElementById("selection-title").textContent = total ? `${total.toLocaleString()} selected` : "Nothing selected";
+    listEl.innerHTML = total ? groups.map(g => {
+      const shown = g.hits.slice(0, 40);
+      return `<h3 class="sel-group">${esc(g.cfg.name)} (${g.hits.length.toLocaleString()})</h3>` + shown.map(l => {
+        const p = l.feature.properties || {};
+        const detail = popupRows(g.cfg, p).slice(0, 4).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join(" · ");
+        picked.push(l);
+        return `<button class="sel-item" type="button" data-pick="${picked.length - 1}">${esc(p.name || g.cfg.name)}${detail ? `<small>${detail}</small>` : ""}</button>`;
+      }).join("") + (g.hits.length > shown.length ? `<p class="meta">and ${(g.hits.length - shown.length).toLocaleString()} more. Draw a smaller box to see them.</p>` : "");
+    }).join("") : '<p class="empty">No features from the layers that are switched on fall inside that box. Outline layers (county, school districts) are not selectable.</p>';
+    listEl.querySelectorAll("[data-pick]").forEach(b => b.addEventListener("click", () => {
+      const l = picked[b.dataset.pick];
+      const at = l.getLatLng ? l.getLatLng() : l.getBounds().getCenter();
+      l.openPopup(at);
+      if (window.innerWidth < 800) setCollapsed(true);
+    }));
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", false));
+    document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-selection");
+    setCollapsed(false);
+  }
+  document.getElementById("selection-close").addEventListener("click", () => {
+    if (boxShape) { map.removeLayer(boxShape); boxShape = null; }
+    document.querySelector('.tab[data-view="layers"]').click();
   });
 
   // ---- Timeline ----
@@ -294,24 +574,26 @@
   // ---- Data sources ----
   // id matches the layer's entry in data/meta.json, which holds its last updated date
   const SOURCES = [
-    { id: "zone",      name: "Reinvestment zone",  source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
-    { id: "county",    name: "County boundary",    source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
-    { id: "schools",   name: "School districts",   source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
-    { id: "traffic",   name: "Traffic counts",     source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
-    { id: "flood",     name: "Floodplains",        source: "FEMA National Flood Hazard Layer", url: "https://www.fema.gov/flood-maps/national-flood-hazard-layer" },
-    { id: "pipelines", name: "Pipelines",          source: "Railroad Commission of Texas", url: "https://www.rrc.texas.gov/resource-center/research/gis-viewer/" },
-    { id: "power",     name: "Power lines",        source: "U.S. federal transmission lines dataset, an archive with data to 2024" },
-    { id: "drive",     name: "Drive times",        source: "OpenStreetMap roads, routed with OSRM. Built once, not refreshed.", url: "https://project-osrm.org/" },
+    { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
+    { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrolment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
+    { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
+    { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. TxDOT publishes a new count every year, so the change from year to year shows where traffic is growing.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
+    { id: "pipelines", name: "Pipelines",          why: "The plant plans its own gas-fired power, so gas supply lines matter. Other pipelines show what already crosses the area.", source: "Railroad Commission of Texas", url: "https://www.rrc.texas.gov/resource-center/research/gis-viewer/" },
+    { id: "power",     name: "Power lines",        why: "The site is the old Gibbons Creek power plant, where several transmission lines meet.", source: "U.S. federal transmission lines dataset, an archive with data to 2024" },
+    { id: "flood",     name: "Floodplains",        why: "Much of the zone surrounds a reservoir and its creeks. Building in a floodplain needs a county permit.", source: "FEMA National Flood Hazard Layer", url: "https://www.fema.gov/flood-maps/national-flood-hazard-layer" },
     { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },
     { id: "documents", name: "County documents",   source: "Grimes County agreements page and Commissioners Court meeting portal", url: "https://grimescotx.portal.civicclerk.com/" },
     { id: "permits",   name: "Permit watch",       source: "TCEQ, TDLR, Railroad Commission, TxDOT project tracker and Commissioners Court agendas", url: "https://www15.tceq.texas.gov/crpub/" },
-    { name: "Terafab site and towns", source: "Placed by hand. Approximate." }
+    { name: "Towns", source: "Placed by hand. Approximate." }
   ];
 
   function showSources(layers) {
     document.getElementById("source-list").innerHTML = SOURCES.map(s => {
       const when = layers[s.id]?.updated;
       return `<li><strong>${esc(s.name)}</strong>
+        ${s.why ? `<span style="display:block;margin-bottom:2px">${esc(s.why)}</span>` : ""}
         ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.source)}</a>` : esc(s.source)}
         ${when ? `<small>Updated ${shortDate(when + "T12:00:00")}</small>` : ""}</li>`;
     }).join("");
