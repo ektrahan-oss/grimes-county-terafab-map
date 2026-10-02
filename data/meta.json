@@ -115,6 +115,11 @@
       "updated": "2026-10-02",
       "source": "https://data.texas.gov/resource/9cir-efmm.json",
       "feature_count": 27
+    },
+    "census": {
+      "updated": "2026-10-02",
+      "source": "https://www2.census.gov/programs-surveys/acs/summary_file/2024/table-based-SF/data/5YRData/acsdt5y2024-b01003.dat",
+      "feature_count": 240
     }
   }
 }

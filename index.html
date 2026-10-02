@@ -96,6 +96,8 @@
   .modes { display: flex; gap: 0; margin: 2px 0 6px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
   .modes button { flex: 1; font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: var(--bg); border: 0; padding: 6px 8px; cursor: pointer; }
   .modes button[aria-pressed="true"] { background: var(--pine); color: #fff; }
+  .mode-select { margin: 2px 0 6px; color: var(--muted); font-size: 0.78rem; }
+  .mode-select select { display: block; width: 100%; font: inherit; font-size: 0.84rem; margin-top: 2px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
 
   /* Select tool */
   .select-tool { width: 34px; height: 34px; background: #fff; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
@@ -249,6 +251,35 @@
   const comparable = p => p[BASELINE] >= QUIET ? fromBaseline(p) : null;
   const inService = p => /in service/i.test(p.Status || "");
 
+  // Census tracts are colored by one measure at a time. Each measure is cut into five groups holding about a
+  // fifth of the tracts each, with the cut points rounded, so the legend follows the data when a new survey arrives.
+  const CENSUS_COLORS = ["#253494", "#2C7FB8", "#41B6C4", "#A1DAB4", "#FFFFCC"];      // high to low
+  const CENSUS_MEASURES = [
+    { key: "Median household income ($ a year)", label: "Median household income", unit: "$" },
+    { key: "Median home value ($)", label: "Median home value", unit: "$" },
+    { key: "Median gross rent ($ a month)", label: "Median rent", unit: "$" },
+    { key: "Vacancy rate (%)", label: "Share of homes vacant", unit: "%" },
+    { key: "Population", label: "Population" },
+    { key: "Housing units", label: "Housing units" }
+  ];
+  function censusModes(features) {
+    const years = features[0]?.properties["Survey years"] || "";
+    return CENSUS_MEASURES.map(m => {
+      const values = features.map(f => f.properties[m.key]).filter(v => v != null).sort((a, b) => a - b);
+      const round = v => { const step = 10 ** (Math.floor(Math.log10(v)) - 1); return Math.round(v / step) * step; };
+      const cuts = [...new Set([0.8, 0.6, 0.4, 0.2].map(q => round(values[Math.floor(values.length * q)])))];
+      const text = v => (m.unit === "$" ? "$" : "") + v.toLocaleString(undefined, { maximumFractionDigits: 1 }) + (m.unit === "%" ? "%" : "");
+      const classes = cuts.map((cut, i) => ({
+        label: i ? `${text(cut)} to ${text(cuts[i - 1])}` : `${text(cut)} or more`,
+        color: CENSUS_COLORS[i], test: p => p[m.key] >= cut
+      }));
+      classes.push({ label: `Under ${text(cuts[cuts.length - 1])}`, color: CENSUS_COLORS[cuts.length], test: p => p[m.key] != null });
+      classes.push({ label: "No figure published", color: "#BDBDBD", test: () => true });
+      return { label: m.label, classes,
+        note: `American Community Survey, ${years}, by census tract. These are survey estimates and can be rough for a single tract: click one to see its margin of error. Each color holds about a fifth of the tracts.` };
+    });
+  }
+
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
@@ -258,6 +289,8 @@
       note: "Parcel map as of January 2025. Tracts split or sold since then are not shown, and owners are not named. Click inside a parcel for its property ID." },
     { id: "places", one: "town", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
     { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78" },
+    { id: "census", one: "census tract", name: "Population and housing", desc: "People, homes, rents and incomes in Grimes and six neighboring counties", url: "data/population_housing.geojson", kind: "fill", color: "#2C7FB8", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
+      commas: true, modePicker: "select", buildModes: censusModes },
     { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", color: "#4A90C8", weight: 1, fillOpacity: 0.45, counts: false,
       note: "Estimated without traffic, from the site's frontage on State Highway 30. Darker means a longer drive.",
       classes: [
@@ -346,7 +379,7 @@
         { label: "River", color: "#08519C", weight: 3.5, test: p => p.Type === "River" },
         { label: "Creek or other stream", color: "#3F8FD0", weight: 1.5, test: () => true }
       ] },
-    { id: "gauges", one: "stream gauge", name: "Stream gauges", desc: "Navasota River flow and the reservoir's level, updated daily", url: "data/stream_gauges.geojson", kind: "point", color: "#3F8FD0",
+    { id: "gauges", one: "stream gauge", name: "Stream gauges", desc: "Navasota River flow and the reservoir's level, updated daily", url: "data/stream_gauges.geojson", kind: "point", color: "#3F8FD0", commas: true,
       note: "Flow is the latest full day's average, compared with the same day in every other year on record. Normal means the middle half of those years. No gauge measures flow on Gibbons Creek itself.",
       classes: [
         { label: "Much below normal (lowest tenth)", color: "#A50026", radius: 9, test: p => p.status === "Much below normal" },
@@ -393,9 +426,12 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id", "url", "link", "status"];
 
+  // A survey figure can come with a margin of error, held in a second property named "<figure> margin"
   function popupRows(cfg, props) {
+    const show = v => cfg.commas && typeof v === "number" ? v.toLocaleString() : v;
     return Object.entries(props)
-      .filter(([k, v]) => !HIDDEN_PROPS.includes(k) && v !== null && v !== "")
+      .filter(([k, v]) => !HIDDEN_PROPS.includes(k) && !k.endsWith(" margin") && v !== null && v !== "")
+      .map(([k, v]) => [k, props[k + " margin"] != null ? `${show(v)} (give or take ${show(props[k + " margin"])})` : show(v)])
       .concat(cfg.popupExtra ? cfg.popupExtra(props) : []);
   }
 
@@ -418,7 +454,7 @@
         ? { color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
         : cfg.kind === "line"
           ? { color, weight: cls.weight ?? (cfg.weightBy ? cfg.weightBy(f.properties) : cfg.weight ?? 2), dashArray: cls.dash }
-          : { color, weight: cfg.weight ?? 2, fillColor: color, fillOpacity: cfg.fillOpacity ?? 0.2 },
+          : { color: cfg.stroke || color, weight: cfg.weight ?? 2, fillColor: color, fillOpacity: cfg.fillOpacity ?? 0.2 },
       pointToLayer: (f, latlng) => L.circleMarker(latlng, {
         radius: cls.radius ?? (cfg.labels ? 4 : 8), color: color === "#FFFFFF" ? "#5F6E68" : "#fff", weight: cfg.canvas ? 1 : color === "#FFFFFF" ? 1.5 : 2,
         fillColor: color, fillOpacity: 1, ...(cfg.canvas ? { renderer: canvas } : {})
@@ -552,6 +588,7 @@
   // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
   const TOPICS = [
     { name: "Site and boundaries", open: true, ids: ["zone", "holdings", "county", "parcels", "places", "schools"] },
+    { name: "People and housing", ids: ["census"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
     { name: "Water", ids: ["flood", "streams", "gauges", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
@@ -607,6 +644,7 @@
       .then(data => {
         const features = data.features.filter(f => f.properties?.show !== false);
         if (data.note) cfg.note = [cfg.note, data.note].filter(Boolean).join(" ");     // a figure worked out when the layer was built
+        if (cfg.buildModes) cfg.modes = cfg.buildModes(features);                      // classes that depend on the data's own range
         const state = { cfg, features, on: !!cfg.on, mode: 0, subs: [] };
         states.push(state);
         refreshMeasureTargets();
@@ -639,8 +677,11 @@
 
           const hasLegend = !!(mode.classes || cfg.note);
           legend.innerHTML =
-            (cfg.modes ? `<div class="modes" role="group" aria-label="Color by">${cfg.modes.map((m, i) =>
-              `<button type="button" data-mode="${i}" aria-pressed="${i === state.mode}">${esc(m.label)}</button>`).join("")}</div>` : "") +
+            (!cfg.modes ? "" : cfg.modePicker === "select"
+              ? `<div class="mode-select"><span>Color the map by</span><select data-modes aria-label="Color the map by">${cfg.modes.map((m, i) =>
+                `<option value="${i}" ${i === state.mode ? "selected" : ""}>${esc(m.label)}</option>`).join("")}</select></div>`
+              : `<div class="modes" role="group" aria-label="Color by">${cfg.modes.map((m, i) =>
+                `<button type="button" data-mode="${i}" aria-pressed="${i === state.mode}">${esc(m.label)}</button>`).join("")}</div>`) +
             (mode.classes ? state.subs.map((s, i) => `<label><input type="checkbox" data-sub="${i}" checked>${symbol(cfg, s.cls)}
               <span>${esc(s.cls.label)}</span>${cfg.counts === false ? "" : `<em>${s.count.toLocaleString()}</em>`}</label>`).join("") : "") +
             (mode.note || cfg.note ? `<p class="note">${esc(mode.note || cfg.note)}</p>` : "");
@@ -651,6 +692,7 @@
             place();
           }));
           legend.querySelectorAll("button[data-mode]").forEach(b => b.addEventListener("click", () => { state.mode = +b.dataset.mode; draw(); }));
+          legend.querySelector("select[data-modes]")?.addEventListener("change", e => { state.mode = +e.target.value; draw(); });
         };
         draw();
 
@@ -981,6 +1023,7 @@
     { id: "parcels",   name: "Parcel lines",       why: "So a landowner can find their own tract and see how it sits against the zone and the other layers. Owners are not named; the appraisal district's own map is the place to look one up.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District, as of January 2025", url: "https://gis.bisclient.com/grimescad/" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "census",    name: "Population and housing", why: "A baseline of who lives here and what housing costs before the plant's workforce arrives, for the counties workers could commute from.", source: "U.S. Census Bureau, American Community Survey 5-year estimates", url: "https://www.census.gov/programs-surveys/acs" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. Each station's 2023 to 2025 average is kept as a yardstick, so later counts show where traffic has grown since construction began.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
