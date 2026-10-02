@@ -33,5 +33,20 @@
     "date": "2026-10-02",
     "layer": "traffic",
     "summary": "Traffic counts: each station now carries its 2023 to 2025 average as a baseline"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "water_rights",
+    "summary": "Surface water rights: new layer with 115 points for 40 water rights"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "wells",
+    "summary": "Water wells: new layer with 3,205 wells from drillers' reports"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "aquifers",
+    "summary": "Aquifers: new layer with 6 aquifers"
   }
 ]

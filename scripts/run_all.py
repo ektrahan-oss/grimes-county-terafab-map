@@ -63,6 +63,9 @@ LAYERS = {
     "watersheds": (module_main("fetch_watersheds"), False, True),
     "streams":   (module_main("fetch_streams"), False, True),
     "outfalls":  (module_main("fetch_wastewater_outfalls"), False, True),
+    "water_rights": (module_main("fetch_water_rights"), False, True),
+    "wells":     (module_main("fetch_water_wells"), False, True),
+    "aquifers":  (module_main("fetch_aquifers"), False, True),
     "drive":     (module_main("build_drive_times"), False, False),      # one-time layer: --only drive
     "news":      (module_main("build_news"), True, True),
     "documents": (module_main("watch_documents"), True, True),
