@@ -125,7 +125,7 @@
           <p class="meta">Recent headlines from Google News. Links open the publisher's site.</p>
           <div id="news-list"><p class="empty">Loading news</p></div>
           <h2 class="section">Map updates</h2>
-          <p class="meta">Changes to the map's data and to county documents about the project.</p>
+          <p class="meta">Changes to the map's data, county documents about the project, and state permits.</p>
           <div id="change-list"><p class="empty">Loading updates</p></div>
         </section>
         <section class="view about" id="view-about" hidden>
@@ -286,7 +286,7 @@
       el.innerHTML = changes.slice().reverse().map(c => `<article class="event">
           <time datetime="${esc(c.date)}">${shortDate(c.date + "T12:00:00")}</time>
           <p>${esc(c.summary || c.change)}</p>
-          ${/^https?:\/\//.test(c.link || "") ? `<div class="event-links"><a href="${esc(c.link)}" target="_blank" rel="noopener">Open document</a></div>` : ""}
+          ${/^https?:\/\//.test(c.link || "") ? `<div class="event-links"><a href="${esc(c.link)}" target="_blank" rel="noopener">${c.layer === "permits" ? "Open record" : "Open document"}</a></div>` : ""}
         </article>`).join("");
     })
     .catch(() => { document.getElementById("change-list").innerHTML = '<p class="empty">No changes recorded yet.</p>'; });
@@ -304,6 +304,7 @@
     { id: "drive",     name: "Drive times",        source: "OpenStreetMap roads, routed with OSRM. Built once, not refreshed.", url: "https://project-osrm.org/" },
     { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },
     { id: "documents", name: "County documents",   source: "Grimes County agreements page and Commissioners Court meeting portal", url: "https://grimescotx.portal.civicclerk.com/" },
+    { id: "permits",   name: "Permit watch",       source: "TCEQ Central Registry and air permit search; TDLR project registry", url: "https://www15.tceq.texas.gov/crpub/" },
     { name: "Terafab site and towns", source: "Placed by hand. Approximate." }
   ];
 
