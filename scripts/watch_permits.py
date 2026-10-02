@@ -57,6 +57,8 @@ ENTITY_WORDS = ["SPACEX", "SPACE EXPLORATION", "TERAFAB", "WIT TECH"]
 SITE_WORDS = ["GIBBONS CREEK", "FM 244", "FM 171", "CARLOS"]     # roads and places at the site
 
 STATE = DATA / "permit_watch.json"
+MIN_FOR_SHORTFALL_CHECK = 8      # with at least this many items on file for a source...
+MAX_SHORTFALL = 0.25             # ...losing more than this share at once is treated as a bad response
 
 
 def post(url, fields, headers=None):
@@ -202,6 +204,13 @@ def check_rrc():
     if not layer:
         raise RuntimeError("the Railroad Commission service no longer has a full Pipelines layer")
 
+    expected = json.loads((DATA / "meta.json").read_text(encoding="utf-8")).get("layers", {}).get("pipelines", {}).get("feature_count")
+    now = fetch_json(layer, {"where": f"COUNTY_NAME='{COUNTY_NAME.upper()}'", "returnCountOnly": "true", "f": "json"})["count"]
+    if expected and now < expected * 0.9:
+        # The Commission reloads this layer from time to time, and partway through it returns only part of the data
+        raise RuntimeError(f"the service has {now} pipeline segments for the county where the map's file has {expected}; "
+                           "it looks mid-update, so nothing was changed")
+
     def permits(where):
         rows = fetch_json(layer, {"where": where, "outFields": "T4PERMIT,OPERATOR,COMMODITY_DESCRIPTION,STATUS,COUNTY_NAME",
                                   "returnDistinctValues": "true", "returnGeometry": "false", "f": "json"})["features"]
@@ -316,14 +325,25 @@ def main():
             failed.append(f"{name}: {e}")
             continue
         first_time = prefix not in recorded
+        on_file = [k for k in seen if k.split(":")[0].split("-")[0] == prefix]
+        missing = [k for k in on_file if k not in found]
+        if len(on_file) >= MIN_FOR_SHORTFALL_CHECK and len(missing) > len(on_file) * MAX_SHORTFALL:
+            # Seen when the Railroad Commission's service was reloading its data and returned a fraction of it
+            failed.append(f"{name}: returned {len(found)} items but {len(missing)} of the {len(on_file)} on file were missing. "
+                          "The source looks incomplete, so nothing was changed")
+            continue
         for key, item in found.items():
             old = seen.get(key)
             if old is None and not first_time:
                 changes.append((f"Permits: new, {item['what']}. Status: {item['status']}", item["link"]))
             elif old and old["status"] != item["status"]:
                 changes.append((f"Permits: status changed from {old['status']} to {item['status']}, {item['what']}", item["link"]))
-            seen[key] = {**item, "first_seen": (old or {}).get("first_seen", date.today().isoformat())}
+            seen[key] = {**item, "first_seen": (old or {}).get("first_seen", date.today().isoformat())}      # also clears missing_since
+        # An item has to be missing on two different days before it is dropped, in case a source hiccups
+        today = date.today().isoformat()
         for key in [k for k in seen if k.split(":")[0].split("-")[0] == prefix and k not in found]:
+            if seen[key].setdefault("missing_since", today) == today:
+                continue
             gone = seen.pop(key)
             if log_removed:
                 changes.append((f"Permits: no longer listed, {gone['what']}", gone["link"]))

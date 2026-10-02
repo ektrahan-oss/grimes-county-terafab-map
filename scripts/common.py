@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import time
 import urllib.error
 import urllib.parse
@@ -15,6 +16,9 @@ DATA = ROOT / "data"
 CACHE = ROOT / ".cache"          # downloads; not committed
 CHANGES = DATA / "changes.json"
 KEEP_CHANGES = 100
+MIN_FOR_SHORTFALL_CHECK = 20     # with at least this many features in a layer...
+MAX_SHORTFALL = 0.3              # ...losing more than this share in one run is treated as a bad response
+ALLOW_SHRINK = os.environ.get("ALLOW_SHRINK") == "1"
 
 COUNTY_NAME = "Grimes"
 COUNTY_FIPS = "48185"
@@ -136,6 +140,11 @@ def publish_features(layer_id, label, path, features, source, noun=("feature", "
     key names a property that identifies each feature across runs. Returns the file size in bytes.
     """
     old = json.loads(path.read_text(encoding="utf-8"))["features"] if path.exists() else None
+    if old and len(old) >= MIN_FOR_SHORTFALL_CHECK and len(features) < len(old) * (1 - MAX_SHORTFALL) and not ALLOW_SHRINK:
+        # A source that is down or mid-update can return a fraction of its data. Keep the file we have.
+        raise SystemExit(f"{label}: the source returned {len(features):,} {noun[1]} where the file has {len(old):,}. "
+                         "That looks incomplete, so nothing was written. If the drop is real, run again with "
+                         "ALLOW_SHRINK=1 set in the environment.")
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
     path.write_text('{\n  "type": "FeatureCollection",\n  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
     ident = (lambda f: f["properties"].get(key)) if key else None
