@@ -1,9 +1,17 @@
 """Run the map's data scripts from one place.
 
-    python scripts/run_all.py --frequent     stream gauges, news feed and the document, permit and entity watches only
-    python scripts/run_all.py --all          every layer except drive times
-                                             (on GitHub the reinvestment zone is skipped too)
+    python scripts/run_all.py --frequent     daily: stream gauges, news feed and the document, permit and entity watches
+    python scripts/run_all.py --all          monthly: the daily ones plus every layer that refreshes itself
+                                             (on GitHub the reinvestment zone is skipped)
     python scripts/run_all.py --only NAME    one layer, for example --only pipelines
+
+Yearly sources ride along in the monthly run. Population and housing checks for a new survey
+release and does nothing if there is none; school enrollment picks up a new school year when
+the state adds it.
+
+Three layers are only run by hand, with --only: holdings (when checking for new purchases),
+land (when a new parcel release is out) and drive (a one-time layer). Parcel lines have their
+own script, build_parcel_tiles.py, also run by hand.
 
 If one layer fails, the error is reported and the rest still run. The exit code is 1
 if anything failed, so an automated run shows up as failed while still keeping the
@@ -99,7 +107,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--frequent", action="store_true", help="stream gauges, news feed and the document, permit and entity watches only")
-    group.add_argument("--all", action="store_true", help="every layer except drive times")
+    group.add_argument("--all", action="store_true", help="every layer except the three run by hand (holdings, land, drive)")
     group.add_argument("--only", metavar="NAME", choices=LAYERS, help="one of: " + ", ".join(LAYERS))
     args = ap.parse_args()
 
