@@ -593,6 +593,7 @@
       .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
       .then(data => {
         const features = data.features.filter(f => f.properties?.show !== false);
+        if (data.note) cfg.note = [cfg.note, data.note].filter(Boolean).join(" ");     // a figure worked out when the layer was built
         const state = { cfg, features, on: !!cfg.on, mode: 0, subs: [] };
         states.push(state);
         refreshMeasureTargets();

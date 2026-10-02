@@ -68,6 +68,18 @@ def blocks_for(parcels):
     return out
 
 
+def outside_zone_note(parcels):
+    """One sentence for the map legend: how much of the mapped land lies outside the reinvestment zone outline."""
+    path = DATA / "reinvestment_zone.geojson"
+    if not path.exists():
+        return None
+    zone = gpd.read_file(path).to_crs(WORK_CRS).geometry.union_all()
+    land = parcels.geometry.union_all()
+    mapped, outside = land.area / 43560, land.difference(zone).area / 43560
+    return (f"About {round(outside, -1):,.0f} of the roughly {round(mapped, -1):,.0f} mapped acres "
+            f"({outside / mapped:.0%}) lie outside the reinvestment zone.")
+
+
 def totals(features):
     return (sum(f["properties"]["Parcels"] for f in features), sum(f["properties"]["Acres listed"] for f in features))
 
@@ -91,7 +103,9 @@ def main():
         f["geometry"]["coordinates"] = _rounded(f["geometry"]["coordinates"])
     old = json.loads(OUT.read_text(encoding="utf-8"))["features"] if OUT.exists() else None
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
-    OUT.write_text('{\n  "type": "FeatureCollection",\n  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
+    note = outside_zone_note(parcels)
+    head = '{\n  "type": "FeatureCollection",\n' + (f'  "note": {json.dumps(note)},\n' if note else "")
+    OUT.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
 
     n, acres = totals(features)
     now = f"{n} parcels and about {acres:,.0f} acres in {len(features)} blocks"
@@ -106,6 +120,8 @@ def main():
     record_layer("holdings", SOURCE, len(features))
 
     print(f"Wrote {len(features)} blocks to {OUT.name} ({OUT.stat().st_size / 1024:.0f} KB): {now}.")
+    if note:
+        print(f"  {note}")
     for f in features:
         p = f["properties"]
         print(f"  {p['Acres listed']:>9,.1f} acres  {p['Parcels']:>2} parcels  {p['Listed under']}")
