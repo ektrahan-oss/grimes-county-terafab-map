@@ -968,7 +968,7 @@
       el.innerHTML = changes.slice().reverse().map(c => `<article class="event">
           <time datetime="${esc(c.date)}">${shortDate(c.date + "T12:00:00")}</time>
           <p>${esc(c.summary || c.change)}</p>
-          ${/^https?:\/\//.test(c.link || "") ? `<div class="event-links"><a href="${esc(c.link)}" target="_blank" rel="noopener">${c.layer === "permits" ? "Open record" : "Open document"}</a></div>` : ""}
+          ${/^https?:\/\//.test(c.link || "") ? `<div class="event-links"><a href="${esc(c.link)}" target="_blank" rel="noopener">${c.layer === "documents" ? "Open document" : "Open record"}</a></div>` : ""}
         </article>`).join("");
     })
     .catch(() => { document.getElementById("change-list").innerHTML = '<p class="empty">No changes recorded yet.</p>'; });
@@ -998,6 +998,7 @@
     { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },
     { id: "documents", name: "County documents",   source: "Grimes County agreements page and Commissioners Court meeting portal", url: "https://grimescotx.portal.civicclerk.com/" },
     { id: "permits",   name: "Permit watch",       source: "TCEQ, TDLR, Railroad Commission, TxDOT project tracker and Commissioners Court agendas", url: "https://www15.tceq.texas.gov/crpub/" },
+    { id: "entities",  name: "Entity watch",       source: "Texas Comptroller of Public Accounts, Active Franchise Taxpayers. New companies and changes appear under Map updates in the News tab.", url: "https://data.texas.gov/dataset/Active-Franchise-Taxpayers/9cir-efmm" },
     { name: "Towns", source: "Placed by hand. Approximate." }
   ];
 

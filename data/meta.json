@@ -110,6 +110,11 @@
       "updated": "2026-10-02",
       "source": "https://www.waterdatafortexas.org/reservoirs/individual/gibbons-creek.csv",
       "feature_count": 1
+    },
+    "entities": {
+      "updated": "2026-10-02",
+      "source": "https://data.texas.gov/resource/9cir-efmm.json",
+      "feature_count": 27
     }
   }
 }

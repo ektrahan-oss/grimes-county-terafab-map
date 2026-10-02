@@ -68,5 +68,11 @@
     "date": "2026-10-02",
     "layer": "gauges",
     "summary": "Stream gauges: new layer with 3 Navasota River gauges and the level of Gibbons Creek Reservoir, updated daily"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "entities",
+    "summary": "Entity watch: new, tracking 27 companies in the Texas Comptroller's franchise tax list",
+    "link": "https://data.texas.gov/dataset/Active-Franchise-Taxpayers/9cir-efmm"
   }
 ]
