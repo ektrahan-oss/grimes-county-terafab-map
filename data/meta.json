@@ -125,6 +125,11 @@
       "updated": "2026-10-02",
       "source": "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html",
       "feature_count": 5
+    },
+    "land": {
+      "updated": "2026-10-02",
+      "source": "https://data.geographic.texas.gov/ (StratMap Land Parcels, Grimes County)",
+      "feature_count": 132
     }
   }
 }
