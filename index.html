@@ -346,6 +346,18 @@
         { label: "River", color: "#08519C", weight: 3.5, test: p => p.Type === "River" },
         { label: "Creek or other stream", color: "#3F8FD0", weight: 1.5, test: () => true }
       ] },
+    { id: "gauges", one: "stream gauge", name: "Stream gauges", desc: "Navasota River flow and the reservoir's level, updated daily", url: "data/stream_gauges.geojson", kind: "point", color: "#3F8FD0",
+      note: "Flow is the latest full day's average, compared with the same day in every other year on record. Normal means the middle half of those years. No gauge measures flow on Gibbons Creek itself.",
+      classes: [
+        { label: "Much below normal (lowest tenth)", color: "#A50026", radius: 9, test: p => p.status === "Much below normal" },
+        { label: "Below normal", color: "#F46D43", radius: 9, test: p => p.status === "Below normal" },
+        { label: "Normal", color: "#4DAC26", radius: 9, test: p => p.status === "Normal" },
+        { label: "Above normal", color: "#74ADD1", radius: 9, test: p => p.status === "Above normal" },
+        { label: "Much above normal (highest tenth)", color: "#313695", radius: 9, test: p => p.status === "Much above normal" },
+        { label: "Reservoir level", color: "#1F78B4", radius: 8, test: p => p.status === "Reservoir level" },
+        { label: "Measures flow only in high water", color: "#FFFFFF", radius: 7, test: p => /high water/.test(p.status || "") },
+        { label: "Not reporting, or record too short", color: "#BDBDBD", radius: 7, test: () => true }
+      ] },
     { id: "outfalls", one: "wastewater outfall", name: "Wastewater outfalls", desc: "Where permitted facilities discharge treated wastewater", url: "data/wastewater_outfalls.geojson", kind: "point", color: "#7B3294",
       note: "Each point is the end of a discharge pipe named in a state permit. Covers the county and five miles around it.",
       classes: [
@@ -379,7 +391,7 @@
 
   const shortDate = d => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id"];
+  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id", "url", "link", "status"];
 
   function popupRows(cfg, props) {
     return Object.entries(props)
@@ -391,7 +403,8 @@
     const rows = popupRows(cfg, props).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
     return `<strong>${esc(props.name || props.NAME || cfg.name)}</strong>` +
       (props.description ? `<div>${esc(props.description)}</div>` : "") +
-      (rows ? `<table>${rows}</table>` : "");
+      (rows ? `<table>${rows}</table>` : "") +
+      (/^https?:\/\//.test(props.url || "") ? `<div style="margin-top:4px"><a href="${esc(props.url)}" target="_blank" rel="noopener">${esc(props.link || "More about this")}</a></div>` : "");
   }
 
   // One Leaflet layer for one legend class (or for the whole layer when it has no classes)
@@ -541,7 +554,7 @@
     { name: "Site and boundaries", open: true, ids: ["zone", "holdings", "county", "parcels", "places", "schools"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
-    { name: "Water", ids: ["flood", "streams", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
+    { name: "Water", ids: ["flood", "streams", "gauges", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
   ];
   const listed = new Set(TOPICS.flatMap(t => t.ids));
   const unlisted = LAYERS.filter(cfg => !listed.has(cfg.id)).map(cfg => cfg.id);
@@ -978,6 +991,8 @@
     { id: "water_rights", name: "Surface water rights", why: "The project's stated supply is Gibbons Creek Reservoir and a pump station on the Navasota River, both covered by state water rights.", source: "Texas Commission on Environmental Quality", url: "https://www.tceq.texas.gov/permitting/water_rights" },
     { id: "watersheds", name: "Watersheds",        why: "Anything discharged at the site runs down Gibbons Creek to the Navasota River, then the Brazos. Watersheds show who is downstream.", source: "U.S. Geological Survey Watershed Boundary Dataset", url: "https://www.usgs.gov/national-hydrography/watershed-boundary-dataset" },
     { id: "streams",   name: "Streams",            why: "The paths water and treated wastewater take across the county.", source: "U.S. Geological Survey National Hydrography Dataset", url: "https://www.usgs.gov/national-hydrography/national-hydrography-dataset" },
+    { id: "gauges",    name: "Stream gauges",      why: "The project's pump station draws from the Navasota River. These show how much water is in the river today, what is normal for the season, and how low it has gone.", source: "U.S. Geological Survey Water Data", url: "https://waterdata.usgs.gov/" },
+    { id: "reservoir", name: "Gibbons Creek Reservoir level", why: "The reservoir is the project's stated main water supply. Shown as a point in the Stream gauges layer.", source: "Texas Water Development Board, Water Data for Texas", url: "https://www.waterdatafortexas.org/reservoirs/individual/gibbons-creek" },
     { id: "outfalls",  name: "Wastewater outfalls", why: "Existing and pending discharge permits. The plant plans its own wastewater treatment, which will need one.", source: "Texas Commission on Environmental Quality", url: "https://www.tceq.texas.gov/gis" },
     { id: "flood",     name: "Floodplains",        why: "Much of the zone surrounds a reservoir and its creeks. Building in a floodplain needs a county permit.", source: "FEMA National Flood Hazard Layer", url: "https://www.fema.gov/flood-maps/national-flood-hazard-layer" },
     { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },

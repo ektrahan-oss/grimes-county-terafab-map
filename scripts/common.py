@@ -134,10 +134,11 @@ def report_change(layer_id, label, summary, link=None):
 
 # ---- Layer output ----
 
-def publish_features(layer_id, label, path, features, source, noun=("feature", "features"), key=None):
+def publish_features(layer_id, label, path, features, source, noun=("feature", "features"), key=None, log_changes=True):
     """Write GeoJSON features, log what changed since the last version, and update meta.json.
 
     key names a property that identifies each feature across runs. Returns the file size in bytes.
+    log_changes=False is for layers whose values move every day, which log their own news instead.
     """
     old = json.loads(path.read_text(encoding="utf-8"))["features"] if path.exists() else None
     if old and len(old) >= MIN_FOR_SHORTFALL_CHECK and len(features) < len(old) * (1 - MAX_SHORTFALL) and not ALLOW_SHRINK:
@@ -148,7 +149,8 @@ def publish_features(layer_id, label, path, features, source, noun=("feature", "
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
     path.write_text('{\n  "type": "FeatureCollection",\n  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
     ident = (lambda f: f["properties"].get(key)) if key else None
-    report_change(layer_id, label, describe_change(old, features, noun, ident))
+    if log_changes:
+        report_change(layer_id, label, describe_change(old, features, noun, ident))
     record_layer(layer_id, source, len(features))
     return path.stat().st_size
 

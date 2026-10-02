@@ -63,5 +63,10 @@
     "date": "2026-10-02",
     "layer": "holdings",
     "summary": "Project-linked holdings: new, with 34 parcels and about 8,087 acres in 6 blocks"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "gauges",
+    "summary": "Stream gauges: new layer with 3 Navasota River gauges and the level of Gibbons Creek Reservoir, updated daily"
   }
 ]
