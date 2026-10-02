@@ -37,7 +37,7 @@
       "feature_count": 50
     },
     "traffic": {
-      "updated": "2026-10-01",
+      "updated": "2026-10-02",
       "source": "https://services.arcgis.com/KTcxiTD9dsQw4r7Z/arcgis/rest/services/TxDOT_AADT_Annuals_(Public_View)/FeatureServer/0/query",
       "feature_count": 145
     },
@@ -60,6 +60,21 @@
       "updated": "2026-10-02",
       "source": "https://valhalla1.openstreetmap.de/route",
       "feature_count": 6
+    },
+    "watersheds": {
+      "updated": "2026-10-02",
+      "source": "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/5/query",
+      "feature_count": 9
+    },
+    "streams": {
+      "updated": "2026-10-02",
+      "source": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query",
+      "feature_count": 80
+    },
+    "outfalls": {
+      "updated": "2026-10-02",
+      "source": "https://gisweb.tceq.texas.gov/arcgis/rest/services/Outfalls/Outfalls/MapServer/0/query",
+      "feature_count": 61
     }
   }
 }

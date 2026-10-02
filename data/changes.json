@@ -13,5 +13,25 @@
     "date": "2026-10-02",
     "layer": "routes",
     "summary": "Likely routes: new layer with the probable route to 6 nearby cities"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "watersheds",
+    "summary": "Watersheds: new layer with 9 watersheds"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "streams",
+    "summary": "Streams: new layer with 80 named rivers and creeks"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "outfalls",
+    "summary": "Wastewater outfalls: new layer with 61 permitted discharge points"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "traffic",
+    "summary": "Traffic counts: each station now carries its 2023 to 2025 average as a baseline"
   }
 ]

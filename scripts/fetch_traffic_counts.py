@@ -22,6 +22,8 @@ SERVICE = (
 )
 COUNTY = "Grimes"
 YEARS = 5        # how many years of counts to keep per station, newest first
+BASELINE_YEARS = (2023, 2024, 2025)      # the last full years before Terafab construction traffic
+BASELINE_LABEL = "Average 2023 to 2025"
 PAGE_SIZE = 1000
 
 OUT = DATA / "traffic_counts.geojson"
@@ -82,10 +84,19 @@ def simplify(feature):
         "description": "Average vehicles per day, both directions",
         "Station": p.get("TRFC_STATN_ID"),
     }
+    def count(for_year):
+        back = year - for_year
+        if not 0 <= back <= 19:
+            return None
+        return p.get("AADT_RPT_QTY" if back == 0 else f"AADT_RPT_HIST_{back:02d}_QTY")
+
     for back in range(YEARS):
-        field = "AADT_RPT_QTY" if back == 0 else f"AADT_RPT_HIST_{back:02d}_QTY"
-        if p.get(field) is not None:
-            props[f"AADT {year - back}"] = p[field]
+        if count(year - back) is not None:
+            props[f"AADT {year - back}"] = count(year - back)
+    # The yardstick later years are measured against: the average before the plant was built
+    before = [count(y) for y in BASELINE_YEARS if count(y) is not None]
+    if len(before) >= 2:
+        props[BASELINE_LABEL] = round(sum(before) / len(before))
     lng, lat = feature["geometry"]["coordinates"][:2]
     return {
         "type": "Feature",
