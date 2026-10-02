@@ -74,5 +74,10 @@
     "layer": "entities",
     "summary": "Entity watch: new, tracking 27 companies in the Texas Comptroller's franchise tax list",
     "link": "https://data.texas.gov/dataset/Active-Franchise-Taxpayers/9cir-efmm"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "census",
+    "summary": "Population and housing: new, with 240 census tracts"
   }
 ]
