@@ -75,6 +75,21 @@
       "updated": "2026-10-02",
       "source": "https://gisweb.tceq.texas.gov/arcgis/rest/services/Outfalls/Outfalls/MapServer/0/query",
       "feature_count": 61
+    },
+    "water_rights": {
+      "updated": "2026-10-02",
+      "source": "https://gisweb.tceq.texas.gov/arcgis/rest/services/WaterRights/WaterRightsViewer/MapServer/3/query",
+      "feature_count": 115
+    },
+    "wells": {
+      "updated": "2026-10-02",
+      "source": "https://services.twdb.texas.gov/arcgis/rest/services/Public/WellReports/MapServer/0/query",
+      "feature_count": 3205
+    },
+    "aquifers": {
+      "updated": "2026-10-02",
+      "source": "https://services.twdb.texas.gov/arcgis/rest/services/Base/BaseLayerQueryService/MapServer/1/query",
+      "feature_count": 6
     }
   }
 }
