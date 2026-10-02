@@ -66,7 +66,7 @@
   .legend input { width: 15px; height: 15px; margin: 0; accent-color: var(--pine); flex: none; }
   .legend em { margin-left: auto; padding-left: 8px; color: var(--muted); font-style: normal; white-space: nowrap; }
   .legend .note { margin: 4px 0 0; color: var(--muted); line-height: 1.4; }
-  .sym { flex: none; width: 24px; height: 14px; display: inline-flex; align-items: center; justify-content: center; }
+  .sym { flex: none; width: 26px; height: 14px; display: inline-flex; align-items: center; justify-content: center; }
   .sym i { display: block; }
   .modes { display: flex; gap: 0; margin: 2px 0 6px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
   .modes button { flex: 1; font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: var(--bg); border: 0; padding: 6px 8px; cursor: pointer; }
@@ -219,7 +219,7 @@
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
     { id: "places", one: "town", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
     { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78" },
-    { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", weight: 1, fillOpacity: 0.45, counts: false,
+    { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", color: "#4A90C8", weight: 1, fillOpacity: 0.45, counts: false,
       note: "Estimated without traffic, from the site's frontage on State Highway 30. Darker means a longer drive.",
       classes: [
         { label: "15 minutes or less", color: "#DCEBF7", test: p => p.minutes <= 15 },
@@ -254,15 +254,15 @@
           { label: "No 2023-25 average", color: "#FFFFFF", radius: 5, test: () => true }
         ] }
       ] },
-    { id: "pipelines", one: "pipeline", name: "Pipelines", desc: "Texas Railroad Commission", url: "data/pipelines.geojson", kind: "line", color: "#5B3A9E",
+    { id: "pipelines", one: "pipeline", name: "Pipelines", desc: "Texas Railroad Commission", url: "data/pipelines.geojson", kind: "line", color: "#D7301F",
       note: "Thick lines are transmission lines. Thin lines are gathering lines from wells.",
       weightBy: p => p.Type === "Transmission" ? 3 : 1.5,
       classes: [
-        { label: "Not in service", color: "#8C8C8C", dash: "5 5", test: p => !inService(p) },
-        { label: "Natural gas", color: "#5B3A9E", test: p => p.Commodity === "Natural gas" },
-        { label: "Crude oil", color: "#1A1A1A", test: p => p.Commodity === "Crude oil" },
-        { label: "Refined products", color: "#E08214", test: p => p.Commodity === "Refined products" },
-        { label: "Highly volatile liquids", color: "#C51B7D", test: p => /volatile/i.test(p.Commodity || "") },
+        { label: "Not in service", color: "#B0B0B0", dash: "5 5", test: p => !inService(p) },
+        { label: "Natural gas", color: "#D7301F", test: p => p.Commodity === "Natural gas" },
+        { label: "Crude oil", color: "#000000", test: p => p.Commodity === "Crude oil" },
+        { label: "Refined products", color: "#7A3FB0", test: p => p.Commodity === "Refined products" },
+        { label: "Highly volatile liquids", color: "#E6AB02", test: p => /volatile/i.test(p.Commodity || "") },
         { label: "Other", color: "#5F6E68", test: () => true }
       ] },
     { id: "power", one: "power line", name: "Power lines", desc: "Transmission lines, federal data to 2024", url: "data/power_lines.geojson", kind: "line", color: "#00A383",
@@ -273,7 +273,7 @@
         { label: "Under 100 kV", color: "#66C9B2", weight: 2, test: p => p["Voltage (kV)"] > 0 },
         { label: "Voltage not recorded", color: "#66C9B2", weight: 2, dash: "4 4", test: () => true }
       ] },
-    { id: "aquifers", name: "Aquifers", desc: "Groundwater formations under the county", url: "data/aquifers.geojson", kind: "fill", weight: 1, fillOpacity: 0.3, counts: false,
+    { id: "aquifers", name: "Aquifers", desc: "Groundwater formations under the county", url: "data/aquifers.geojson", kind: "fill", color: "#1B9E77", weight: 1, fillOpacity: 0.3, counts: false,
       note: "Aquifers lie at different depths, so their areas overlap. Groundwater here is regulated by the Bluebonnet Groundwater Conservation District.",
       classes: [
         { label: "Gulf Coast (major)", color: "#1B9E77", test: p => /^Gulf Coast/.test(p.name || "") },
@@ -315,7 +315,7 @@
         { label: "Domestic wastewater (sewage)", color: "#8C6D31", radius: 7, test: p => /domestic/i.test(p.Type || "") },
         { label: "Other permit type", color: "#8C8C8C", radius: 6, test: () => true }
       ] },
-    { id: "flood", one: "floodplain", name: "Floodplains", desc: "FEMA flood hazard zones", url: "data/floodplains.geojson", kind: "fill", weight: 0.5, fillOpacity: 0.55,
+    { id: "flood", one: "floodplain", name: "Floodplains", desc: "FEMA flood hazard zones", url: "data/floodplains.geojson", kind: "fill", color: "#2B8CBE", weight: 0.5, fillOpacity: 0.55,
       note: "Land outside these areas is mapped by FEMA as minimal flood hazard and is not drawn.",
       classes: [
         { label: "Floodway", color: "#08306B", test: p => /^Floodway/.test(p.name || "") },
@@ -388,8 +388,8 @@
   function symbol(cfg, cls) {
     const color = cls.color || cfg.color;
     if (cfg.kind === "line" || cfg.kind === "outline") {
-      const w = Math.max(2, Math.round(cls.weight ?? cfg.weight ?? 2.5));
-      return `<span class="sym"><i style="width:24px;border-top:${w}px ${cls.dash || cfg.dash ? "dashed" : "solid"} ${color}"></i></span>`;
+      const w = Math.max(4, Math.round(cls.weight ?? cfg.weight ?? 2.5));
+      return `<span class="sym"><i style="width:26px;border-top:${w}px ${cls.dash || cfg.dash ? "dashed" : "solid"} ${color}"></i></span>`;
     }
     if (cfg.kind === "point") {
       const d = (cls.radius ?? 6) * 1.6;
