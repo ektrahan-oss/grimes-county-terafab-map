@@ -69,7 +69,9 @@ def main():
     lines = gpd.clip(lines, area).to_crs(WORK_CRS)
     lines = lines[lines.geometry.geom_type.isin(["LineString", "MultiLineString"])]
     lines["geometry"] = lines.geometry.simplify(SIMPLIFY_FEET)
-    lines = lines.sort_values(["Voltage (kV)", "Owner"], ascending=[False, True], na_position="last").reset_index(drop=True)
+    # A stable sort from a fixed starting order, so the file comes out the same on every machine
+    lines = lines.sort_index().sort_values(["Voltage (kV)", "Owner"], ascending=[False, True], na_position="last",
+                                           kind="stable").reset_index(drop=True)
 
     size = publish_geojson("power", "Power lines", OUT, lines, SERVICE, ("line", "lines"))
     miles = lines.length / 5280
