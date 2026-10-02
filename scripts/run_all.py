@@ -68,6 +68,7 @@ LAYERS = {
     "aquifers":  (module_main("fetch_aquifers"), False, True),
     "census":    (module_main("fetch_population_housing"), False, True),    # only rebuilds when a new yearly survey is out
     "holdings":  (module_main("fetch_project_holdings"), False, False),  # checked by hand: --only holdings
+    "land":      (module_main("build_land_values"), False, False),       # by hand when a new parcel release is out: --only land
     "drive":     (module_main("build_drive_times"), False, False),      # one-time layer: --only drive
     "gauges":    (module_main("build_stream_gauges"), True, True),         # river flow and reservoir level move daily
     "news":      (module_main("build_news"), True, True),

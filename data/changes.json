@@ -84,5 +84,10 @@
     "date": "2026-10-02",
     "layer": "schools",
     "summary": "School districts: enrollment history added for all 5 districts, 2011-12 to 2025-26"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "land",
+    "summary": "Land value per acre: new layer for tax year 2025, with a median for 118 areas 3 miles across"
   }
 ]

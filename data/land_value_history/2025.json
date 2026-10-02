@@ -1,0 +1,482 @@
+{
+ "tax_year": 2025,
+ "release": "stratmap25-landparcels_48185_lp",
+ "hexagon_miles": 3,
+ "minimum_parcels": 5,
+ "county_median_per_acre": 21470,
+ "parcels_counted": 15780,
+ "areas": {
+  "r734c230": {
+   "median_per_acre": 9120,
+   "parcels": 5
+  },
+  "r734c231": {
+   "median_per_acre": 18260,
+   "parcels": 11
+  },
+  "r735c229": {
+   "median_per_acre": 18360,
+   "parcels": 8
+  },
+  "r735c230": {
+   "median_per_acre": 26440,
+   "parcels": 150
+  },
+  "r735c231": {
+   "median_per_acre": 21510,
+   "parcels": 125
+  },
+  "r735c232": {
+   "median_per_acre": 31020,
+   "parcels": 220
+  },
+  "r735c233": {
+   "median_per_acre": 46180,
+   "parcels": 651
+  },
+  "r735c234": {
+   "median_per_acre": 41490,
+   "parcels": 496
+  },
+  "r735c235": {
+   "median_per_acre": 28720,
+   "parcels": 67
+  },
+  "r736c230": {
+   "median_per_acre": 22920,
+   "parcels": 80
+  },
+  "r736c231": {
+   "median_per_acre": 23740,
+   "parcels": 157
+  },
+  "r736c232": {
+   "median_per_acre": 23110,
+   "parcels": 90
+  },
+  "r736c233": {
+   "median_per_acre": 39310,
+   "parcels": 467
+  },
+  "r736c234": {
+   "median_per_acre": 30680,
+   "parcels": 275
+  },
+  "r736c235": {
+   "median_per_acre": 100080,
+   "parcels": 232
+  },
+  "r737c228": {
+   "median_per_acre": 10860,
+   "parcels": 9
+  },
+  "r737c229": {
+   "median_per_acre": 17000,
+   "parcels": 46
+  },
+  "r737c230": {
+   "median_per_acre": 24690,
+   "parcels": 107
+  },
+  "r737c231": {
+   "median_per_acre": 25070,
+   "parcels": 175
+  },
+  "r737c232": {
+   "median_per_acre": 19940,
+   "parcels": 111
+  },
+  "r737c233": {
+   "median_per_acre": 27670,
+   "parcels": 246
+  },
+  "r737c234": {
+   "median_per_acre": 27870,
+   "parcels": 217
+  },
+  "r737c235": {
+   "median_per_acre": 48710,
+   "parcels": 6
+  },
+  "r738c229": {
+   "median_per_acre": 23600,
+   "parcels": 190
+  },
+  "r738c230": {
+   "median_per_acre": 40060,
+   "parcels": 340
+  },
+  "r738c231": {
+   "median_per_acre": 26690,
+   "parcels": 227
+  },
+  "r738c232": {
+   "median_per_acre": 18210,
+   "parcels": 67
+  },
+  "r738c233": {
+   "median_per_acre": 21570,
+   "parcels": 225
+  },
+  "r738c234": {
+   "median_per_acre": 69520,
+   "parcels": 361
+  },
+  "r738c235": {
+   "median_per_acre": 33970,
+   "parcels": 129
+  },
+  "r739c229": {
+   "median_per_acre": 32610,
+   "parcels": 286
+  },
+  "r739c230": {
+   "median_per_acre": 22240,
+   "parcels": 207
+  },
+  "r739c231": {
+   "median_per_acre": 20280,
+   "parcels": 118
+  },
+  "r739c232": {
+   "median_per_acre": 19970,
+   "parcels": 222
+  },
+  "r739c233": {
+   "median_per_acre": 22940,
+   "parcels": 180
+  },
+  "r739c234": {
+   "median_per_acre": 16590,
+   "parcels": 109
+  },
+  "r740c229": {
+   "median_per_acre": 9460,
+   "parcels": 7
+  },
+  "r740c230": {
+   "median_per_acre": 21300,
+   "parcels": 83
+  },
+  "r740c231": {
+   "median_per_acre": 24930,
+   "parcels": 122
+  },
+  "r740c232": {
+   "median_per_acre": 15140,
+   "parcels": 103
+  },
+  "r740c233": {
+   "median_per_acre": 11890,
+   "parcels": 247
+  },
+  "r740c234": {
+   "median_per_acre": 24140,
+   "parcels": 155
+  },
+  "r740c235": {
+   "median_per_acre": 11430,
+   "parcels": 19
+  },
+  "r741c228": {
+   "median_per_acre": 11290,
+   "parcels": 15
+  },
+  "r741c229": {
+   "median_per_acre": 22840,
+   "parcels": 116
+  },
+  "r741c230": {
+   "median_per_acre": 23940,
+   "parcels": 202
+  },
+  "r741c231": {
+   "median_per_acre": 23680,
+   "parcels": 160
+  },
+  "r741c232": {
+   "median_per_acre": 21140,
+   "parcels": 120
+  },
+  "r741c233": {
+   "median_per_acre": 19180,
+   "parcels": 151
+  },
+  "r741c234": {
+   "median_per_acre": 24100,
+   "parcels": 151
+  },
+  "r742c228": {
+   "median_per_acre": 1690,
+   "parcels": 5
+  },
+  "r742c229": {
+   "median_per_acre": 16820,
+   "parcels": 74
+  },
+  "r742c230": {
+   "median_per_acre": 21620,
+   "parcels": 127
+  },
+  "r742c231": {
+   "median_per_acre": 18640,
+   "parcels": 109
+  },
+  "r742c232": {
+   "median_per_acre": 22880,
+   "parcels": 145
+  },
+  "r742c233": {
+   "median_per_acre": 17390,
+   "parcels": 97
+  },
+  "r742c234": {
+   "median_per_acre": 20540,
+   "parcels": 78
+  },
+  "r743c228": {
+   "median_per_acre": 8130,
+   "parcels": 10
+  },
+  "r743c229": {
+   "median_per_acre": 23650,
+   "parcels": 42
+  },
+  "r743c230": {
+   "median_per_acre": 20350,
+   "parcels": 150
+  },
+  "r743c231": {
+   "median_per_acre": 20640,
+   "parcels": 101
+  },
+  "r743c232": {
+   "median_per_acre": 23690,
+   "parcels": 173
+  },
+  "r743c233": {
+   "median_per_acre": 17590,
+   "parcels": 87
+  },
+  "r743c234": {
+   "median_per_acre": 21740,
+   "parcels": 100
+  },
+  "r744c228": {
+   "median_per_acre": 9640,
+   "parcels": 126
+  },
+  "r744c229": {
+   "median_per_acre": 38380,
+   "parcels": 247
+  },
+  "r744c230": {
+   "median_per_acre": 17110,
+   "parcels": 86
+  },
+  "r744c231": {
+   "median_per_acre": 17190,
+   "parcels": 108
+  },
+  "r744c232": {
+   "median_per_acre": 21430,
+   "parcels": 149
+  },
+  "r744c233": {
+   "median_per_acre": 21330,
+   "parcels": 158
+  },
+  "r744c234": {
+   "median_per_acre": 16100,
+   "parcels": 158
+  },
+  "r745c227": {
+   "median_per_acre": 93230,
+   "parcels": 299
+  },
+  "r745c228": {
+   "median_per_acre": 37450,
+   "parcels": 454
+  },
+  "r745c229": {
+   "median_per_acre": 9850,
+   "parcels": 21
+  },
+  "r745c230": {
+   "median_per_acre": 8790,
+   "parcels": 33
+  },
+  "r745c231": {
+   "median_per_acre": 12060,
+   "parcels": 77
+  },
+  "r745c232": {
+   "median_per_acre": 19440,
+   "parcels": 111
+  },
+  "r745c233": {
+   "median_per_acre": 19680,
+   "parcels": 160
+  },
+  "r745c234": {
+   "median_per_acre": 11450,
+   "parcels": 34
+  },
+  "r746c228": {
+   "median_per_acre": 19110,
+   "parcels": 152
+  },
+  "r746c229": {
+   "median_per_acre": 18830,
+   "parcels": 377
+  },
+  "r746c230": {
+   "median_per_acre": 8070,
+   "parcels": 50
+  },
+  "r746c231": {
+   "median_per_acre": 10910,
+   "parcels": 102
+  },
+  "r746c232": {
+   "median_per_acre": 15850,
+   "parcels": 162
+  },
+  "r746c233": {
+   "median_per_acre": 17690,
+   "parcels": 152
+  },
+  "r746c234": {
+   "median_per_acre": 13020,
+   "parcels": 70
+  },
+  "r747c227": {
+   "median_per_acre": 4660,
+   "parcels": 18
+  },
+  "r747c228": {
+   "median_per_acre": 17860,
+   "parcels": 126
+  },
+  "r747c229": {
+   "median_per_acre": 15150,
+   "parcels": 111
+  },
+  "r747c230": {
+   "median_per_acre": 15520,
+   "parcels": 109
+  },
+  "r747c231": {
+   "median_per_acre": 10260,
+   "parcels": 67
+  },
+  "r747c232": {
+   "median_per_acre": 9400,
+   "parcels": 41
+  },
+  "r747c233": {
+   "median_per_acre": 9390,
+   "parcels": 69
+  },
+  "r747c234": {
+   "median_per_acre": 16770,
+   "parcels": 18
+  },
+  "r748c228": {
+   "median_per_acre": 4990,
+   "parcels": 14
+  },
+  "r748c229": {
+   "median_per_acre": 16900,
+   "parcels": 119
+  },
+  "r748c230": {
+   "median_per_acre": 20880,
+   "parcels": 216
+  },
+  "r748c231": {
+   "median_per_acre": 10900,
+   "parcels": 27
+  },
+  "r748c232": {
+   "median_per_acre": 16860,
+   "parcels": 210
+  },
+  "r748c233": {
+   "median_per_acre": 11510,
+   "parcels": 67
+  },
+  "r748c234": {
+   "median_per_acre": 9680,
+   "parcels": 47
+  },
+  "r749c227": {
+   "median_per_acre": 4150,
+   "parcels": 6
+  },
+  "r749c228": {
+   "median_per_acre": 10840,
+   "parcels": 65
+  },
+  "r749c229": {
+   "median_per_acre": 17970,
+   "parcels": 187
+  },
+  "r749c230": {
+   "median_per_acre": 9380,
+   "parcels": 63
+  },
+  "r749c231": {
+   "median_per_acre": 19330,
+   "parcels": 217
+  },
+  "r749c232": {
+   "median_per_acre": 18120,
+   "parcels": 281
+  },
+  "r749c233": {
+   "median_per_acre": 5950,
+   "parcels": 23
+  },
+  "r750c228": {
+   "median_per_acre": 10400,
+   "parcels": 52
+  },
+  "r750c229": {
+   "median_per_acre": 13580,
+   "parcels": 86
+  },
+  "r750c230": {
+   "median_per_acre": 8590,
+   "parcels": 52
+  },
+  "r750c231": {
+   "median_per_acre": 6990,
+   "parcels": 42
+  },
+  "r750c232": {
+   "median_per_acre": 13420,
+   "parcels": 109
+  },
+  "r750c233": {
+   "median_per_acre": 16710,
+   "parcels": 190
+  },
+  "r750c234": {
+   "median_per_acre": 7390,
+   "parcels": 11
+  },
+  "r751c231": {
+   "median_per_acre": 13750,
+   "parcels": 80
+  },
+  "r751c232": {
+   "median_per_acre": 6420,
+   "parcels": 14
+  },
+  "r751c233": {
+   "median_per_acre": 15460,
+   "parcels": 176
+  }
+ }
+}

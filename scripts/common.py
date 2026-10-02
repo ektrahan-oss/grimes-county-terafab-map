@@ -146,11 +146,12 @@ def report_change(layer_id, label, summary, link=None):
 
 # ---- Layer output ----
 
-def publish_features(layer_id, label, path, features, source, noun=("feature", "features"), key=None, log_changes=True):
+def publish_features(layer_id, label, path, features, source, noun=("feature", "features"), key=None, log_changes=True, note=None):
     """Write GeoJSON features, log what changed since the last version, and update meta.json.
 
     key names a property that identifies each feature across runs. Returns the file size in bytes.
     log_changes=False is for layers whose values move every day, which log their own news instead.
+    note is a sentence worked out when the layer was built, which the map adds to the layer's legend.
     """
     old = json.loads(path.read_text(encoding="utf-8"))["features"] if path.exists() else None
     if old and len(old) >= MIN_FOR_SHORTFALL_CHECK and len(features) < len(old) * (1 - MAX_SHORTFALL) and not ALLOW_SHRINK:
@@ -159,7 +160,8 @@ def publish_features(layer_id, label, path, features, source, noun=("feature", "
                          "That looks incomplete, so nothing was written. If the drop is real, run again with "
                          "ALLOW_SHRINK=1 set in the environment.")
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
-    path.write_text('{\n  "type": "FeatureCollection",\n  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
+    head = '{\n  "type": "FeatureCollection",\n' + (f'  "note": {json.dumps(note, ensure_ascii=False)},\n' if note else "")
+    path.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
     ident = (lambda f: f["properties"].get(key)) if key else None
     if log_changes:
         report_change(layer_id, label, describe_change(old, features, noun, ident))

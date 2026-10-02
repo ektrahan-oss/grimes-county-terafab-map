@@ -263,23 +263,26 @@
     { key: "Population", label: "Population" },
     { key: "Housing units", label: "Housing units" }
   ];
+  // Five legend rows for one measure, high to low, plus a gray row for areas with no figure
+  function fifths(features, m, colors, missing) {
+    const values = features.map(f => f.properties[m.key]).filter(v => v != null).sort((a, b) => a - b);
+    const round = v => { const step = 10 ** (Math.floor(Math.log10(v)) - 1); return Math.round(v / step) * step; };
+    const cuts = [...new Set([0.8, 0.6, 0.4, 0.2].map(q => round(values[Math.floor(values.length * q)])))];
+    const text = v => (m.unit === "$" ? "$" : "") + v.toLocaleString(undefined, { maximumFractionDigits: 1 }) + (m.unit === "%" ? "%" : "");
+    const classes = cuts.map((cut, i) => ({
+      label: i ? `${text(cut)} to ${text(cuts[i - 1])}` : `${text(cut)} or more`,
+      color: colors[i], test: p => p[m.key] >= cut
+    }));
+    classes.push({ label: `Under ${text(cuts[cuts.length - 1])}`, color: colors[cuts.length], test: p => p[m.key] != null });
+    classes.push({ label: missing, color: "#BDBDBD", test: () => true });
+    return classes;
+  }
   function censusModes(features) {
     const years = features[0]?.properties["Survey years"] || "";
-    return CENSUS_MEASURES.map(m => {
-      const values = features.map(f => f.properties[m.key]).filter(v => v != null).sort((a, b) => a - b);
-      const round = v => { const step = 10 ** (Math.floor(Math.log10(v)) - 1); return Math.round(v / step) * step; };
-      const cuts = [...new Set([0.8, 0.6, 0.4, 0.2].map(q => round(values[Math.floor(values.length * q)])))];
-      const text = v => (m.unit === "$" ? "$" : "") + v.toLocaleString(undefined, { maximumFractionDigits: 1 }) + (m.unit === "%" ? "%" : "");
-      const classes = cuts.map((cut, i) => ({
-        label: i ? `${text(cut)} to ${text(cuts[i - 1])}` : `${text(cut)} or more`,
-        color: CENSUS_COLORS[i], test: p => p[m.key] >= cut
-      }));
-      classes.push({ label: `Under ${text(cuts[cuts.length - 1])}`, color: CENSUS_COLORS[cuts.length], test: p => p[m.key] != null });
-      classes.push({ label: "No figure published", color: "#BDBDBD", test: () => true });
-      return { label: m.label, classes,
-        note: `American Community Survey, ${years}, by census tract. These are survey estimates and can be rough for a single tract: click one to see its margin of error. Each color holds about a fifth of the tracts.` };
-    });
+    return CENSUS_MEASURES.map(m => ({ label: m.label, classes: fifths(features, m, CENSUS_COLORS, "No figure published"),
+      note: `American Community Survey, ${years}, by census tract. These are survey estimates and can be rough for a single tract: click one to see its margin of error. Each color holds about a fifth of the tracts.` }));
   }
+  const LAND_COLORS = ["#993404", "#D95F0E", "#FE9929", "#FED98E", "#FFFFD4"];        // high to low
 
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
@@ -293,6 +296,9 @@
       clickLabels: true, commas: true, popupMore: enrollmentChart, note: "Click a district's name on the map for its enrollment since 2011." },
     { id: "census", one: "census tract", name: "Population and housing", desc: "People, homes, rents and incomes in Grimes and six neighboring counties", url: "data/population_housing.geojson", kind: "fill", color: "#2C7FB8", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
       commas: true, modePicker: "select", buildModes: censusModes },
+    { id: "land", one: "land value area", name: "Land value per acre", desc: "Median appraised land value, in areas 3 miles across", url: "data/land_values.geojson", kind: "fill", color: "#D95F0E", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
+      commas: true, note: "Appraisal district estimates of land only, not sale prices, and not what any one property is worth. Each hexagon is 3 miles across and shows the middle value of its parcels of an acre or more. Gray hexagons have fewer than 5 such parcels, so no figure is shown.",
+      buildClasses: features => fifths(features, { key: "Median land value per acre ($)", unit: "$" }, LAND_COLORS, "Too few parcels to show") },
     { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", color: "#4A90C8", weight: 1, fillOpacity: 0.45, counts: false,
       note: "Estimated without traffic, from the site's frontage on State Highway 30. Darker means a longer drive.",
       classes: [
@@ -615,7 +621,7 @@
   // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
   const TOPICS = [
     { name: "Site and boundaries", open: true, ids: ["zone", "holdings", "county", "parcels", "places", "schools"] },
-    { name: "People and housing", ids: ["census"] },
+    { name: "People, housing and land", ids: ["census", "land"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
     { name: "Water", ids: ["flood", "streams", "gauges", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
@@ -672,6 +678,7 @@
         const features = data.features.filter(f => f.properties?.show !== false);
         if (data.note) cfg.note = [cfg.note, data.note].filter(Boolean).join(" ");     // a figure worked out when the layer was built
         if (cfg.buildModes) cfg.modes = cfg.buildModes(features);                      // classes that depend on the data's own range
+        if (cfg.buildClasses) cfg.classes = cfg.buildClasses(features);
         const state = { cfg, features, on: !!cfg.on, mode: 0, subs: [] };
         states.push(state);
         refreshMeasureTargets();
@@ -1052,6 +1059,7 @@
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "enrollment", name: "School enrollment", why: "A baseline of how many students each district had before the plant, so growth can be measured against it. Shown when you click a district's name.", source: "Texas Education Agency, PEIMS Student Enrollment reports", url: "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html" },
     { id: "census",    name: "Population and housing", why: "A baseline of who lives here and what housing costs before the plant's workforce arrives, for the counties workers could commute from.", source: "U.S. Census Bureau, American Community Survey 5-year estimates", url: "https://www.census.gov/programs-surveys/acs" },
+    { id: "land",      name: "Land value per acre", why: "A baseline of what the appraisal district valued land at before the project was announced, so later years can show where values moved. Shown only as the middle value of at least 5 parcels in an area, never for one property.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District. Rebuilt by hand when a new release is out.", url: "https://data.geographic.texas.gov/" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. Each station's 2023 to 2025 average is kept as a yardstick, so later counts show where traffic has grown since construction began.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
