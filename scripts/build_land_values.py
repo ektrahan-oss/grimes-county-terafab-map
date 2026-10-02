@@ -19,13 +19,12 @@ Run by hand when TxGIO publishes a new release; the parcel download is refused f
 import json
 import math
 import sys
-import zipfile
 
 import geopandas as gpd
 from shapely.geometry import Polygon
 
 import build_reinvestment_zone as zone
-from common import DATA, WORK_CRS, county_boundary, publish_features, _rounded
+from common import DATA, WORK_CRS, county_boundary, publish_features, read_parcel_file, _rounded
 
 HEX_MILES = 3                    # across, flat side to flat side
 MIN_PARCELS = 5                  # fewer than this in a hexagon and no figure is shown
@@ -57,10 +56,7 @@ def hexagons(area):
 def properties():
     """One row per property with its land value and mapped acres. Only those two columns and the ID are read."""
     zip_path, label = zone.fetch_parcels("--refresh-parcels" in sys.argv)
-    shp = next(n for n in zipfile.ZipFile(zip_path).namelist() if n.lower().endswith(".shp"))
-    parcels = gpd.read_file(f"zip://{zip_path}!{shp}", columns=["Prop_ID", "LAND_VALUE", "TAX_YEAR"]).to_crs(WORK_CRS)
-    if "LAND_VALUE" not in parcels.columns:
-        sys.exit(f"The parcel release {label} has no land value column. Nothing written.")
+    parcels = read_parcel_file(zip_path, ["Prop_ID", "LAND_VALUE", "TAX_YEAR"]).to_crs(WORK_CRS)
     parcels = parcels[parcels.geometry.notna() & ~parcels.geometry.is_empty]
     parcels["Prop_ID"] = parcels["Prop_ID"].map(zone.norm_id)
     parcels = parcels[~parcels["Prop_ID"].isin(["", "0"])]            # road and water strips with no property record
@@ -90,7 +86,8 @@ def main():
 
     HISTORY.mkdir(exist_ok=True)
     earlier = sorted(int(p.stem) for p in HISTORY.glob("*.json") if p.stem.isdigit() and int(p.stem) < tax_year)
-    before = json.loads((HISTORY / f"{earlier[-1]}.json").read_text(encoding="utf-8"))["areas"] if earlier else {}
+    last = json.loads((HISTORY / f"{earlier[-1]}.json").read_text(encoding="utf-8")) if earlier else {}
+    before = last.get("areas", {})
 
     features, saved = [], {}
     for cell in cells.to_crs(4326).itertuples():
@@ -104,7 +101,8 @@ def main():
             saved[cell.id] = {"median_per_acre": median, "parcels": count}
             if cell.id in before:
                 was = before[cell.id]["median_per_acre"]
-                p[f"Change since tax year {earlier[-1]}"] = f"{(median - was) / was:+.1%} (${median - was:+,} an acre)"
+                p[f"Change since tax year {earlier[-1]}"] = (f"{(median - was) / was:+.1%} "
+                                                             f"({'-' if median < was else '+'}${abs(median - was):,} an acre)")
         else:
             p["description"] = f"Too few parcels to show (fewer than {MIN_PARCELS} of an acre or more)"
         geometry = cell.geometry.__geo_interface__
@@ -118,8 +116,11 @@ def main():
         "county_median_per_acre": county_median, "parcels_counted": len(used), "areas": saved}, indent=1) + "\n", encoding="utf-8")
 
     shown = len(saved)
-    note = (f"Tax year {tax_year}. The county-wide median is ${county_median:,} an acre, from {len(used):,} parcels; "
-            f"{small:,} parcels under {MIN_ACRES} acre are left out.")
+    was = last.get("county_median_per_acre")
+    since = f", {(county_median - was) / was:+.0%} from tax year {earlier[-1]}" if was else ""
+    note = (f"Tax year {tax_year}. The county-wide median is ${county_median:,} an acre{since}, from {len(used):,} parcels; "
+            f"{small:,} parcels under {MIN_ACRES} acre are left out."
+            + (f" Click a hexagon for its change since {earlier[-1]}." if was else ""))
     size = publish_features("land", "Land value per acre", OUT, features, SOURCE, ("area", "areas"), key="id", note=note)
     print(f"Tax year {tax_year}, release {label}. Wrote {len(features)} hexagons to {OUT.name} ({size / 1024:.0f} KB): "
           f"{shown} with a figure, {len(features) - shown} with too few parcels.")

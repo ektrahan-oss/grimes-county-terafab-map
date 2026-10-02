@@ -41,6 +41,8 @@ import shapely
 from pyproj import Geod
 from shapely.geometry import MultiPolygon, Polygon
 
+from common import read_parcel_file
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CACHE = ROOT / ".cache"          # downloads; not committed
@@ -220,8 +222,7 @@ def record_sources(sources, previous_lists, current_lists):
 
 def load_parcels(zip_path):
     """Read only the property ID and shape. Owner names and addresses are never loaded."""
-    shp = next(n for n in zipfile.ZipFile(zip_path).namelist() if n.lower().endswith(".shp"))
-    parcels = gpd.read_file(f"zip://{zip_path}!{shp}", columns=["Prop_ID"])
+    parcels = read_parcel_file(zip_path, ["Prop_ID"])      # copes with the column being renamed between releases
     parcels["id"] = parcels["Prop_ID"].map(norm_id)
     return parcels[["id", "geometry"]]
 
