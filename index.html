@@ -157,7 +157,8 @@
   .town-label { background: none; border: 0; box-shadow: none; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--ink); text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
   .town-label::before { display: none; }
   .area-label { color: #9C3F78; font-size: 0.74rem; }
-  .leaflet-popup-content { font-family: "Public Sans", system-ui, sans-serif; font-size: 0.85rem; line-height: 1.45; }
+  .click-label { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .leaflet-popup-content { font-family: "Public Sans", system-ui, sans-serif; font-size: 0.85rem; line-height: 1.45; max-height: 55vh; overflow-y: auto; }
   .leaflet-popup-content table { border-collapse: collapse; margin-top: 4px; }
   .leaflet-popup-content td { padding: 2px 8px 2px 0; vertical-align: top; }
   .leaflet-popup-content td:first-child { color: var(--muted); }
@@ -288,7 +289,8 @@
     { id: "parcels", name: "Parcel lines", desc: "Property boundaries as of January 2025", tiles: "data/parcels", kind: "outline", color: "#7A6A55", minZoom: 13,
       note: "Parcel map as of January 2025. Tracts split or sold since then are not shown, and owners are not named. Click inside a parcel for its property ID." },
     { id: "places", one: "town", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
-    { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78" },
+    { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78",
+      clickLabels: true, commas: true, popupMore: enrollmentChart, note: "Click a district's name on the map for its enrollment since 2011." },
     { id: "census", one: "census tract", name: "Population and housing", desc: "People, homes, rents and incomes in Grimes and six neighboring counties", url: "data/population_housing.geojson", kind: "fill", color: "#2C7FB8", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
       commas: true, modePicker: "select", buildModes: censusModes },
     { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", color: "#4A90C8", weight: 1, fillOpacity: 0.45, counts: false,
@@ -424,7 +426,31 @@
 
   const shortDate = d => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id", "url", "link", "status"];
+  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id", "url", "link", "status", "Enrollment by year"];
+
+  // A small line chart of a district's enrollment by school year, with the full list underneath
+  function enrollmentChart(props) {
+    const years = Object.entries(props["Enrollment by year"] || {}).sort((a, b) => a[0].localeCompare(b[0]));
+    if (years.length < 2) return "";
+    const W = 240, H = 92, left = 6, right = 6, top = 20, bottom = 18;
+    const values = years.map(y => y[1]), lo = Math.min(...values), hi = Math.max(...values);
+    const x = i => left + i * (W - left - right) / (years.length - 1);
+    const y = v => hi === lo ? (top + H - bottom) / 2 : top + (hi - v) * (H - top - bottom) / (hi - lo);
+    const last = years.length - 1, step = (W - left - right) / last;
+    const dot = i => `<circle cx="${x(i)}" cy="${y(values[i])}" r="4" fill="#2F7AA8" stroke="#fff" stroke-width="2"/>`;
+    const label = (i, anchor) => `<text x="${x(i)}" y="12" text-anchor="${anchor}" font-size="11" font-weight="600" fill="#22302C">${values[i].toLocaleString()}</text>`;
+    return `<div style="margin-top:8px"><div style="color:#5F6E68;font-size:0.78rem">Students enrolled by school year</div>
+      <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Enrollment from ${esc(years[0][0])} to ${esc(years[last][0])}" style="max-width:100%;height:auto;display:block">
+        <line x1="${left}" x2="${W - right}" y1="${H - bottom + 4}" y2="${H - bottom + 4}" stroke="#D5DDD9"/>
+        <polyline points="${years.map((_, i) => `${x(i)},${y(values[i])}`).join(" ")}" fill="none" stroke="#2F7AA8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        ${dot(0)}${dot(last)}${label(0, "start")}${label(last, "end")}
+        <text x="${left}" y="${H - 3}" font-size="10" fill="#5F6E68">${esc(years[0][0])}</text>
+        <text x="${W - right}" y="${H - 3}" text-anchor="end" font-size="10" fill="#5F6E68">${esc(years[last][0])}</text>
+        ${years.map((yr, i) => `<rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent"><title>${esc(yr[0])}: ${yr[1].toLocaleString()} students</title></rect>`).join("")}
+      </svg>
+      <details style="margin-top:2px"><summary style="cursor:pointer;color:#1E3B34;font-weight:600;font-size:0.8rem">Every year</summary>
+        <table>${years.slice().reverse().map(yr => `<tr><td>${esc(yr[0])}</td><td>${yr[1].toLocaleString()}</td></tr>`).join("")}</table></details></div>`;
+  }
 
   // A survey figure can come with a margin of error, held in a second property named "<figure> margin"
   function popupRows(cfg, props) {
@@ -440,6 +466,7 @@
     return `<strong>${esc(props.name || props.NAME || cfg.name)}</strong>` +
       (props.description ? `<div>${esc(props.description)}</div>` : "") +
       (rows ? `<table>${rows}</table>` : "") +
+      (cfg.popupMore ? cfg.popupMore(props) : "") +
       (/^https?:\/\//.test(props.url || "") ? `<div style="margin-top:4px"><a href="${esc(props.url)}" target="_blank" rel="noopener">${esc(props.link || "More about this")}</a></div>` : "");
   }
 
@@ -469,7 +496,7 @@
           const text = cfg.labelColor ? `<span style="color:${cfg.labelColor}">${esc(f.properties.name)}</span>` : esc(f.properties.name);
           layer.bindTooltip(text, point
             ? { permanent: true, direction: "right", offset: [6, 0], className: "town-label" }
-            : { permanent: true, direction: "center", className: "town-label area-label" });
+            : { permanent: true, direction: "center", className: "town-label area-label" + (cfg.clickLabels ? " click-label" : ""), interactive: !!cfg.clickLabels });
         }
       }
     });
@@ -1023,6 +1050,7 @@
     { id: "parcels",   name: "Parcel lines",       why: "So a landowner can find their own tract and see how it sits against the zone and the other layers. Owners are not named; the appraisal district's own map is the place to look one up.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District, as of January 2025", url: "https://gis.bisclient.com/grimescad/" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "enrollment", name: "School enrollment", why: "A baseline of how many students each district had before the plant, so growth can be measured against it. Shown when you click a district's name.", source: "Texas Education Agency, PEIMS Student Enrollment reports", url: "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html" },
     { id: "census",    name: "Population and housing", why: "A baseline of who lives here and what housing costs before the plant's workforce arrives, for the counties workers could commute from.", source: "U.S. Census Bureau, American Community Survey 5-year estimates", url: "https://www.census.gov/programs-surveys/acs" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },

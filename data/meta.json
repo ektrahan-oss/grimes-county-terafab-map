@@ -22,7 +22,7 @@
       "feature_count": 52
     },
     "schools": {
-      "updated": "2026-10-01",
+      "updated": "2026-10-02",
       "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query",
       "feature_count": 5
     },
@@ -120,6 +120,11 @@
       "updated": "2026-10-02",
       "source": "https://www2.census.gov/programs-surveys/acs/summary_file/2024/table-based-SF/data/5YRData/acsdt5y2024-b01003.dat",
       "feature_count": 240
+    },
+    "enrollment": {
+      "updated": "2026-10-02",
+      "source": "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html",
+      "feature_count": 5
     }
   }
 }
