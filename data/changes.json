@@ -1,0 +1,17 @@
+[
+  {
+    "date": "2026-10-02",
+    "layer": "zone",
+    "summary": "Reinvestment zone: outline redrawn so that road strips between listed parcels are filled in"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "drive",
+    "summary": "Drive times: now shown as rings for 15, 30, 60 and 90 minutes from the site"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "routes",
+    "summary": "Likely routes: new layer with the probable route to 6 nearby cities"
+  }
+]
