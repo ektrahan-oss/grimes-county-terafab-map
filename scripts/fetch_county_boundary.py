@@ -14,7 +14,7 @@ import geopandas as gpd
 from common import COUNTY_FIPS, DATA, fetch, fetch_json, publish_geojson
 
 SERVICE = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
-SIMPLIFY_DEGREES = 0.0001        # about 35 feet; the rivers on the county line stay recognisable
+SIMPLIFY_DEGREES = 0.0001        # about 35 feet; the rivers on the county line stay recognizable
 OUT = DATA / "grimes_county.geojson"
 
 

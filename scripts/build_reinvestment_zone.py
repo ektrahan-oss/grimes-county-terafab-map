@@ -247,7 +247,7 @@ def build_outline(matched):
     # are filled in. Acreage is still measured from the parcels themselves.
     closed = parcels.buffer(CLOSE_GAPS_FEET, join_style="mitre").buffer(-CLOSE_GAPS_FEET, join_style="mitre")
     outline = drop_small_holes(shapely.unary_union([closed, parcels]))
-    # Simplifying and rounding can each make neighbouring pieces touch or cross, so repair after both.
+    # Simplifying and rounding can each make neighboring pieces touch or cross, so repair after both.
     simple = shapely.make_valid(outline.simplify(SIMPLIFY_FEET, preserve_topology=True))
     wgs = gpd.GeoSeries([outline, simple], crs=WORK_CRS).to_crs(4326)
     web = shapely.make_valid(shapely.set_precision(wgs.iloc[1], 1e-6))

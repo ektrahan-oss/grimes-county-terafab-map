@@ -215,7 +215,7 @@
   // kind:    "fill", "line", "point" or "outline" (no fill, not clickable).
   // classes: legend rows. A feature goes in the first class whose test passes; each row can be switched off.
   // modes:   alternative sets of classes, with a switch in the legend.
-  // Colours were checked to stay distinguishable under the common forms of colour blindness.
+  // Colors were checked to stay distinguishable under the common forms of color blindness.
 
   // Traffic counts carry one "AADT <year>" value per year; work out the latest two.
   const countYears = p => Object.keys(p).filter(k => /^AADT \d{4}$/.test(k)).map(k => +k.slice(5)).sort((x, y) => y - x);
@@ -488,7 +488,7 @@
 
           const hasLegend = !!(mode.classes || cfg.note);
           legend.innerHTML =
-            (cfg.modes ? `<div class="modes" role="group" aria-label="Colour by">${cfg.modes.map((m, i) =>
+            (cfg.modes ? `<div class="modes" role="group" aria-label="Color by">${cfg.modes.map((m, i) =>
               `<button type="button" data-mode="${i}" aria-pressed="${i === state.mode}">${esc(m.label)}</button>`).join("")}</div>` : "") +
             (mode.classes ? state.subs.map((s, i) => `<label><input type="checkbox" data-sub="${i}" checked>${symbol(cfg, s.cls)}
               <span>${esc(s.cls.label)}</span>${cfg.counts === false ? "" : `<em>${s.count.toLocaleString()}</em>`}</label>`).join("") : "") +
@@ -623,13 +623,13 @@
   map.on("popupopen", e => { if (measuring) map.closePopup(e.popup); });
   map.on("click", e => { if (measuring) { measurePoints.push(e.latlng); drawMeasure(); } });
 
-  const FEET_PER_METRE = 3.28084;
-  const distanceText = metres => {
-    const feet = metres * FEET_PER_METRE, miles = feet / 5280;
+  const FEET_PER_METER = 3.28084;
+  const distanceText = meters => {
+    const feet = meters * FEET_PER_METER, miles = feet / 5280;
     return miles >= 0.2 ? `${miles < 10 ? miles.toFixed(2) : miles.toFixed(1)} miles` : `${Math.round(feet).toLocaleString()} feet`;
   };
 
-  // Nearest point on a layer's features to a place. Works in a flat local grid of metres, which is exact enough at county scale.
+  // Nearest point on a layer's features to a place. Works in a flat local grid of meters, which is exact enough at county scale.
   function nearestOn(features, at) {
     const kx = 111320 * Math.cos(at.lat * Math.PI / 180), ky = 110540;
     const flat = c => [(c[0] - at.lng) * kx, (c[1] - at.lat) * ky];
@@ -661,7 +661,7 @@
       else if (g.type === "MultiPolygon") g.coordinates.forEach(tryPolygon);
     });
     if (!best.pt) return null;
-    return { inside, metres: best.d, latlng: L.latLng(at.lat + best.pt[1] / ky, at.lng + best.pt[0] / kx) };
+    return { inside, meters: best.d, latlng: L.latLng(at.lat + best.pt[1] / ky, at.lng + best.pt[0] / kx) };
   }
 
   function drawMeasure() {
@@ -678,8 +678,8 @@
       const hit = nearestOn(shown, measurePoints[0]);
       const what = target.cfg.one, single = ["zone", "county"].includes(target.cfg.id);
       if (!hit) lines.push(`<p>Nothing from the ${esc(target.cfg.name.toLowerCase())} layer is switched on.</p>`);
-      else if (hit.inside && target.cfg.kind !== "outline") lines.push(`<p><strong>Inside</strong> ${single ? "the" : "a"} ${esc(what)}<br>${distanceText(hit.metres)} from its edge</p>`);
-      else lines.push(`<p><strong>${distanceText(hit.metres)}</strong> to the ${single ? "" : "nearest "}${esc(what)}</p>`);
+      else if (hit.inside && target.cfg.kind !== "outline") lines.push(`<p><strong>Inside</strong> ${single ? "the" : "a"} ${esc(what)}<br>${distanceText(hit.meters)} from its edge</p>`);
+      else lines.push(`<p><strong>${distanceText(hit.meters)}</strong> to the ${single ? "" : "nearest "}${esc(what)}</p>`);
       if (hit) {
         L.polyline([measurePoints[0], hit.latlng], { color: "#1E3B34", weight: 2.5, dashArray: "6 5", interactive: false }).addTo(measureLayer);
         L.circleMarker(hit.latlng, { ...dot, radius: 4, fillColor: "#fff", color: "#1E3B34" }).addTo(measureLayer);
@@ -827,7 +827,7 @@
   const SOURCES = [
     { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
-    { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrolment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. Each station's 2023 to 2025 average is kept as a yardstick, so later counts show where traffic has grown since construction began.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
