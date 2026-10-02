@@ -25,7 +25,8 @@ from html.parser import HTMLParser
 
 from common import DATA, USER_AGENT, fetch, fetch_json, log_change, record_layer
 
-KEYWORDS = ["SpaceX", "Terafab", "reinvestment zone"]
+# The county often uses the company's formal name: its May 2026 agendas never said "SpaceX".
+KEYWORDS = ["SpaceX", "Space Exploration Technologies", "Terafab", "reinvestment zone"]
 
 DOCS_PAGE = ("https://grimescountytexas.gov/index.asp"
              "?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627")

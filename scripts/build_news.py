@@ -20,7 +20,8 @@ from common import DATA, fetch, record_layer
 FEED = "https://news.google.com/rss/search"
 # Each search needs a local term as well as the project, because Google matches the article
 # text: "Terafab" alone pulls in national Tesla and SpaceX stock coverage.
-SEARCHES = ['Terafab "Grimes County"', 'SpaceX "Grimes County"', '"Gibbons Creek" (Terafab OR SpaceX)']
+SEARCHES = ['Terafab "Grimes County"', 'SpaceX "Grimes County"', '"Space Exploration Technologies" "Grimes County"',
+            '"Gibbons Creek" (Terafab OR SpaceX)']
 KEEP = 50
 SIMILAR = 0.85                   # titles at least this alike count as the same story
 PAUSE_SECONDS = 1

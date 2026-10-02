@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-05-06",
+    "title": "County discusses incentives in closed session; no action",
+    "summary": "Commissioners met in closed session about incentives for a proposed manufacturing, data center and power plant project and took no action. News reports that week identified it as SpaceX's Terafab chip plant at Gibbons Creek.",
+    "source": "Commissioners Court minutes",
+    "url": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=4452,plainText=false)",
+    "lat": 30.487,
+    "lng": -95.987
+  },
+  {
+    "date": "2026-05-13",
+    "title": "Special meeting on the SpaceX application",
+    "summary": "Commissioners held a special meeting on an incentive application from Space Exploration Technologies Corp. for a semiconductor plant, and residents spoke about the project.",
+    "source": "Commissioners Court minutes",
+    "url": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=4451,plainText=false)",
+    "lat": 30.487,
+    "lng": -95.987
+  },
+  {
+    "date": "2026-05-27",
+    "title": "Tax abatement committee appointed",
+    "summary": "At a special meeting, commissioners heard public comment and voted 5 to 0 to appoint members to the advisory committee called for by the county's tax abatement guidelines.",
+    "source": "Commissioners Court minutes",
+    "url": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=4467,plainText=false)",
+    "lat": 30.487,
+    "lng": -95.987
+  },
+  {
     "date": "2026-06-03",
     "title": "County approves reinvestment zone and tax abatement",
     "summary": "Grimes County commissioners voted 4-1 to approve a reinvestment zone and a 100% property tax abatement for the Terafab project.",
@@ -16,5 +43,94 @@
     "url": "https://www.kwtx.com/2026/06/06/grimes-county-releases-documents-detailing-spacex-terafab-agreement/",
     "lat": 30.625,
     "lng": -96.065
+  },
+  {
+    "date": "2026-06-22",
+    "title": "SpaceX signs the tax abatement agreement",
+    "summary": "KBTX reported that SpaceX's chief financial officer signed the agreement, making it fully executed. The county judge had signed on June 3. The date shown is the date of the report.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/2026/06/23/spacex-officially-signs-terafab-tax-agreement-with-grimes-county/",
+    "lat": 30.625,
+    "lng": -96.065
+  },
+  {
+    "date": "2026-07-05",
+    "title": "Stormwater permit for site construction",
+    "summary": "State records show Space Exploration Technologies Corp. has held construction stormwater permit TXR1535YT for the \"Gibbons Creek Project Site\", south of the reservoir, since July 5.",
+    "source": "TCEQ Central Registry",
+    "url": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
+    "lat": 30.625,
+    "lng": -96.065
+  },
+  {
+    "date": "2026-07-14",
+    "title": "Two school boards approve tax agreements",
+    "summary": "The Anderson-Shiro CISD and Iola ISD boards each voted to approve agreements for the project under the state's JETI incentive program.",
+    "source": "KBTX",
+    "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNNEFwVU9NMkhMNEFQQ3dzekR6aWc4S2tSQTNrVFVMQUh6TDkyOEhubWNhcnZLSG1MTExnSFJnek0zNjhyeWJxRzBiemZVR2dkSmEzS2xnZ0ZScTI1SkhnTmlqSGQtVFJzZ3p4U19YVUZ4QVVrbEhXQ3BUUjlZMWpxLVlXaGZvaGZtRmx0bnk5X1F6Uk44RVVJb1JR0gGuAUFVX3lxTFBOU0ZxZmFadnJQX2FyWlQ5dmIzOTl2VF9Mc2VGTTdXbjR5d29jTWhwWWw2TlhweFcwZTd6UWlWMmpRal83Ymxucno4eFdRRllrTi1xcF91SXFCS3ZiSzVmUlNmXzlGSUozZEY0NFNpbGdINTB0cnh4NE9PSFFCdVJfOWtwWWxqR2F2blhRcjJPbkcyOUdpanIzdnBET0VwcndBUEtGOXZJRFc0THhkUQ?oc=5"
+  },
+  {
+    "date": "2026-07-21",
+    "title": "Governor signals approval of school tax agreements",
+    "summary": "KBTX reported that Gov. Greg Abbott signalled approval of the project's JETI agreements. The date shown is the date of the report.",
+    "source": "KBTX",
+    "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOd2FfRVVFRUR4UjlEdExXV2xILVFEcVZvWXFmUzFRemNERFVoNTY3TDFoRTI4aFNKWU9OTzN3a2N6QnkxWFdqVkxBQl9yOGozczZ4NTlsU092R18yMEZFNGgwQlV1dHNxelludEJoQ0RRTk9hRlQzZTlFeGFUWVB2WWh1MlBvdXpiRS01azIzODRjVE5seXF6V1dPOXM?oc=5"
+  },
+  {
+    "date": "2026-07-28",
+    "title": "Attorney General rules most records must be released",
+    "summary": "The Texas Attorney General's office ruled against nearly all of the arguments for withholding records about the project that had been requested from Grimes County.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/2026/09/10/spacex-sues-block-release-terafab-records/"
+  },
+  {
+    "date": "2026-07-29",
+    "title": "SpaceX pays the county $10 million",
+    "summary": "The county received the non-refundable $10 million payment required by the tax abatement agreement, a few days before the August 2 deadline.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/business/spacex-pays-grimes-county-million-ahead-deadline-under-terafab-tax-agreement/",
+    "lat": 30.487,
+    "lng": -95.987
+  },
+  {
+    "date": "2026-08-05",
+    "title": "SpaceX takes questions at Commissioners Court",
+    "summary": "SpaceX and Terafab representatives answered questions at Commissioners Court and confirmed the agreements were signed. Residents delivered a petition asking for protections ahead of development.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/2026/08/06/spacex-confirms-terefab-project-is-done-deal-reps-meet-face-to-face-with-grimes-county-residents/",
+    "lat": 30.487,
+    "lng": -95.987
+  },
+  {
+    "date": "2026-08-06",
+    "title": "Terafab officially announced",
+    "summary": "The Governor's office and SpaceX announced that Terafab will be built in Grimes County, with a first phase of more than $16.8 billion and 3,000 jobs.",
+    "source": "Office of the Texas Governor",
+    "url": "https://gov.texas.gov/news/post/governor-abbott-announces-spacex-expansion-in-grimes-county",
+    "lat": 30.625,
+    "lng": -96.065
+  },
+  {
+    "date": "2026-08-10",
+    "title": "Land clearing under way near the site",
+    "summary": "KBTX reported clearing and burning on the south side of Gibbons Creek Reservoir, and the Central Grimes County Volunteer Fire Department confirmed the burning was in the area of the future site. The work had begun some days earlier; the date shown is the date of the report.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/2026/08/11/land-clearing-already-underway-near-terefab-site-grimes-county/",
+    "lat": 30.625,
+    "lng": -96.065
+  },
+  {
+    "date": "2026-08-25",
+    "title": "State publishes terms of the property tax deal",
+    "summary": "The Business Journals reported that Texas released the terms of the project's state property tax agreement. The date shown is the date of the report.",
+    "source": "The Business Journals",
+    "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQdEpLNlFsaXAxRm9xZ3hnWWt3M0ktWkY0SkowR3BMYnJua1VoeVNmUVNFdm5HSWRJRFMyaHdpWE82V2otSFpNVDdwOVZzT0xYcVFRbGMwNUc4azE2d2pYT2liWkZfY3VYa3l6Z3pjM1lPLXhyQ2RiUU50Z3VxellxNEtmVDFINlBWU2RtbWNicnJHSlE?oc=5"
+  },
+  {
+    "date": "2026-09-09",
+    "title": "SpaceX sues to block release of records",
+    "summary": "SpaceX sued the Texas Attorney General and Grimes County in Travis County district court to stop the release of records about the project, including its tax abatement application. KBTX reported the filing on September 9.",
+    "source": "KBTX",
+    "url": "https://www.kbtx.com/2026/09/10/spacex-sues-block-release-terafab-records/"
   }
 ]
