@@ -70,13 +70,13 @@ def main():
     if not found:
         sys.exit("Google News returned nothing for any search. Nothing written.")
 
-    unique = dedupe(found)
+    # Google returns a slightly different set each time, and names a publisher sometimes by name and
+    # sometimes by web address. Start from the stories already on file and keep their entries, so the
+    # list only changes when something newer arrives.
+    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else []
+    known = {n["link"]: n for n in old}
+    unique = dedupe(old + [n for n in found if n["link"] not in known])
     news = sorted(unique, key=lambda i: i["date"], reverse=True)[:KEEP]
-    old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else None
-    # Google sometimes gives a publisher as a name and sometimes as a web address. Keep the entry
-    # already on file for a known link, so the file does not flip back and forth between runs.
-    known = {n["link"]: n for n in old or []}
-    news = [known.get(n["link"], n) for n in news]
     OUT.write_text("[\n" + ",\n".join("  " + json.dumps(n, ensure_ascii=False) for n in news) + "\n]\n", encoding="utf-8")
     # New stories are not written to data/changes.json: the News tab already shows them, and
     # daily entries would crowd out layer and document changes.
