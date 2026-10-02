@@ -1,6 +1,6 @@
 name: Data refresh
 
-# Daily:   news feed, county documents and permits  (run_all.py --frequent)
+# Daily:   stream gauges, news feed, county documents and permits  (run_all.py --frequent)
 # Monthly: every layer except drive times           (run_all.py --all)
 # Manual:  Actions tab > Data refresh > Run workflow, and pick which of the two to run
 
