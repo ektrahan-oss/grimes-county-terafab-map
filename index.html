@@ -252,6 +252,8 @@
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
+    { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land listed under a company tied to the project", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false,
+      note: "Land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. The About tab shows when the records were last checked." },
     { id: "parcels", name: "Parcel lines", desc: "Property boundaries as of January 2025", tiles: "data/parcels", kind: "outline", color: "#7A6A55", minZoom: 13,
       note: "Parcel map as of January 2025. Tracts split or sold since then are not shown, and owners are not named. Click inside a parcel for its property ID." },
     { id: "places", one: "town", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
@@ -536,7 +538,7 @@
 
   // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
   const TOPICS = [
-    { name: "Site and boundaries", open: true, ids: ["zone", "county", "parcels", "places", "schools"] },
+    { name: "Site and boundaries", open: true, ids: ["zone", "holdings", "county", "parcels", "places", "schools"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
     { name: "Water", ids: ["flood", "streams", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
@@ -961,6 +963,7 @@
   // id matches the layer's entry in data/meta.json, which holds its last updated date
   const SOURCES = [
     { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
+    { id: "holdings",  name: "Project-linked holdings", why: "The zone is land the county designated; this is land a project-linked company is actually listed on, which shows where buying has gone beyond or stopped short of the zone.", source: "Grimes Central Appraisal District parcel records, merged into blocks", url: "https://gis.bisclient.com/grimescad/" },
     { id: "parcels",   name: "Parcel lines",       why: "So a landowner can find their own tract and see how it sits against the zone and the other layers. Owners are not named; the appraisal district's own map is the place to look one up.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District, as of January 2025", url: "https://gis.bisclient.com/grimescad/" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },

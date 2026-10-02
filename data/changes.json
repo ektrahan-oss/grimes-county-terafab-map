@@ -58,5 +58,10 @@
     "date": "2026-10-02",
     "layer": "parcels",
     "summary": "Parcel lines: built from the January 2025 parcel map, 26,990 parcels"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "holdings",
+    "summary": "Project-linked holdings: new, with 34 parcels and about 8,087 acres in 6 blocks"
   }
 ]
