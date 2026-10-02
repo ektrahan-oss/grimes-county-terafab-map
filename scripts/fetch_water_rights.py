@@ -20,6 +20,7 @@ SERVICE = "https://gisweb.tceq.texas.gov/arcgis/rest/services/WaterRights/WaterR
 POINTS = f"{SERVICE}/3/query"    # "Water Rights As Single Points"
 USE = f"{SERVICE}/13/query"      # "Water Use": reported use and yearly diversions, one row per right, use and year
 BUFFER_MILES = 5
+GALLONS_PER_ACRE_FOOT = 325851   # an acre of water one foot deep
 OUT = DATA / "water_rights.geojson"
 
 TYPES = {
@@ -27,6 +28,16 @@ TYPES = {
     "U/S Limit - Diversion Segment": "Upstream end of a diversion reach",
 }
 KINDS = {"ADJ": "Certificate of adjudication", "WRPERM": "Water use permit"}
+
+
+def gallons(acre_feet):
+    """Acre-feet as gallons in words a reader can picture: 1,234.5 -> '402 million'."""
+    amount = acre_feet * GALLONS_PER_ACRE_FOOT
+    if amount >= 1e9:
+        return f"{amount / 1e9:.1f} billion"
+    if amount >= 1e6:
+        return f"{amount / 1e6:.0f} million"
+    return f"{amount:,.0f}"
 
 
 def right_label(type_and_number):
@@ -84,6 +95,7 @@ def main():
             "Use": ", ".join(sorted(info["uses"])) or None,
             "Latest reported year": latest,
             "Acre-feet diverted that year": round(info["years"][latest], 1) if latest else None,
+            "Gallons diverted that year": gallons(info["years"][latest]) if latest else None,
             "id": str(r.TCEQ_ID),
             "geometry": r.geometry,
         })
