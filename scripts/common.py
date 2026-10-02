@@ -178,6 +178,27 @@ def publish_geojson(layer_id, label, path, gdf, source, noun=("feature", "featur
     return publish_features(layer_id, label, path, features, source, noun, key)
 
 
+def read_parcel_file(zip_path, columns, ignore_geometry=False):
+    """Read the named columns from a TxGIO StratMap parcel zip, and nothing else.
+
+    The state's releases have spelled column names differently (Prop_ID in 2025, PROP_ID in 2026),
+    so names are matched whatever their case and come back spelled the way they were asked for.
+    """
+    import zipfile
+
+    import geopandas as gpd
+    import pyogrio
+
+    shp = next(n for n in zipfile.ZipFile(zip_path).namelist() if n.lower().endswith(".shp"))
+    src = f"zip://{zip_path}!{shp}"
+    actual = {name.upper(): name for name in pyogrio.read_info(src)["fields"]}
+    missing = [c for c in columns if c.upper() not in actual]
+    if missing:
+        raise SystemExit(f"The parcel file {Path(zip_path).name} has no column named {missing[0]}. Its layout has changed; nothing written.")
+    parcels = gpd.read_file(src, columns=[actual[c.upper()] for c in columns], ignore_geometry=ignore_geometry)
+    return parcels.rename(columns={actual[c.upper()]: c for c in columns})
+
+
 def county_boundary(buffer_miles=0):
     """Grimes County as a one-row GeoDataFrame in EPSG:4326, optionally grown by a buffer."""
     import geopandas as gpd

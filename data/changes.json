@@ -89,5 +89,20 @@
     "date": "2026-10-02",
     "layer": "land",
     "summary": "Land value per acre: new layer for tax year 2025, with a median for 118 areas 3 miles across"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "parcels",
+    "summary": "Parcel lines: built from the March 2026 parcel map, 27,116 parcels"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "land",
+    "summary": "Land value per acre: updated to tax year 2026. The county-wide median is $27,110 an acre, up 26% from tax year 2025; each area now shows its change"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "zone",
+    "summary": "Reinvestment zone: redrawn from the March 2026 parcel map, with the same 193 parcels and 22,464 acres"
   }
 ]
