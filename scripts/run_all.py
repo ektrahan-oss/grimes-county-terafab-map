@@ -2,6 +2,7 @@
 
     python scripts/run_all.py --frequent     news feed and document watching only
     python scripts/run_all.py --all          every layer except drive times
+                                             (on GitHub the reinvestment zone is skipped too)
     python scripts/run_all.py --only NAME    one layer, for example --only pipelines
 
 If one layer fails, the error is reported and the rest still run. The exit code is 1
@@ -12,6 +13,7 @@ layers that worked.
 import argparse
 import importlib
 import json
+import os
 import sys
 import time
 import traceback
@@ -27,6 +29,12 @@ def module_main(module_name):
 
 def reinvestment_zone():
     """build_reinvestment_zone.py predates the shared helper, so the runner does that part for it."""
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        # TxGIO's download server refuses GitHub's servers (HTTP 403), so the parcel file cannot be
+        # fetched there. The zone only changes if the county changes its order, which
+        # watch_documents.py reports; when it does, run "--only zone" on your own computer.
+        print("  Skipped on GitHub: the parcel download is refused from GitHub's servers. Run by hand when the order changes.")
+        return
     zone = importlib.import_module("build_reinvestment_zone")
     out = DATA / "reinvestment_zone.geojson"
     old = json.loads(out.read_text(encoding="utf-8"))["features"] if out.exists() else None

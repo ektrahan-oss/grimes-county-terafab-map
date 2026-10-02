@@ -72,11 +72,21 @@
   .about p { font-size: 0.9rem; line-height: 1.55; margin: 0 0 10px; max-width: 65ch; }
   .meta { color: var(--muted); font-size: 0.8rem; }
   .empty { color: var(--muted); font-size: 0.88rem; }
+  .panel-body { overflow-wrap: anywhere; }
+  .section { margin: 18px 0 2px; font-size: 0.95rem; color: var(--pine); }
+  .section:first-child { margin-top: 0; }
+  .more { margin: 10px 0 0; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--pine); background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; cursor: pointer; width: 100%; }
+  .sources { list-style: none; margin: 6px 0 12px; padding: 0; }
+  .sources li { padding: 8px 0; border-bottom: 1px solid var(--soft); font-size: 0.86rem; line-height: 1.4; }
+  .sources li:last-child { border-bottom: 0; }
+  .sources strong { display: block; }
+  .sources a { color: var(--pine); }
+  .sources small { display: block; color: var(--muted); font-size: 0.78rem; }
 
   /* Map labels and popups */
   .town-label { background: none; border: 0; box-shadow: none; font-family: inherit; font-weight: 600; font-size: 0.78rem; color: var(--ink); text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
   .town-label::before { display: none; }
-  .area-label { color: #8A4F7D; font-size: 0.74rem; }
+  .area-label { color: #9C3F78; font-size: 0.74rem; }
   .leaflet-popup-content { font-family: "Public Sans", system-ui, sans-serif; font-size: 0.85rem; line-height: 1.45; }
   .leaflet-popup-content table { border-collapse: collapse; margin-top: 4px; }
   .leaflet-popup-content td { padding: 2px 8px 2px 0; vertical-align: top; }
@@ -111,12 +121,18 @@
         <section class="view" id="view-layers"><div id="layer-list"></div></section>
         <section class="view" id="view-timeline" hidden><div id="event-list"><p class="empty">Loading timeline</p></div></section>
         <section class="view" id="view-news" hidden>
+          <h2 class="section">Latest news</h2>
           <p class="meta">Recent headlines from Google News. Links open the publisher's site.</p>
           <div id="news-list"><p class="empty">Loading news</p></div>
+          <h2 class="section">Map updates</h2>
+          <p class="meta">Changes to the map's data and to county documents about the project.</p>
+          <div id="change-list"><p class="empty">Loading updates</p></div>
         </section>
         <section class="view about" id="view-about" hidden>
           <p>A free public map of what's changing around the SpaceX Terafab site in Grimes County, Texas. Layers refresh from public sources, and the timeline tracks major decisions as they happen.</p>
           <p>Locations marked approximate are for context only. This map is not a survey or legal boundary.</p>
+          <h2 class="section">Data sources</h2>
+          <ul class="sources" id="source-list"></ul>
           <p class="meta">Data last updated: <span id="updated">not yet</span></p>
         </section>
       </div>
@@ -127,17 +143,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
   // ---- Layer settings. Add a layer by adding a line here and a file in /data ----
+  // Colours were checked to stay distinguishable under the common forms of colour blindness.
   const LAYERS = [
     { id: "county",    name: "County boundary",    desc: "Grimes County, U.S. Census Bureau",        url: "data/grimes_county.geojson",    color: "#5F6E68", on: true, outline: true },
     { id: "site",     name: "Terafab site",       desc: "Gibbons Creek Reservoir, approximate",     url: "data/site.geojson",             color: "#2F7AA8", on: true },
     { id: "zone",      name: "Reinvestment zone",  desc: "About 22,000 acres approved June 2026",     url: "data/reinvestment_zone.geojson", color: "#C8962E", on: true },
     { id: "places",    name: "Towns",              desc: "Nearby communities",                       url: "data/places.geojson",           color: "#22302C", on: true, labels: true },
-    { id: "schools",   name: "School districts",   desc: "District boundaries within the county",    url: "data/school_districts.geojson", color: "#8A4F7D", on: false, outline: true, dash: "6 4", labels: true },
-    { id: "drive",     name: "Drive times",        desc: "Approximate routes to nearby cities",      url: "data/drive_times.geojson",      color: "#C2541B", on: false, weight: 3 },
+    { id: "schools",   name: "School districts",   desc: "District boundaries within the county",    url: "data/school_districts.geojson", color: "#D27FB0", on: false, outline: true, dash: "6 4", labels: true },
+    { id: "drive",     name: "Drive times",        desc: "Approximate routes to nearby cities",      url: "data/drive_times.geojson",      color: "#0B3D66", on: false, weight: 3 },
     { id: "traffic",  name: "Traffic counts",     desc: "TxDOT annual average daily traffic",       url: "data/traffic_counts.geojson",   color: "#B23A48", on: false },
-    { id: "pipelines", name: "Pipelines",          desc: "Texas Railroad Commission",                url: "data/pipelines.geojson",        color: "#6B4C9A", on: false },
-    { id: "power",     name: "Power lines",        desc: "Transmission lines, federal data to 2024", url: "data/power_lines.geojson",      color: "#1F8A70", on: false },
-    { id: "flood",    name: "Floodplains",        desc: "FEMA flood hazard zones",                  url: "data/floodplains.geojson",      color: "#5B9BC4", on: false, weight: 0.5, fillOpacity: 0.4 }
+    { id: "pipelines", name: "Pipelines",          desc: "Texas Railroad Commission",                url: "data/pipelines.geojson",        color: "#5B3A9E", on: false },
+    { id: "power",     name: "Power lines",        desc: "Transmission lines, federal data to 2024", url: "data/power_lines.geojson",      color: "#00A383", on: false },
+    { id: "flood",    name: "Floodplains",        desc: "FEMA flood hazard zones",                  url: "data/floodplains.geojson",      color: "#7CC4EE", on: false, weight: 0.5, fillOpacity: 0.45 }
   ];
 
   const center = [30.6, -96.1];
@@ -153,6 +170,7 @@
   );
   L.control.layers({ "Streets": streets, "Satellite": satellite }, null, { position: "topright" }).addTo(map);
 
+  const shortDate = d => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   function popupHtml(props) {
@@ -246,20 +264,62 @@
       const el = document.getElementById("news-list");
       news = news.filter(n => /^https?:\/\//.test(n.link));
       if (!news.length) { el.innerHTML = '<p class="empty">No news yet.</p>'; return; }
-      el.innerHTML = news.map(n => {
-        const d = new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-        return `<article class="event">
-          <time datetime="${esc(n.date)}">${d}</time>
+      const item = n => `<article class="event">
+          <time datetime="${esc(n.date)}">${shortDate(n.date)}</time>
           <h3><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a></h3>
           <p class="source">${esc(n.source)}</p>
         </article>`;
-      }).join("");
+      // A short list first, so the Map updates section below is easy to reach
+      const first = 6;
+      el.innerHTML = news.slice(0, first).map(item).join("") +
+        (news.length > first ? `<button class="more" type="button">Show all ${news.length} stories</button>` : "");
+      el.querySelector(".more")?.addEventListener("click", () => { el.innerHTML = news.map(item).join(""); });
     })
     .catch(() => { document.getElementById("news-list").innerHTML = '<p class="empty">News unavailable.</p>'; });
 
+  // ---- Map updates ----
+  fetch("data/changes.json")
+    .then(r => { if (!r.ok) throw new Error("none yet"); return r.json(); })
+    .then(changes => {
+      const el = document.getElementById("change-list");
+      if (!changes.length) throw new Error("none yet");
+      el.innerHTML = changes.slice().reverse().map(c => `<article class="event">
+          <time datetime="${esc(c.date)}">${shortDate(c.date + "T12:00:00")}</time>
+          <p>${esc(c.summary || c.change)}</p>
+          ${/^https?:\/\//.test(c.link || "") ? `<div class="event-links"><a href="${esc(c.link)}" target="_blank" rel="noopener">Open document</a></div>` : ""}
+        </article>`).join("");
+    })
+    .catch(() => { document.getElementById("change-list").innerHTML = '<p class="empty">No changes recorded yet.</p>'; });
+
+  // ---- Data sources ----
+  // id matches the layer's entry in data/meta.json, which holds its last updated date
+  const SOURCES = [
+    { id: "zone",      name: "Reinvestment zone",  source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
+    { id: "county",    name: "County boundary",    source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "schools",   name: "School districts",   source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "traffic",   name: "Traffic counts",     source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
+    { id: "flood",     name: "Floodplains",        source: "FEMA National Flood Hazard Layer", url: "https://www.fema.gov/flood-maps/national-flood-hazard-layer" },
+    { id: "pipelines", name: "Pipelines",          source: "Railroad Commission of Texas", url: "https://www.rrc.texas.gov/resource-center/research/gis-viewer/" },
+    { id: "power",     name: "Power lines",        source: "U.S. federal transmission lines dataset, an archive with data to 2024" },
+    { id: "drive",     name: "Drive times",        source: "OpenStreetMap roads, routed with OSRM. Built once, not refreshed.", url: "https://project-osrm.org/" },
+    { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },
+    { id: "documents", name: "County documents",   source: "Grimes County agreements page and Commissioners Court meeting portal", url: "https://grimescotx.portal.civicclerk.com/" },
+    { name: "Terafab site and towns", source: "Placed by hand. Approximate." }
+  ];
+
+  function showSources(layers) {
+    document.getElementById("source-list").innerHTML = SOURCES.map(s => {
+      const when = layers[s.id]?.updated;
+      return `<li><strong>${esc(s.name)}</strong>
+        ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.source)}</a>` : esc(s.source)}
+        ${when ? `<small>Updated ${shortDate(when + "T12:00:00")}</small>` : ""}</li>`;
+    }).join("");
+  }
+  showSources({});
   fetch("data/meta.json").then(r => r.json()).then(m => {
     if (m.updated) document.getElementById("updated").textContent =
       new Date(m.updated + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    showSources(m.layers || {});
   }).catch(() => {});
 
   // ---- Panel behavior ----

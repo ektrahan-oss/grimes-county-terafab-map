@@ -77,7 +77,8 @@ def main():
     lines = gpd.clip(lines, county_boundary()).to_crs(WORK_CRS)
     lines = lines[lines.geometry.geom_type.isin(["LineString", "MultiLineString"])]
     lines["geometry"] = lines.geometry.simplify(SIMPLIFY_FEET)
-    lines = lines.sort_values(["Commodity", "Operator", "Type"]).reset_index(drop=True)
+    # A stable sort from a fixed starting order, so the file comes out the same on every machine
+    lines = lines.sort_index().sort_values(["Commodity", "Operator", "Type"], kind="stable").reset_index(drop=True)
 
     size = publish_geojson("pipelines", "Pipelines", OUT, lines, url, ("segment", "segments"))
     miles = lines.length / 5280
