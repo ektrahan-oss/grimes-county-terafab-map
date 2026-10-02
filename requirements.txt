@@ -1,0 +1,6 @@
+# Packages the scripts in scripts/ import. Installed by .github/workflows/refresh.yml.
+geopandas>=1.0
+pandas>=2.0
+pypdf>=5.0
+pyproj>=3.6
+shapely>=2.1        # coverage_simplify, used for school districts, needs 2.1
