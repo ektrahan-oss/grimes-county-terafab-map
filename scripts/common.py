@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections import Counter
@@ -20,14 +22,27 @@ WORK_CRS = 2277                  # Texas State Plane Central, US feet; used for 
 
 # Names the project in the form some public data servers require before they will answer
 USER_AGENT = "Mozilla/5.0 (compatible; grimes-county-terafab-map/1.0)"
+ATTEMPTS = 4
+RETRY_PAUSE_SECONDS = 15
 
 
 def fetch(url, params=None, timeout=120):
+    """Download a URL, trying again after a pause if the server drops the connection or is overloaded."""
     if params:
         url += "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read()
+    for attempt in range(1, ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            if attempt == ATTEMPTS or not (e.code == 429 or e.code >= 500):
+                raise                           # a refusal such as 403 or 404 will not get better
+        except (urllib.error.URLError, ConnectionError, TimeoutError):
+            if attempt == ATTEMPTS:
+                raise
+        print(f"  Download failed, trying again in {RETRY_PAUSE_SECONDS * attempt} seconds ({attempt} of {ATTEMPTS - 1})", flush=True)
+        time.sleep(RETRY_PAUSE_SECONDS * attempt)
 
 
 def fetch_json(url, params=None, timeout=120):
