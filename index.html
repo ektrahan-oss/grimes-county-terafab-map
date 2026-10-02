@@ -151,7 +151,8 @@
         <button class="tab" role="tab" aria-selected="false" data-view="about">About</button>
       </div>
       <div class="panel-body">
-        <section class="view" id="view-layers"><div id="layer-list"></div></section>
+        <section class="view" id="view-layers"><div id="layer-list"></div>
+          <p class="meta" style="margin:14px 0 0">Live traffic is not shown on this map. <a href="https://www.google.com/maps/@30.61,-96.03,11z/data=!5m1!1e1" target="_blank" rel="noopener" style="color:var(--pine);font-weight:600">Open Google Maps with traffic</a></p></section>
         <section class="view" id="view-selection" hidden>
           <div class="selection-head"><h2 class="section" id="selection-title">Selection</h2><button class="linkish" id="selection-close" type="button">Close</button></div>
           <div id="selection-list"></div>
@@ -188,18 +189,18 @@
   // Traffic counts carry one "AADT <year>" value per year; work out the latest two.
   const countYears = p => Object.keys(p).filter(k => /^AADT \d{4}$/.test(k)).map(k => +k.slice(5)).sort((x, y) => y - x);
   const latestCount = p => p["AADT " + countYears(p)[0]];
-  const yearChange = p => {
-    const [now, before] = countYears(p);
-    // Only a true year-on-year comparison counts; a station that skipped a year has no figure
-    return now && before === now - 1 && p["AADT " + before] ? (p["AADT " + now] / p["AADT " + before] - 1) * 100 : null;
-  };
+  const BASELINE = "Average 2023 to 2025";
+  const QUIET = 500;           // below this many vehicles a day, a percentage says little
+  // Latest count against the station's average before the plant was built, in percent
+  const fromBaseline = p => p[BASELINE] ? (latestCount(p) / p[BASELINE] - 1) * 100 : null;
+  const comparable = p => p[BASELINE] >= QUIET ? fromBaseline(p) : null;
   const inService = p => /in service/i.test(p.Status || "");
 
   const LAYERS = [
     { id: "county", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
     { id: "places", name: "Towns", desc: "Nearby communities", url: "data/places.geojson", kind: "point", color: "#22302C", on: true, labels: true },
-    { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true },
+    { id: "schools", name: "School districts", desc: "District boundaries within the county", url: "data/school_districts.geojson", kind: "outline", color: "#D27FB0", dash: "6 4", labels: true, labelColor: "#9C3F78" },
     { id: "drive", name: "Drive times", desc: "How far you can drive from the site, approximate", url: "data/drive_times.geojson", kind: "fill", weight: 1, fillOpacity: 0.45, counts: false,
       note: "Estimated without traffic, from the site's frontage on State Highway 30. Darker means a longer drive.",
       classes: [
@@ -210,7 +211,12 @@
       ] },
     { id: "routes", name: "Likely routes", desc: "Probable routes to nearby cities, approximate", url: "data/drive_routes.geojson", kind: "line", color: "#0B3D66", weight: 3 },
     { id: "traffic", name: "Traffic counts", desc: "TxDOT average vehicles per day", url: "data/traffic_counts.geojson", kind: "point", color: "#B23A48",
-      popupExtra: p => { const c = yearChange(p), y = countYears(p); return c == null ? [] : [[`Change ${y[1]} to ${y[0]}`, (c > 0 ? "+" : "") + c.toFixed(1) + "%"]]; },
+      popupExtra: p => {
+        const c = fromBaseline(p);
+        if (c == null) return [];
+        const diff = latestCount(p) - p[BASELINE];
+        return [[`${countYears(p)[0]} compared with that average`, `${c > 0 ? "+" : ""}${c.toFixed(1)}% (${diff > 0 ? "+" : ""}${diff.toLocaleString()} a day)`]];
+      },
       modes: [
         { label: "Vehicles per day", note: "Latest yearly count at each station. Darker and larger means busier.", classes: [
           { label: "Over 35,000", color: "#67000D", radius: 10, test: p => latestCount(p) >= 35000 },
@@ -219,13 +225,15 @@
           { label: "5,000 to 12,000", color: "#FC9272", radius: 7, test: p => latestCount(p) >= 5000 },
           { label: "Under 5,000", color: "#FCCFBE", radius: 6, test: () => true }
         ] },
-        { label: "Change in a year", note: "Latest count compared with the year before. Single-year swings can reflect how a count was taken as much as real change.", classes: [
-          { label: "Up more than 10%", color: "#B2182B", radius: 8, test: p => yearChange(p) > 10 },
-          { label: "Up 3% to 10%", color: "#F4A582", radius: 7, test: p => yearChange(p) > 3 },
-          { label: "Within 3% either way", color: "#D9D9D9", radius: 6, test: p => yearChange(p) != null && yearChange(p) >= -3 },
-          { label: "Down 3% to 10%", color: "#92C5DE", radius: 7, test: p => yearChange(p) != null && yearChange(p) >= -10 },
-          { label: "Down more than 10%", color: "#2166AC", radius: 8, test: p => yearChange(p) != null },
-          { label: "No count for the year before", color: "#FFFFFF", radius: 5, test: () => true }
+        { label: "Change since 2023-25", note: "Latest count compared with each station's 2023 to 2025 average, the last years before construction traffic. One fixed yardstick is steadier than comparing each year with the one before.", classes: [
+          { label: "More than doubled", color: "#67000D", radius: 10, test: p => comparable(p) > 100 },
+          { label: "Up 50% to 100%", color: "#CB181D", radius: 9, test: p => comparable(p) > 50 },
+          { label: "Up 25% to 50%", color: "#EF6548", radius: 8, test: p => comparable(p) > 25 },
+          { label: "Up 10% to 25%", color: "#FDBB84", radius: 7, test: p => comparable(p) > 10 },
+          { label: "Within 10% either way", color: "#D9D9D9", radius: 6, test: p => comparable(p) != null && comparable(p) >= -10 },
+          { label: "Down more than 10%", color: "#6BAED6", radius: 7, test: p => comparable(p) != null },
+          { label: `Too quiet to compare (under ${QUIET} a day)`, color: "#FFFFFF", radius: 5, test: p => p[BASELINE] != null },
+          { label: "No 2023-25 average", color: "#FFFFFF", radius: 5, test: () => true }
         ] }
       ] },
     { id: "pipelines", name: "Pipelines", desc: "Texas Railroad Commission", url: "data/pipelines.geojson", kind: "line", color: "#5B3A9E",
@@ -246,6 +254,20 @@
         { label: "138 kV", color: "#00A383", weight: 3, test: p => p["Voltage (kV)"] >= 100 },
         { label: "Under 100 kV", color: "#66C9B2", weight: 2, test: p => p["Voltage (kV)"] > 0 },
         { label: "Voltage not recorded", color: "#66C9B2", weight: 2, dash: "4 4", test: () => true }
+      ] },
+    { id: "watersheds", name: "Watersheds", desc: "Which stream each area drains to", url: "data/watersheds.geojson", kind: "outline", color: "#1B6E8A", dash: "2 5", labels: true, labelColor: "#155A72" },
+    { id: "streams", name: "Streams", desc: "Named rivers and creeks", url: "data/streams.geojson", kind: "line", color: "#1F78B4",
+      classes: [
+        { label: "River", color: "#08519C", weight: 3.5, test: p => p.Type === "River" },
+        { label: "Creek or other stream", color: "#3F8FD0", weight: 1.5, test: () => true }
+      ] },
+    { id: "outfalls", name: "Wastewater outfalls", desc: "Where permitted facilities discharge treated wastewater", url: "data/wastewater_outfalls.geojson", kind: "point", color: "#7B3294",
+      note: "Each point is the end of a discharge pipe named in a state permit. Covers the county and five miles around it.",
+      classes: [
+        { label: "Pending application", color: "#E66101", radius: 8, test: p => /pending/i.test(p.Status || "") },
+        { label: "Industrial wastewater", color: "#7B3294", radius: 7, test: p => /industrial/i.test(p.Type || "") },
+        { label: "Domestic wastewater (sewage)", color: "#8C6D31", radius: 7, test: p => /domestic/i.test(p.Type || "") },
+        { label: "Other permit type", color: "#8C8C8C", radius: 6, test: () => true }
       ] },
     { id: "flood", name: "Floodplains", desc: "FEMA flood hazard zones", url: "data/floodplains.geojson", kind: "fill", weight: 0.5, fillOpacity: 0.55,
       note: "Land outside these areas is mapped by FEMA as minimal flood hazard and is not drawn.",
@@ -272,7 +294,7 @@
 
   const shortDate = d => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show"];
+  const HIDDEN_PROPS = ["name", "NAME", "description", "minutes", "show", "id"];
 
   function popupRows(cfg, props) {
     return Object.entries(props)
@@ -306,7 +328,8 @@
         layer.bindPopup(popupHtml(cfg, f.properties || {}));
         if (cfg.labels && f.properties?.name) {
           const point = f.geometry.type === "Point";
-          layer.bindTooltip(f.properties.name, point
+          const text = cfg.labelColor ? `<span style="color:${cfg.labelColor}">${esc(f.properties.name)}</span>` : esc(f.properties.name);
+          layer.bindTooltip(text, point
             ? { permanent: true, direction: "right", offset: [6, 0], className: "town-label" }
             : { permanent: true, direction: "center", className: "town-label area-label" });
         }
@@ -579,9 +602,12 @@
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrolment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
-    { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. TxDOT publishes a new count every year, so the change from year to year shows where traffic is growing.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
+    { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. Each station's 2023 to 2025 average is kept as a yardstick, so later counts show where traffic has grown since construction began.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
     { id: "pipelines", name: "Pipelines",          why: "The plant plans its own gas-fired power, so gas supply lines matter. Other pipelines show what already crosses the area.", source: "Railroad Commission of Texas", url: "https://www.rrc.texas.gov/resource-center/research/gis-viewer/" },
     { id: "power",     name: "Power lines",        why: "The site is the old Gibbons Creek power plant, where several transmission lines meet.", source: "U.S. federal transmission lines dataset, an archive with data to 2024" },
+    { id: "watersheds", name: "Watersheds",        why: "Anything discharged at the site runs down Gibbons Creek to the Navasota River, then the Brazos. Watersheds show who is downstream.", source: "U.S. Geological Survey Watershed Boundary Dataset", url: "https://www.usgs.gov/national-hydrography/watershed-boundary-dataset" },
+    { id: "streams",   name: "Streams",            why: "The paths water and treated wastewater take across the county.", source: "U.S. Geological Survey National Hydrography Dataset", url: "https://www.usgs.gov/national-hydrography/national-hydrography-dataset" },
+    { id: "outfalls",  name: "Wastewater outfalls", why: "Existing and pending discharge permits. The plant plans its own wastewater treatment, which will need one.", source: "Texas Commission on Environmental Quality", url: "https://www.tceq.texas.gov/gis" },
     { id: "flood",     name: "Floodplains",        why: "Much of the zone surrounds a reservoir and its creeks. Building in a floodplain needs a county permit.", source: "FEMA National Flood Hazard Layer", url: "https://www.fema.gov/flood-maps/national-flood-hazard-layer" },
     { id: "news",      name: "News",               source: "Google News", url: "https://news.google.com/" },
     { id: "documents", name: "County documents",   source: "Grimes County agreements page and Commissioners Court meeting portal", url: "https://grimescotx.portal.civicclerk.com/" },

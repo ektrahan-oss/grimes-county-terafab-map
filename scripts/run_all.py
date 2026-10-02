@@ -60,6 +60,9 @@ LAYERS = {
     "pipelines": (module_main("fetch_pipelines"), False, True),
     "power":     (module_main("fetch_power_lines"), False, True),
     "schools":   (module_main("fetch_school_districts"), False, True),
+    "watersheds": (module_main("fetch_watersheds"), False, True),
+    "streams":   (module_main("fetch_streams"), False, True),
+    "outfalls":  (module_main("fetch_wastewater_outfalls"), False, True),
     "drive":     (module_main("build_drive_times"), False, False),      # one-time layer: --only drive
     "news":      (module_main("build_news"), True, True),
     "documents": (module_main("watch_documents"), True, True),
