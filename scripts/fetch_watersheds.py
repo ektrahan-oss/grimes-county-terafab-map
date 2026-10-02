@@ -16,7 +16,7 @@ from common import DATA, WORK_CRS, county_boundary, fetch_json, publish_geojson
 
 SERVICE = "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer"
 LAYER_NAME = "10-digit HU (Watershed)"
-MIN_SQ_MILES = 1                 # ignore neighbours that only brush the county line
+MIN_SQ_MILES = 1                 # ignore neighbors that only brush the county line
 SIMPLIFY_FEET = 60
 OUT = DATA / "watersheds.geojson"
 

@@ -48,5 +48,10 @@
     "date": "2026-10-02",
     "layer": "aquifers",
     "summary": "Aquifers: new layer with 6 aquifers"
+  },
+  {
+    "date": "2026-10-02",
+    "layer": "water_rights",
+    "summary": "Surface water rights: gallons added alongside acre-feet"
   }
 ]

@@ -1,7 +1,7 @@
 """Pull the school districts covering Grimes County into data/school_districts.geojson.
 
 Source: U.S. Census Bureau TIGERweb, current Unified School Districts layer.
-Districts are cut to the county line, so one that mostly lies in a neighbouring
+Districts are cut to the county line, so one that mostly lies in a neighboring
 county shows only its Grimes County part.
 
     python scripts/fetch_school_districts.py
@@ -16,7 +16,7 @@ from common import DATA, WORK_CRS, county_boundary, fetch_json, publish_geojson
 
 SERVICE = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
 LAYER_NAME = "Unified School Districts"
-MIN_SQ_MILES = 0.25              # ignore neighbours that only brush the county line
+MIN_SQ_MILES = 0.25              # ignore neighbors that only brush the county line
 SIMPLIFY_FEET = 30
 OUT = DATA / "school_districts.geojson"
 

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
 <style>
   :root {
     --pine: #1E3B34; --reservoir: #2F7AA8; --ink: #22302C; --muted: #5F6E68;
@@ -55,6 +56,23 @@
   .layer strong { display: block; font-size: 0.92rem; }
   .layer small { display: block; color: var(--muted); font-size: 0.8rem; line-height: 1.4; }
   .layer.unavailable { cursor: default; opacity: 0.55; }
+  /* Numbered circle standing for many points */
+  .cluster { background: rgba(31, 120, 180, 0.88); border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    color: #fff; font: 700 0.74rem "Public Sans", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; }
+
+  /* Topics: a heading with its own switch, and the layers under it */
+  .topic { border-bottom: 1px solid var(--line); }
+  .topic:last-child { border-bottom: 0; }
+  .topic-head { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+  .topic-head input { width: 18px; height: 18px; margin: 0; accent-color: var(--pine); flex: none; }
+  .topic-head button { flex: 1; display: flex; align-items: baseline; gap: 8px; font: inherit; text-align: left; background: none; border: 0; padding: 2px 0; cursor: pointer; color: var(--pine); }
+  .topic-head strong { font-size: 0.98rem; }
+  .topic-head small { color: var(--muted); font-size: 0.78rem; }
+  .topic-head button::after { content: "▾"; margin-left: auto; color: var(--muted); }
+  .topic-head button[aria-expanded="false"]::after { content: "▸"; }
+  .topic-body[hidden] { display: none; }
+  .topic-body { padding-left: 4px; }
+  .topic-body .layer-item:last-child .layer { padding-bottom: 12px; }
   .layer-item { border-bottom: 1px solid var(--soft); }
   .layer-item:last-child { border-bottom: 0; }
   .layer-item .layer { border-bottom: 0; }
@@ -197,12 +215,13 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
   // ---- Layer settings. Add a layer by adding an entry here and a file in /data ----
   // kind:    "fill", "line", "point" or "outline" (no fill, not clickable).
   // classes: legend rows. A feature goes in the first class whose test passes; each row can be switched off.
   // modes:   alternative sets of classes, with a switch in the legend.
-  // Colours were checked to stay distinguishable under the common forms of colour blindness.
+  // Colors were checked to stay distinguishable under the common forms of color blindness.
 
   // Traffic counts carry one "AADT <year>" value per year; work out the latest two.
   const countYears = p => Object.keys(p).filter(k => /^AADT \d{4}$/.test(k)).map(k => +k.slice(5)).sort((x, y) => y - x);
@@ -284,8 +303,8 @@
         { label: "Brazos River Alluvium", color: "#E6AB02", test: p => /^Brazos/.test(p.name || "") },
         { label: "Other aquifer", color: "#8C8C8C", test: () => true }
       ] },
-    { id: "wells", one: "water well", name: "Water wells", desc: "Wells drilled since about 2001, from drillers' reports", url: "data/water_wells.geojson", kind: "point", color: "#1F78B4", canvas: true,
-      note: "From the report a driller files with the state. Older wells are missing, and locations are as accurate as the driller recorded them.",
+    { id: "wells", one: "water well", name: "Water wells", desc: "Wells drilled since about 2001, from drillers' reports", url: "data/water_wells.geojson", kind: "point", color: "#1F78B4", canvas: true, cluster: true,
+      note: "Numbered circles count the wells in an area; zoom in and they split into single wells. From the report a driller files with the state: older wells are missing, and locations are as accurate as the driller recorded them.",
       classes: [
         { label: "Household", color: "#1F78B4", radius: 4, test: p => p.Use === "Household" },
         { label: "Livestock or irrigation", color: "#33A02C", radius: 4, test: p => p.Use === "Livestock or irrigation" },
@@ -356,6 +375,7 @@
   }
 
   // One Leaflet layer for one legend class (or for the whole layer when it has no classes)
+  const CLUSTER_UNTIL_ZOOM = 13;                 // from this zoom inward, clustered layers show every point
   const canvas = L.canvas({ padding: 0.3 });     // much faster than the default for layers with thousands of points
   function makeLayer(cfg, cls, features) {
     const color = cls.color || cfg.color;
@@ -401,16 +421,55 @@
   const list = document.getElementById("layer-list");
   const states = [];           // one per loaded layer, used by the select tool
 
-  LAYERS.forEach(cfg => {
+  // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
+  const TOPICS = [
+    { name: "Site and boundaries", open: true, ids: ["zone", "county", "places", "schools"] },
+    { name: "Transport", ids: ["drive", "routes", "traffic"] },
+    { name: "Energy", ids: ["pipelines", "power"] },
+    { name: "Water", ids: ["flood", "streams", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
+  ];
+  const listed = new Set(TOPICS.flatMap(t => t.ids));
+  const unlisted = LAYERS.filter(cfg => !listed.has(cfg.id)).map(cfg => cfg.id);
+  if (unlisted.length) TOPICS.push({ name: "Other", ids: unlisted });
+
+  TOPICS.forEach(topic => {
+    const section = document.createElement("section");
+    section.className = "topic";
+    section.innerHTML = `<div class="topic-head"><input type="checkbox" aria-label="Show or hide every ${esc(topic.name)} layer">
+      <button type="button" aria-expanded="${!!topic.open}"><strong>${esc(topic.name)}</strong><small></small></button></div>
+      <div class="topic-body" ${topic.open ? "" : "hidden"}></div>`;
+    list.appendChild(section);
+    const topicBox = section.querySelector(".topic-head input");
+    const opener = section.querySelector(".topic-head button");
+    const body = section.querySelector(".topic-body");
+    const members = [];        // the layer checkboxes in this topic
+    const setOpen = open => { opener.setAttribute("aria-expanded", open); body.hidden = !open; };
+    opener.addEventListener("click", () => setOpen(body.hidden));
+    const sync = () => {
+      const ready = members.filter(b => !b.disabled), on = ready.filter(b => b.checked).length;
+      topicBox.checked = on > 0 && on === ready.length;
+      topicBox.indeterminate = on > 0 && on < ready.length;
+      opener.querySelector("small").textContent = `${on} of ${members.length} on`;
+    };
+    topicBox.addEventListener("change", () => {
+      const want = topicBox.checked;
+      members.filter(b => !b.disabled && b.checked !== want).forEach(b => { b.checked = want; b.dispatchEvent(new Event("change")); });
+      if (want) setOpen(true);
+      sync();
+    });
+
+   topic.ids.map(id => LAYERS.find(cfg => cfg.id === id)).filter(Boolean).forEach(cfg => {
     const item = document.createElement("div");
     item.className = "layer-item";
     item.innerHTML = `<label class="layer"><input type="checkbox" ${cfg.on ? "checked" : ""} disabled>
       ${symbol(cfg, {}).replace('class="sym"', 'class="sym swatch-sym" style="margin-top:2px"')}
       <span><strong>${esc(cfg.name)}</strong><small>${esc(cfg.desc)}</small></span></label>
       <div class="legend" hidden></div>`;
-    list.appendChild(item);
+    body.appendChild(item);
     const row = item.querySelector(".layer");
     const box = row.querySelector("input");
+    members.push(box);
+    sync();
     const small = row.querySelector("small");
     const legend = item.querySelector(".legend");
 
@@ -422,8 +481,23 @@
         states.push(state);
         refreshMeasureTargets();
 
+        // A layer with thousands of points is held in a cluster group: numbered circles that split as you zoom in.
+        // Its classes go into the group; the group itself goes on and off the map with the layer.
+        const group = cfg.cluster && L.markerClusterGroup ? L.markerClusterGroup({
+          disableClusteringAtZoom: CLUSTER_UNTIL_ZOOM, maxClusterRadius: 60, showCoverageOnHover: false, spiderfyOnMaxZoom: false, chunkedLoading: true,
+          iconCreateFunction: c => {
+            const n = c.getChildCount(), size = n < 20 ? 30 : n < 150 ? 38 : 46;
+            return L.divIcon({ html: `<span>${n.toLocaleString()}</span>`, className: "cluster", iconSize: [size, size] });
+          }
+        }) : null;
+        const host = group || map;
+        const place = () => {
+          state.subs.slice().reverse().forEach(s => (group ? s.on : state.on && s.on) ? host.addLayer(s.layer) : host.removeLayer(s.layer));
+          if (group) state.on ? map.addLayer(group) : map.removeLayer(group);
+        };
+
         const draw = () => {
-          state.subs.forEach(s => map.removeLayer(s.layer));
+          state.subs.forEach(s => host.removeLayer(s.layer));
           const mode = cfg.modes ? cfg.modes[state.mode] : cfg;
           const classes = mode.classes || [{}];
           const taken = new Set();
@@ -431,12 +505,11 @@
             const mine = features.filter((f, i) => !taken.has(i) && (!cls.test || cls.test(f.properties || {})) && taken.add(i));
             return { cls, count: mine.length, on: true, layer: makeLayer(cfg, cls, mine) };
           }).filter(s => s.count);
-          // Add the last class first so the first legend row is drawn on top
-          if (state.on) state.subs.slice().reverse().forEach(s => s.layer.addTo(map));
+          place();      // adds the last class first, so the first legend row is drawn on top
 
           const hasLegend = !!(mode.classes || cfg.note);
           legend.innerHTML =
-            (cfg.modes ? `<div class="modes" role="group" aria-label="Colour by">${cfg.modes.map((m, i) =>
+            (cfg.modes ? `<div class="modes" role="group" aria-label="Color by">${cfg.modes.map((m, i) =>
               `<button type="button" data-mode="${i}" aria-pressed="${i === state.mode}">${esc(m.label)}</button>`).join("")}</div>` : "") +
             (mode.classes ? state.subs.map((s, i) => `<label><input type="checkbox" data-sub="${i}" checked>${symbol(cfg, s.cls)}
               <span>${esc(s.cls.label)}</span>${cfg.counts === false ? "" : `<em>${s.count.toLocaleString()}</em>`}</label>`).join("") : "") +
@@ -445,7 +518,7 @@
           legend.querySelectorAll("input[data-sub]").forEach(b => b.addEventListener("change", () => {
             const s = state.subs[b.dataset.sub];
             s.on = b.checked;
-            if (state.on && s.on) s.layer.addTo(map); else map.removeLayer(s.layer);
+            place();
           }));
           legend.querySelectorAll("button[data-mode]").forEach(b => b.addEventListener("click", () => { state.mode = +b.dataset.mode; draw(); }));
         };
@@ -454,15 +527,19 @@
         box.disabled = false;
         box.addEventListener("change", () => {
           state.on = box.checked;
-          state.subs.slice().reverse().forEach(s => state.on && s.on ? s.layer.addTo(map) : map.removeLayer(s.layer));
+          place();
           legend.hidden = !(state.on && legend.innerHTML);
+          sync();
         });
+        sync();
       })
       .catch(() => {
         row.classList.add("unavailable");
         box.checked = false;
         small.textContent = cfg.desc + ". Coming soon.";
+        sync();
       });
+   });
   });
 
   // ---- Select tool: drag a box, list what is inside ----
@@ -567,13 +644,13 @@
   map.on("popupopen", e => { if (measuring) map.closePopup(e.popup); });
   map.on("click", e => { if (measuring) { measurePoints.push(e.latlng); drawMeasure(); } });
 
-  const FEET_PER_METRE = 3.28084;
-  const distanceText = metres => {
-    const feet = metres * FEET_PER_METRE, miles = feet / 5280;
+  const FEET_PER_METER = 3.28084;
+  const distanceText = meters => {
+    const feet = meters * FEET_PER_METER, miles = feet / 5280;
     return miles >= 0.2 ? `${miles < 10 ? miles.toFixed(2) : miles.toFixed(1)} miles` : `${Math.round(feet).toLocaleString()} feet`;
   };
 
-  // Nearest point on a layer's features to a place. Works in a flat local grid of metres, which is exact enough at county scale.
+  // Nearest point on a layer's features to a place. Works in a flat local grid of meters, which is exact enough at county scale.
   function nearestOn(features, at) {
     const kx = 111320 * Math.cos(at.lat * Math.PI / 180), ky = 110540;
     const flat = c => [(c[0] - at.lng) * kx, (c[1] - at.lat) * ky];
@@ -605,7 +682,7 @@
       else if (g.type === "MultiPolygon") g.coordinates.forEach(tryPolygon);
     });
     if (!best.pt) return null;
-    return { inside, metres: best.d, latlng: L.latLng(at.lat + best.pt[1] / ky, at.lng + best.pt[0] / kx) };
+    return { inside, meters: best.d, latlng: L.latLng(at.lat + best.pt[1] / ky, at.lng + best.pt[0] / kx) };
   }
 
   function drawMeasure() {
@@ -622,8 +699,8 @@
       const hit = nearestOn(shown, measurePoints[0]);
       const what = target.cfg.one, single = ["zone", "county"].includes(target.cfg.id);
       if (!hit) lines.push(`<p>Nothing from the ${esc(target.cfg.name.toLowerCase())} layer is switched on.</p>`);
-      else if (hit.inside && target.cfg.kind !== "outline") lines.push(`<p><strong>Inside</strong> ${single ? "the" : "a"} ${esc(what)}<br>${distanceText(hit.metres)} from its edge</p>`);
-      else lines.push(`<p><strong>${distanceText(hit.metres)}</strong> to the ${single ? "" : "nearest "}${esc(what)}</p>`);
+      else if (hit.inside && target.cfg.kind !== "outline") lines.push(`<p><strong>Inside</strong> ${single ? "the" : "a"} ${esc(what)}<br>${distanceText(hit.meters)} from its edge</p>`);
+      else lines.push(`<p><strong>${distanceText(hit.meters)}</strong> to the ${single ? "" : "nearest "}${esc(what)}</p>`);
       if (hit) {
         L.polyline([measurePoints[0], hit.latlng], { color: "#1E3B34", weight: 2.5, dashArray: "6 5", interactive: false }).addTo(measureLayer);
         L.circleMarker(hit.latlng, { ...dot, radius: 4, fillColor: "#fff", color: "#1E3B34" }).addTo(measureLayer);
@@ -771,7 +848,7 @@
   const SOURCES = [
     { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
-    { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrolment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
+    { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "traffic",   name: "Traffic counts",     why: "A baseline of how busy each road was before the plant opens. Each station's 2023 to 2025 average is kept as a yardstick, so later counts show where traffic has grown since construction began.", source: "Texas Department of Transportation", url: "https://www.txdot.gov/data-maps.html" },
