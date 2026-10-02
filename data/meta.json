@@ -95,6 +95,11 @@
       "updated": "2026-10-02",
       "source": "https://data.geographic.texas.gov/ (StratMap Land Parcels, Grimes County)",
       "feature_count": 26990
+    },
+    "holdings": {
+      "updated": "2026-10-02",
+      "source": "Grimes Central Appraisal District parcel records (https://gis.bisclient.com/grimescad/)",
+      "feature_count": 6
     }
   }
 }
