@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import ssl
 import time
 import urllib.error
 import urllib.parse
@@ -30,6 +31,17 @@ ATTEMPTS = 4
 RETRY_PAUSE_SECONDS = 15
 
 
+def _open(req, timeout):
+    """Open a request. If this computer does not know the site's certificate authority, check against certifi's list."""
+    try:
+        return urllib.request.urlopen(req, timeout=timeout)
+    except urllib.error.URLError as e:
+        if not isinstance(e.reason, ssl.SSLCertVerificationError):
+            raise
+        import certifi                          # comes with pyproj; some Windows setups lack the authority data.texas.gov uses
+        return urllib.request.urlopen(req, timeout=timeout, context=ssl.create_default_context(cafile=certifi.where()))
+
+
 def fetch(url, params=None, timeout=120):
     """Download a URL, trying again after a pause if the server drops the connection or is overloaded."""
     if params:
@@ -37,7 +49,7 @@ def fetch(url, params=None, timeout=120):
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     for attempt in range(1, ATTEMPTS + 1):
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as r:
+            with _open(req, timeout) as r:
                 return r.read()
         except urllib.error.HTTPError as e:
             if attempt == ATTEMPTS or not (e.code == 429 or e.code >= 500):
