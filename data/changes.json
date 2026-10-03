@@ -104,5 +104,11 @@
     "date": "2026-10-02",
     "layer": "zone",
     "summary": "Reinvestment zone: redrawn from the March 2026 parcel map, with the same 193 parcels and 22,464 acres"
+  },
+  {
+    "date": "2026-10-03",
+    "layer": "entities",
+    "summary": "Entity watch: new company on the state's franchise tax list, LLZ BUILD LLC (same mailing address as SpaceX (1 Rocket Rd); out-of-state limited liability company, Hawthorne, CA, dated 2026-09-11). Link to the project: not confirmed.",
+    "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108082614"
   }
 ]

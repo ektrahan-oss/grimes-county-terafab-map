@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-02",
+  "checked": "2026-10-03",
   "source": "https://data.texas.gov/dataset/Active-Franchise-Taxpayers/9cir-efmm",
   "about": "Companies in the Texas Comptroller's franchise tax records that are tied to the Terafab project, share its name, or share a mailing address with SpaceX or with the company buying the land. Sharing an address or a name is not proof of a link: see link_to_project. Only companies are listed; no officers or other people are named.",
   "not_in_the_data": "WIT TECH LLC, the company listed on the land in Grimes County appraisal records (mailing address 1450 Page Mill Rd, Palo Alto, California), is not in the Comptroller's franchise tax data. An unrelated Texas company of the same name is left out of this list.",
@@ -79,7 +79,7 @@
       "registered_with_secretary_of_state": "2025-03-31",
       "tax_responsibility_began": "2025-03-31",
       "secretary_of_state_file_number": "0805978993",
-      "right_to_transact": "Active",
+      "right_to_transact": "Comptroller code N",
       "first_seen": "2026-10-02",
       "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32099566419"
     },
@@ -132,7 +132,7 @@
       "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32093730342"
     },
     {
-      "taxpayer_number": "32108012504",
+      "taxpayer_number": "32108082614",
       "name": "LLZ BUILD LLC",
       "group": "Same mailing address as SpaceX (1 Rocket Rd)",
       "link_to_project": "Not confirmed",
@@ -140,10 +140,12 @@
       "street": "1 Rocket Rd",
       "city": "Hawthorne",
       "state": "CA",
-      "tax_responsibility_began": "2026-10-01",
+      "registered_with_secretary_of_state": "2026-09-11",
+      "tax_responsibility_began": "2026-09-11",
+      "secretary_of_state_file_number": "0806792617",
       "right_to_transact": "Active",
-      "first_seen": "2026-10-02",
-      "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108012504"
+      "first_seen": "2026-10-03",
+      "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108082614"
     },
     {
       "taxpayer_number": "32074772966",
@@ -285,7 +287,7 @@
       "registered_with_secretary_of_state": "2025-06-30",
       "tax_responsibility_began": "2025-06-30",
       "secretary_of_state_file_number": "0806105603",
-      "right_to_transact": "Active",
+      "right_to_transact": "Comptroller code N",
       "first_seen": "2026-10-02",
       "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32100941387"
     },
@@ -317,7 +319,7 @@
       "registered_with_secretary_of_state": "2025-03-17",
       "tax_responsibility_began": "2025-03-17",
       "secretary_of_state_file_number": "0805957145",
-      "right_to_transact": "Active",
+      "right_to_transact": "Comptroller code N",
       "first_seen": "2026-10-02",
       "url": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32099335963"
     },

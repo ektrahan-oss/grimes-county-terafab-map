@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-02",
+  "updated": "2026-10-03",
   "layers": {
     "county": {
       "updated": "2026-10-02",
@@ -32,7 +32,7 @@
       "feature_count": 4
     },
     "news": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://news.google.com/rss/search",
       "feature_count": 50
     },
@@ -42,7 +42,7 @@
       "feature_count": 145
     },
     "documents": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627",
       "feature_count": 4
     },
@@ -52,7 +52,7 @@
       "feature_count": 1
     },
     "permits": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://www15.tceq.texas.gov/crpub/index.cfm",
       "feature_count": 57
     },
@@ -102,17 +102,17 @@
       "feature_count": 6
     },
     "gauges": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://api.waterdata.usgs.gov/ogcapi/v0/collections/daily/items",
       "feature_count": 4
     },
     "reservoir": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://www.waterdatafortexas.org/reservoirs/individual/gibbons-creek.csv",
       "feature_count": 1
     },
     "entities": {
-      "updated": "2026-10-02",
+      "updated": "2026-10-03",
       "source": "https://data.texas.gov/resource/9cir-efmm.json",
       "feature_count": 27
     },
