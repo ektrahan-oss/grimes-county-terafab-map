@@ -14,3 +14,6 @@ __pycache__/
 
 # Kept copies of county documents: these live on the separate "archive" branch, checked out into this folder
 /data/archive/
+
+# Analysis results that are parcel-level or sensitive: never committed
+/analysis/private/
