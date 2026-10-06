@@ -255,7 +255,7 @@ def main():
     matching = [a for a in agendas.values() if a["mentions"]]
     listed = [d for d in documents.values() if "removed" not in d]
     record_layer("documents", DOCS_PAGE, len(listed) + len(matching), complete=not failed)
-    kept = [f for f in ARCHIVE.rglob("*") if f.is_file()] if ARCHIVE.exists() else []
+    kept = [f for f in ARCHIVE.rglob("*") if f.is_file() and ".git" not in f.parts] if ARCHIVE.exists() else []
     print(f"Tracking {len(listed)} county documents and {len(agendas)} agenda or minutes files, "
           f"{len(matching)} of which mention the project.")
     print(f"Archive: {len(kept)} files kept, {sum(f.stat().st_size for f in kept) / 1e6:.1f} MB.")
