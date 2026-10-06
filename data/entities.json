@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-05",
+  "checked": "2026-10-06",
   "source": "https://data.texas.gov/dataset/Active-Franchise-Taxpayers/9cir-efmm",
   "about": "Companies in the Texas Comptroller's franchise tax records that are tied to the Terafab project, share its name, or share a mailing address with SpaceX or with the company buying the land. Sharing an address or a name is not proof of a link: see link_to_project. Only companies are listed; no officers or other people are named.",
   "not_in_the_data": "WIT TECH LLC, the company listed on the land in Grimes County appraisal records (mailing address 1450 Page Mill Rd, Palo Alto, California), is not in the Comptroller's franchise tax data. An unrelated Texas company of the same name is left out of this list.",
