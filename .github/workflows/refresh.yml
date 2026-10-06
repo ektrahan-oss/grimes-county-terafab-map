@@ -36,13 +36,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Check out the document archive
+        uses: actions/checkout@v7
+        with:
+          ref: archive            # kept copies of county documents live on their own branch, away from the site
+          path: data/archive
+
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install packages
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          sudo apt-get install -y --no-install-recommends tesseract-ocr   # reads scanned county minutes
 
       - name: Refresh data
         id: refresh
@@ -50,6 +58,21 @@ jobs:
         env:
           MODE: ${{ github.event.schedule == '43 13 1 * *' && 'all' || github.event.inputs.mode || 'frequent' }}
         run: python scripts/run_all.py --$MODE
+
+      - name: Commit and push new archive copies
+        run: |
+          # Before the data itself, so the list of what has been seen never points at a copy that was not kept
+          cd data/archive
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No new documents to keep."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Documents kept $(date +%F)"
+          git pull --rebase origin archive
+          git push origin HEAD:archive
 
       - name: Commit and push changed data
         run: |

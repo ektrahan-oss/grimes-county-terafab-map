@@ -11,3 +11,6 @@ __pycache__/
 *.tmp
 *.bak
 .claude/
+
+# Kept copies of county documents: these live on the separate "archive" branch, checked out into this folder
+/data/archive/

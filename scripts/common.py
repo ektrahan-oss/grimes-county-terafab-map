@@ -75,13 +75,19 @@ def _rounded(coords):
     return [_rounded(c) for c in coords]
 
 
-def record_layer(layer_id, source, feature_count):
-    """Note in data/meta.json when a layer was last built, from where, and how many features it has."""
+def record_layer(layer_id, source, feature_count, complete=True):
+    """Note in data/meta.json when a layer was last built, from where, and how many features it has.
+
+    A run that could not reach every source (complete=False) keeps the layer's earlier date,
+    so the map never claims a check that did not fully happen.
+    """
     path = DATA / "meta.json"
     meta = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     today = date.today().isoformat()
-    meta["updated"] = today
-    meta.setdefault("layers", {})[layer_id] = {"updated": today, "source": source, "feature_count": feature_count}
+    earlier = meta.get("layers", {}).get(layer_id, {}).get("updated")
+    if complete or not earlier:
+        meta["updated"] = earlier = today
+    meta.setdefault("layers", {})[layer_id] = {"updated": earlier, "source": source, "feature_count": feature_count}
     path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 
 

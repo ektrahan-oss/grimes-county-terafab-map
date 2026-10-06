@@ -282,9 +282,13 @@ LAND_ITEM = re.compile(r"\bplat\b|replat|variance|utility|pipeline|right[- ]of[-
 
 def check_county():
     since = (date.today() - timedelta(days=AGENDA_LOOK_BACK_DAYS)).isoformat()
-    query = urllib.parse.quote(f"$filter=startDateTime gt {since}T00:00:00Z&$orderby=startDateTime desc&$top=100", safe="$=&")
-    found = {}
-    for event in fetch_json(f"{AGENDA_API}/Events?{query}")["value"]:
+    query = urllib.parse.quote(f"$filter=startDateTime gt {since}T00:00:00Z&$orderby=startDateTime desc", safe="$=&")
+    found, events, url = {}, [], f"{AGENDA_API}/Events?{query}"
+    while url:                                  # the portal hands out 15 meetings at a time
+        page = fetch_json(url)
+        events += page["value"]
+        url = page.get("@odata.nextLink")
+    for event in events:
         for f in event.get("publishedFiles") or []:
             if f.get("type") != "Agenda":
                 continue
@@ -359,7 +363,7 @@ def main():
     if not changes:
         print("  No change since the last run.")
 
-    record_layer("permits", REGISTRY, len(seen))
+    record_layer("permits", REGISTRY, len(seen), complete=not failed)
     print(f"Tracking {len(seen)} records:")
     for prefix, name, _, _ in SOURCES:
         items = [v for k, v in seen.items() if k.split(":")[0].split("-")[0] == prefix]
