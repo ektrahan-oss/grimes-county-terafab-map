@@ -124,5 +124,131 @@
     "source": "TxGIO StratMap Land Parcels, Grimes County (appraisal district records) (improvement value field)",
     "date": "2026-03-01",
     "confidence": "low"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 1 mile of a gas transmission pipeline",
+    "value": 138973,
+    "unit": "acres",
+    "source": "Railroad Commission of Texas pipeline map; in-service natural gas transmission lines in Grimes County",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 3 miles of a gas transmission pipeline",
+    "value": 261867,
+    "unit": "acres",
+    "source": "Railroad Commission of Texas pipeline map; in-service natural gas transmission lines in Grimes County",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 5 miles of a gas transmission pipeline",
+    "value": 323025,
+    "unit": "acres",
+    "source": "Railroad Commission of Texas pipeline map; in-service natural gas transmission lines in Grimes County",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 1 mile of a 138 or 345 kv power line",
+    "value": 190557,
+    "unit": "acres",
+    "source": "HIFLD electric transmission lines, 138 and 345 kV (frozen federal dataset)",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 3 miles of a 138 or 345 kv power line",
+    "value": 316165,
+    "unit": "acres",
+    "source": "HIFLD electric transmission lines, 138 and 345 kV (frozen federal dataset)",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 5 miles of a 138 or 345 kv power line",
+    "value": 372126,
+    "unit": "acres",
+    "source": "HIFLD electric transmission lines, 138 and 345 kV (frozen federal dataset)",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 1 mile of a state highway",
+    "value": 131185,
+    "unit": "acres",
+    "source": "TxDOT Roadways centerlines, state highways",
+    "date": "2026-10-01",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 3 miles of a state highway",
+    "value": 254004,
+    "unit": "acres",
+    "source": "TxDOT Roadways centerlines, state highways",
+    "date": "2026-10-01",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 5 miles of a state highway",
+    "value": 329155,
+    "unit": "acres",
+    "source": "TxDOT Roadways centerlines, state highways",
+    "date": "2026-10-01",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 1 mile of gas transmission, a 138 or 345 kV line and a state highway",
+    "value": 35604,
+    "unit": "acres",
+    "source": "All three sources above",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Parcels with 100 or more buildable acres within 1 mile of all three",
+    "value": 68,
+    "unit": "parcels",
+    "source": "All three sources above",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Buildable land within 3 miles of a 345 kV line",
+    "value": 246995,
+    "unit": "acres",
+    "source": "HIFLD electric transmission lines, 138 and 345 kV (frozen federal dataset)",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "In-service gas transmission operators with a line crossing the reinvestment zone",
+    "value": 4,
+    "unit": "operators",
+    "source": "Railroad Commission of Texas pipeline map; in-service natural gas transmission lines in Grimes County",
+    "date": "2026-10-02",
+    "confidence": "medium"
+  },
+  {
+    "section": "Part 2: Infrastructure access",
+    "metric": "Largest gas transmission line crossing the reinvestment zone",
+    "value": 36.0,
+    "unit": "inches diameter",
+    "source": "Railroad Commission of Texas pipeline map; in-service natural gas transmission lines in Grimes County",
+    "date": "2026-10-02",
+    "confidence": "medium"
   }
 ]
