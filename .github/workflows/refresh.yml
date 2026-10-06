@@ -10,8 +10,8 @@ name: Data refresh
 
 on:
   schedule:
-    - cron: "0 12 * * *"      # daily, 12:00 UTC (early morning in Texas)
-    - cron: "0 13 1 * *"      # 1st of each month, 13:00 UTC, an hour after that day's daily run
+    - cron: "43 12 * * *"     # daily, 12:43 UTC (7:43 a.m. in Texas in summer, 6:43 a.m. in winter)
+    - cron: "43 13 1 * *"     # 1st of each month, 13:43 UTC, an hour after that day's daily run
   workflow_dispatch:
     inputs:
       mode:
@@ -48,7 +48,7 @@ jobs:
         id: refresh
         continue-on-error: true   # keep the layers that worked; the job is failed at the end instead
         env:
-          MODE: ${{ github.event.schedule == '0 13 1 * *' && 'all' || github.event.inputs.mode || 'frequent' }}
+          MODE: ${{ github.event.schedule == '43 13 1 * *' && 'all' || github.event.inputs.mode || 'frequent' }}
         run: python scripts/run_all.py --$MODE
 
       - name: Commit and push changed data
