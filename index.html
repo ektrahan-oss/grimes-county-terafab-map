@@ -27,11 +27,9 @@
   /* Contact: in the header on phones, bottom right of the map on wider screens */
   .contact { position: relative; flex: none; }
   .contact-btn { font: inherit; font-size: 0.8rem; font-weight: 600; color: var(--pine); background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 6px 14px; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 2px 8px rgba(30, 59, 52, 0.2); }
-  .contact-note { position: absolute; right: 0; top: calc(100% + 8px); z-index: 1100; width: 220px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 16px rgba(30, 59, 52, 0.18); padding: 10px 12px; font-size: 0.82rem; line-height: 1.45; }
-  .contact-note[hidden] { display: none; }
   .newsletter-btn { box-shadow: none; background: var(--soft); }
-  #newsletter-note { display: block; margin-top: 6px; }
-  #newsletter-note[hidden] { display: none; }
+  .brand { margin: 18px 0 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .brand + .section { margin-top: 2px; }
 
   .main { position: relative; min-height: 0; }
   #map { position: absolute; inset: 0; }
@@ -171,7 +169,6 @@
     .panel { top: 16px; bottom: 16px; left: 16px; right: auto; width: 340px; max-height: none; border: 1px solid var(--line); border-radius: 10px; }
     .handle { display: none; }
     .contact { position: fixed; right: 10px; bottom: 30px; z-index: 900; }
-    .contact-note { top: auto; bottom: calc(100% + 8px); }
     .panel.collapsed .panel-body { display: block; }
   }
 </style>
@@ -184,8 +181,7 @@
       <p>Tracking change around Gibbons Creek</p>
     </div>
     <div class="contact">
-      <button class="contact-btn" id="contact-btn" type="button" aria-expanded="false">Contact</button>
-      <div class="contact-note" id="contact-note" hidden>A contact form is coming soon, for questions, corrections and requests for more analysis.</div>
+      <a class="contact-btn" href="mailto:hello@grimesgrowthwatch.com?subject=Grimes%20County%20map%20question">Contact</a>
     </div>
   </header>
 
@@ -227,10 +223,10 @@
         <section class="view about" id="view-about" hidden>
           <p>A free public map of what's changing around the SpaceX Terafab site in Grimes County, Texas. Layers refresh from public sources, and the timeline tracks major decisions as they happen.</p>
           <p>Locations marked approximate are for context only. This map is not a survey or legal boundary.</p>
+          <p class="brand">Grimes Growth Watch</p>
           <h2 class="section">About me and this map</h2>
           <p>I'm a market intelligence and GIS professional based in the Houston area. My family owns land in Grimes County, which is part of why I started following this project closely. I built this map to understand what Terafab means for the county, and I'm sharing it for free so others can too. Nothing here is legal, financial or investment advice.</p>
-          <p><button class="contact-btn newsletter-btn" id="newsletter-btn" type="button" aria-expanded="false">Sign up for the newsletter</button>
-            <span class="meta" id="newsletter-note" role="status" hidden>A newsletter signup is coming soon, for updates when something changes around the site.</span></p>
+          <p><a class="contact-btn newsletter-btn" href="https://grimesgrowthwatch.beehiiv.com/subscribe" target="_blank" rel="noopener">Get updates by email</a></p>
           <h2 class="section">Ownership policy</h2>
           <p>This map never shows the names of individual property owners. Ownership is shown only for companies connected to the Terafab project. Parcel lines show property ID and acreage only.</p>
           <h2 class="section">Layers and data sources</h2>
@@ -530,24 +526,6 @@
     }
     return `<span class="sym"><i style="width:22px;height:13px;border-radius:2px;border:1px solid ${color};background:${color};opacity:${Math.min(1, (cfg.fillOpacity ?? 0.2) + 0.35)}"></i></span>`;
   }
-
-  // Contact and Newsletter: placeholders until each address is filled in here.
-  // Put the full link between the quotes, for example "https://example.com/signup". Left empty, the button shows its "coming soon" note.
-  const CONTACT_URL = "";
-  const NEWSLETTER_URL = "";
-  // Each button opens its link in a new tab, or shows its "coming soon" note while the link is empty
-  const linkButton = (button, note, url) => {
-    button.addEventListener("click", e => {
-      if (/^https?:\/\//.test(url)) { window.open(url, "_blank", "noopener"); return; }
-      e.stopPropagation();
-      note.hidden = !note.hidden;
-      button.setAttribute("aria-expanded", String(!note.hidden));
-    });
-    return () => { note.hidden = true; button.setAttribute("aria-expanded", "false"); };
-  };
-  const closeContactNote = linkButton(document.getElementById("contact-btn"), document.getElementById("contact-note"), CONTACT_URL);
-  linkButton(document.getElementById("newsletter-btn"), document.getElementById("newsletter-note"), NEWSLETTER_URL);   // in the About tab
-  document.addEventListener("click", closeContactNote);
 
   const list = document.getElementById("layer-list");
   const states = [];           // one per loaded layer, used by the select tool
