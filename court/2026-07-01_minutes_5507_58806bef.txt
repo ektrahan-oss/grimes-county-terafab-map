@@ -1,0 +1,470 @@
+                            Grimes County Commissioners Court 
+Chad Mallett                                                                     Michael Raska 
+Commissioner, Precinct #1                                           Commissioner, Precinct #3 
+                                                                                                  
+David Tullos                                                                         Phillip Cox 
+Commissioner, Precinct #2                                           Commissioner, Precinct #4 
+
+                                                             
+                                         Joe Fauth III 
+                                    Grimes County Judge 
+                                        270 FM 149 W. 
+                                    Anderson, Texas 77830 
+                                                 
+                     The Minutes of the Regular Meeting are as follows: 
+ 
+Call to Order 
+THE STATE OF TEXAS ~ COUNTY OF GRIMES ~ BE IT REMEMBERED, that on July 1, 2026 at 9:00 AM 
+there was a Commissioners Court Regular Meeting Part One of Grimes County, Texas at the Grimes County Justice 
+Center, 270 FM 149 W., Anderson, Texas with the following members present: 
+ 
+Present: 
+Joe Fauth, David Tullos, Michael Raska, Phillip Cox, Chad Mallett 
+ 
+Absent: 
+ 
+
+Invocation 
+Invocation led by Charles Thompkins, Sr. Pastor, House of Blessings and Miracles  
+
+Pledge of Allegiance to the U.S. Flag 
+
+Pledge of Allegiance to the Texas Flag 
+
+Public Comments 
+We look forward to hearing from the citizens of Grimes County. If you wish to make public comments you will 
+need to submit a Public Participation Form prior to the start of the meeting and give it to the County Clerk. Public 
+comments will be limited to 2 minutes per person. 
+One Speaker: Connie Clements 
+Pct 4 Commissioner Phillip Cox: The City of Navasota will be hosting a fireworks gala on Saturday, July 4th. The 
+parade starts at 11:00 am. 
+Grimes County Judge Joe Fauth: The City of Anderson is hosting a 4th of July Picnic on Friday, July 3rd. Activities 
+start around 7:00 pm. Fireworks behind the Courthouse at 9:00 pm. Iola is having a 4th of July celebration on 
+Saturday the 4th. Fireworks will begin at dusk at the Iola Community Center.   
+ 
+
+Consent Agenda Items 
+Grimes County Auditor Jessi Murphy requests to table Agenda item #6, Review and Accept the Internal Audit of 
+the Sheriff's Office Jail Administration, to the next agenda, due to it not being available in enough time for the 
+Court to review. Judge Fauth asked Ms Wagner to move item #6 to July 15th meeting.  Motion by Chad Mallett to Approve Consent Agenda Items 1,2,3,4,5,7,8,9 and 10 with the removal of Item 6. 
+Seconded by Phillip Cox. 
+ 
+In Favor: 5 
+Opposed: 0 
+Motion Passed 
+ 
+
+1.   Receive Internal Audit Report of Justice of the Peace Pct. 1 - Monthly Bank Reconciliations and OMNI 
+     January 1, 2025 - December 31, 2025. 
+
+2.   Receive Internal Audit Report of the Justice of the Peace Pct. 1 - Monthly Bank Reconciliations and OMNI 
+     January 2026 - March 2026. 
+
+3.   Receive Internal Audit Report of Justice of the Peace Pct. 2 - Monthly Bank Reconciliations and OMNI 
+     January 1, 2025 - December 31, 2025. 
+
+4.   Receive Internal Audit Report of the Justice of the Peace Pct. 2 - Monthly Bank Reconciliations and OMNI 
+     January 2026 - March 2026. 
+
+5.   Receive Internal Audit Report of the Justice of the Peace Pct. 2 - Liability Audit. 
+
+6.   Review and Accept the internal audit of the Sheriff's Office Jail Administration. 
+
+7.   Approve Monthly Report submitted by the County Treasurer for May 2026 and authorize advertisement of 
+     affidavit of same, in accordance with Local Government Code 114.026. 
+
+8.   Consider and take action to approve the Treasurer's List of Claims and Bills. 
+
+9.   Consider and take action to approve payroll. 
+
+10.  Consider and take action to approve Budget Amendments and/or Line-Item Transfers. 
+
+Presentation of Employee Service Awards. 
+
+11.  Consider and recognize the following employees for their years of service: 
+      
+     15 YEARS 
+     Barbara Kimich 
+     County Judge Joe Fauth III presented 15 year Service Award to Barbara Kimich. 
+
+Presentation of Monthly Departmental Reports:  
+
+12.  Human Resources, IT, Elections 
+     Grimes County Human Resource Director Atina Adair: Open Enrollment will begin on Wednesday, July 
+     22nd. at 7:00 am, located in the Commissioners Courtroom. All vendors will be present to discuss all benefits 
+     they have to offer. Employees do not have to make an election on that day. Employees will have the 22nd to 
+     make an election or they have until July 29th by 2:00 pm in person in the HR Office to let HR know how they 
+     want to move forward with their benefits. Current vacancies in the county: Jobs are being sourced thru current 
+     Job Boards such as Work in Texas.com which is through Texas Workforce, Ameritech Temp Agency using 
+     for Road Department. In the Sheriff's office there are 4 patrol positions vacant, 2 Jailers and 1 Dispatcher. 
+     Road Dept needs 2 light equipment operators. Solid waste needs 1 part time dump site attendant. Auditors 
+     office has an Assistant Auditor 1 position. Maintenance has a full time position with the facilities 
+     maintenance crew.  
+     Grimes County IT Director Gregg Cannon: Systems have been up 99.8%. No cybersecurity incidents and no      major outages. Approximately 26,000 phishing attempts with zero successful. 95% patch compliant. One 
+     backup system that is not operating in a timely fashion. Working with the Engineers of the company to try to 
+     resolve the issue. Storage capacity is still growing. Currently at 71.5%. The system in the elevator at the 
+     Historical Courthouse is being updated. The company that is installing the new system upgrade inadvertently 
+     cut the video camera feed for that elevator and are in the process of repairing it. The new phone system in the 
+     elevator has been tested. There is new regulations for ADA compliance that the phone has to be able to call 
+     and visually see that the call was made. By pressing a button, it will automatically dial out to 911 Dispatch. 
+     Help desk received 182 tickets and closed 173. IT is working with Dept heads to make sure they have 
+     everything for upcoming budget hearings. New AI training course that will be part of the grant process, 
+     notifications will be going out. Judge Fauth wanted to re-visit the storage capacity issue. The Judge asked if 
+     there was a report that could be run to identify duplicate items. Mr Cannon stated that some reports have 
+     identified 200,000 duplicates. IT is looking into storing data on tape as opposed to cloud or disc. Precint 1 
+     Commissioner Mallett asked if there are best practices or procedures to ensure the user does not have 
+     duplicates. Mr Cannon stated there are things that can be done like setting quotas for departments allotting so 
+     much storage and if the exceed that amount, it will not allow them to file save. Mr Cannon stated that the 
+     Sheriff's office and the DA's office are doing a good job of managing files to alleviate duplicates.  
+     Grimes County Elections Administrator Rachel Walker: 21,810 Registered Voters, 314 DPS Applications, 
+     137 mail in applications, 5 walk in applications, 11 Applications Ballot by mail-RCVD, 5 Applications Ballot 
+     by mail-mailed, 44 Notice of Address confirmations, 5 Notice of Examination, 28 Notice of Incomplete, 4 
+     Notice of Cancellation, 2 Notice of Rejection, 11 Address Confirmation Responses, 2 Examination 
+     Responses, 7 Undeliverable by Post Office, 1 VR Card Undeliverable by Post Office, 4 Jury Reports, 11 
+     Death Abstracts Reports, 80 Statements of Residence, 2 Open Records Requests, 26 Total Certified VDR's. 
+     Another issue with TEAM related to voter registration processing. The system was unable to properly match 
+     DPS applications to already existing registered voters which could result in duplicate records. Additionally 
+     some DPS applications imported into the system were missing signatures or dates. For applications 
+     transferred from another county, staff had to contact the previous county to request the most recent signature 
+     on file. All of this resulted in time consuming work-arounds. In May and June the Elections office completed 
+     post-election work for the May 2nd City and School Election, administered the May 26th run-off election, 
+     completed required audits, prepared FY 27 budget, monitored Legislative activity related to election charges, 
+     advanced courthouse event scheduling procedures, prepared a voter registration outreach event, attended State 
+     training related to SB 2753 implementation and Risk-Limiting Audits.May 2nd election produced and 
+     distributed the Official Election Results for all 4 local entities and completing the Post Election Hand Count 
+     Audit (PEHCA). This covered the entire May 2nd election including all races and all polling locations. Staff 
+     hand counted all 925 ballots cast. The PEHCA results reflected that hand-count totals matched the 
+     electronically tabulate totals for the audited ballot groups shown. May 26th Primary Runoff Election. Staffed 
+     the election with 52 election workers covering 135 shifts. Operated 9 total polling locations including 2 early 
+     voting. Maintained polls open for a cumulative total of 72 hours. Recorded 3,484 voters participating for 
+     16.08% overall turnout, 3,202 Republican voters representing 14.78% turnout, 264 Democratic voters 
+     representing 1.22% turnout. 3,466 ballots counted. Rejected 18 ballots including 15 ballot by mail and 3 
+     provisional with an overall rejection rate of 0.52% of ballots cast. Used 3 counting teams with 6 staff 
+     members to complete the required post-election hand count audit. The Republican races audited were US 
+     Senator, Attorney General and County Commissioner Pct 2. The Democratic races audited were Lieutenant 
+     Governor, Attorney General, and Justice 14th Court of Appeals District Place 7. The PEHCA results reflected 
+     that the hand count totals matched electronically totals for the audited races and ballot groups. Administrative 
+     and operational work as follows: Prepared FY 27 budget. Prepared the system to handle scheduling 
+     Courthouse events and distributed to eligible parties. Legislative monitoring and training as follows: 
+     Monitored developments by watching interim hearings held by the House Elections Committee and the 
+     Senate State Affairs Committee. Attended a two-day Secretary of State regional training. Received additional 
+     information related to HB 2753 implementation. Participated in an exercise to prepare for th Risk-Limiting 
+     Audit scheduled after the November election, which will be the first time this audit has been conducted 
+     statewide.  
+
+Presentation of Monthly Commissioners Court Liaison Reports: 
+
+13.  County Judge: Maintenance, HR, IT, Emergency Management, Road Department, Veterans Services,      Elections, Navasota Grimes County Chamber of Commerce; 
+      
+     Commissioner Pct. 2: Animal Shelter, Historical Commission, Navasota Grimes County Chamber of 
+     Commerce, Bluebonnet Groundwater Conservation District Board;  
+      
+     Commissioner Pct. 3: 911 Addressing/Permits/Environmental/Solid Waste, BVCOG Solid Waste Advisory 
+     Committee;  
+      
+     Commissioner Pct. 4: Fairgrounds, Hospital Contracts, EMS Services, Health Resource Center 
+     Grimes County Judge Joe Fauth III: Grimes County Chamber has been engaging in several ribbon cuttings.  
+     Precinct 4 Commissioner Cox: Ambulance service is still stressed and there will be lengthy discussions 
+      concerning this during budget.  
+
+Grimes County Facilities Director - Rodney Floyd 
+
+14.  Discuss and take any necessary action on projects and repairs. 
+     Grimes County Facilities Director Rodney Floyd: Maintenance work on the elevator. A few programming 
+     issues to finalize with the fire alarm in order to get it inspected and back into service.  
+      Approval of Emergency Call out on June 27 and 28.  
+     Motion by Phillip Cox to Approve Facilities Director emergency call out Seconded by Michael Raska. 
+      
+     In Favor: 5 
+     Opposed: 0 
+     Motion Passed 
+     The RTU above the kitchen at the jail replaced. Expecting to have the chiller back up and running next week 
+     at the Justice Center. The part ordered back in January has finally been received. The building has been 
+     running at 50% for 6 months. The Fairgrounds hosted a youth cattle camp which introduced young showman 
+     how to show cattle. Mr Floyd spoke with the road engineer about the RFQ's for the jail. The road engineer 
+     stated he sent out an RFQ earlier in the year to get a list of approved engineers, so with the Courts permission 
+     would not like to have to spend the money to put it into the paper along with other postings since it was done 
+     previously for engineering services. The request is to modify the direction of the Court previously to go out 
+     for an RFQ and just use the existing RFQ of approved engineers that we can use. Juge Fauth asked the 
+     County Attorney if that meets with her approval. She answered yes.  
+      
+     Motion by Phillip Cox to Approve to use the existing RFQ of approved engineers. Seconded by Michael 
+     Raska. 
+     Precinct 2 Commissioner Tullos has further discussion. Mr Tullos asked when the County Road Engineer got 
+     his RFQ was it pertaining to engineering services relative to road and bridge projects or just a general request 
+     for engineering? Would it have excluded engineering firms that might be specifically dedicated toward 
+     facility construction?  
+     In Favor: 5 
+     Opposed: 0 
+     Motion Passed 
+      
+
+Grimes County Judge - Joe Fauth III 
+
+15.  Consider and take action regarding the Burn Ban and authorize the County Judge as signatory. (Not currently 
+     under a burn ban order.) 
+     Grimes County Judge Joe Fauth III: Not currently under a Burn Ban. No action taken.  
+
+Grimes County Engineer - Jon Steiber (CM/MR) 
+
+16.  Discuss and take action to approve or deny a request for variance from the developer of Traditions RV Park in 
+     Precinct 1.      Grimes County Engineer Jon Steiber: Traditons RV Park is requesting a variance from the minimum 
+     detention criteria issued. There have been 5 or 6 issued and this variance is consistent with all that have been 
+     issued so far. All models have been reviewed by the Consultant and there are no adverse impacts with this 
+     development. Judge Fauth asked Precinct Commissioner Chad Mallett if he had any issues with the request. 
+     Mr Mallett stated that he did not have a problem and discussions have taken place to modify the regulations 
+     for these type of situations. Possibly change the language so future developers will not have to go before the 
+     court for a variance as long as they meet the engineering guidelines.  
+     Motion by Chad Mallett to Approve a request for variance from the developer of Traditions RV Park in 
+     Precinct 1. Seconded by Michael Raska. 
+      
+     In Favor: 5 
+     Opposed: 0 
+     Motion Passed 
+
+17.  Discuss and take action to authorize tire disposal fees at solid waste disposal site 
+     Grimes County Engineer Jon Steiber: Wanting to place a tire trailer at the Stoneham disposal site. Mr Steiber 
+     is asking the Court to approve the fees. Limit 4 tires per trip. Up to 24.5 in diameter $3.00 ea and over 24.5 
+     $10.00 per tire. The fees should offset the $1600.00 cost of the trailer. Testing this in Stoneham for possibly 
+     adding to other sites. The tire trailer is dropped off, picked up and disposed of by a company called Reliable 
+     Tire.  
+     Motion by David Tullos to Approve and authorize tire disposal fees at solid waste disposal site.. Seconded by 
+     Phillip Cox. 
+      
+     In Favor: 5 
+     Opposed: 0 
+     Motion Passed 
+
+18.  Discuss and take any necessary action on security and security devices at the solid waste collection sites. It is 
+     expected the court will convene in closed/executive session to deliberate the deployment or implementation of 
+     security personnel, critical infrastructure, or security devices in accordance with Tex. Gov. Code Section 
+     551.089. 
+     Grimes County Engineer Jon Steiber: 
+     It is expected the court will convene in closed/executive session to deliberate the deployment or 
+     implementation of security personnel, critical infrastructure, or security devices in accordance with Tex. Gov 
+     Code Section 551.089 
+     Court convened at 9:59 am 
+     Court re-convened at 10:20 am  
+     No votes were taken. Only discussion occurred. 
+
+19.  Discuss and take action to adjust the fund deposit period for Grimes County's solid waste collection sites. 
+     No action taken. 
+
+Grimes County Attorney - Megan Barcak 
+
+20.  Discuss and take any necessary action on proposed economic development negotiations. EXECUTIVE 
+     SESSION: It is expected that the Commissioners Court will meet in a closed/executive session pursuant to 
+     Section 551.087 of the Texas Government Code to discuss commercial or financial information that the 
+     Commissioners Court has received from EVAPCO, Inc. that the Commissioners Court seeks to have locate, 
+     stay, or expand within the County in the Navasota Industrial Park and with which the Commissioners Court 
+     is conducting economic development negotiations, and to deliberate the offer of a financial or other incentive 
+     to the business prospect: proposed manufacturing facility for heat-transfer equipment and thermal-
+     management systems for cooling, refrigeration, and industrial processing applications. 
+     Grimes County Attorney Megan Barcak: 
+     It is expected that the Commissioners Court will meet in a closed/executive session pursuant to Section 
+     551.087 of the Texas Government Code to discuss commercial or financial information that the      Commissioners Court has received from EVAPCO, Inc. that the Commissioners Court seeks to have locate, 
+     stay, or expand within the County in the Navasota Industrial Park and with which the Commissioners Court 
+     is conducting economic development negotiations, and to deliberate the offer of a financial or other incentive 
+     to the business prospect: proposed manufacturing facility for heat-transfer equipment and thermal-
+     management systems for cooling, refrigeration, and industrial processing applications. 
+     Court convened at 10:23 am 
+     Court re-convened at 11:34 am 
+     Motion by Chad Mallett to Approve to allow the County Attorney to present the 30 day notice. Seconded by 
+     Phillip Cox. 
+      
+     In Favor: 5 
+     Opposed: 0 
+     Motion Passed 
+      
+      
+       
+
+Adjourn 
+Motion by Michael Raska to Adjourn. Seconded by Phillip Cox. 
+ 
+In Favor: 5 
+Opposed: 0 
+Motion Passed 
+ 
+Meeting was adjourned at 11: 40 AM 
+
+  
+STATE OF TEXAS 
+COUNTY OF GRIMES 
+I, Barbara Kimich, Grimes County Clerk, attest that the foregoing is a true and accurate 
+accounting of the Commissioners Court authorized proceedings for July 1, 2026. 
+ 
+_________________________________ 
+Barbara Kimich, Grimes County Clerk 
+Clerk of the Commissioners Court 
+Grimes County, Texas 
+                                                                     Agenda Item Number: 7. 
+
+                                   Item Cover Page 
+
+
+ 
+Commissioners Court Agenda Item Report 
+Date:              July 1, 2026 
+Submitted By:       
+Item Type:         Action Item 
+Agenda Section:    Consent Agenda Items 
+Subject:           Approve Monthly Report submitted by the County Treasurer for May 2026 and authorize 
+                   advertisement of affidavit of same, in accordance with Local Government Code 114.026. 
+
+ 
+Suggested Action: 
+ 
+ 
+Attachments: 
+1.    treas rept 052026 
+                           GRIMES COUNTY  
+                     COMMISSIONERS’ COURT 
+               REQUEST FOR AGENDA PLACEMENT 
+              
+              
+              
+              
+ Requested Agenda Date:    July 1, 2026     
+ Submitted by:   Tom Maynard, Grimes County Treasurer 
+ Department:      Grimes County Treasury 
+             
+Specific Agenda Wording: 
+             
+Approve Monthly Report submitted by the County Treasurer for May 2026 
+and authorize advertisement of Affidavit of same, in accordance with Local  
+Government Code 114.026. 
+                                                           GRIMES COUNTY FINANCIAL REPORT                                                                                                                                  
+                                         MONTHLY TREASURER'S REPORT-MAY 2026 SAR
+
+                                                       BEGINNING                                              ENDING
+FUND AND FUND NAME                                      BALANCE        INCREASE       DECREASE              BALANCE
+
+0010 - GENERAL FUND                                       29,074,394.66      1,313,778.25      1,735,191.26              28,652,981.65
+0011 - COURTS JURY FUND                                             7,997.49              4,356.89              1,180.00                      11,174.38
+0012 - COUNTY SPECIALTY COURT FUND                                  7,944.40                 108.46                        -                        8,052.86
+0013 - LOCAL TRUANCY PREVENTION & DIV. FUND                       43,832.89                 744.55                        -                      44,577.44
+0014 - CRT INITIATED GUARDIANSHIP FUND                              6,415.00                 660.00                        -                        7,075.00
+0015 - COURT FACILITY FEE FUND                                    48,659.40              1,781.00                        -                      50,440.40
+0016 - COURT RECORD PRESERVATION FUND                             17,204.23              1,767.48                        -                      18,971.71
+0017 - GAME WARDEN                                                  9,318.05                        -                        -                        9,318.05
+0018 - TEXAS VINE GRANT-CONTRACT                                   (1,363.07)                        -                        -                       (1,363.07)
+0019 - COUNTY REC MGMT & PRESERVATION FUND                          1,070.52                        -                        -                        1,070.52
+0020 - SPECIAL REVENUE FUND-ROAD & BRIDGE                   6,370,525.66         181,244.07         570,044.12                5,981,725.61
+0021 - RECORDS MGMT #1 COUNTY CLERK                             180,699.88              8,409.56                        -                    189,109.44
+0022 - RECORDS MGMT #2 DISTRICT CLERK                             61,898.70                 106.50                        -                      62,005.20
+0023-  HAZARDOUS MITIGATION GRANT                                             -                 345.00                        -                            345.00
+0025 - COUNTY JUDGE'S EDUCATION FUND                                1,381.69                 100.00                        -                        1,481.69
+0026 - JUVENILE DELINQUENCY PREVENTION                                  200.00                        -                        -                            200.00
+0027 - APPELLATE JUD SYSTEM FUND                                  45,757.61                 450.85                        -                      46,208.46
+0028 - CHILD WELFARE BOARD FUND                                   58,453.78                        -              2,800.00                      55,653.78
+0030 - COUNTY AND DISTRICT COURTS TECHNOLOGY FUND                   5,164.50                   48.25              2,080.00                        3,132.75
+0031 - LAW LIBRARY                                              159,739.36              5,738.36                 300.00                    165,177.72
+0032 - DISTRICT COURT RECORDS TECHNOLOGY (ARCHIVE) FUND             17,478.51                        -                        -                      17,478.51
+0033 - JUSTICE OF THE PEACE TECHNOLOGY FUND                       27,673.47                 631.64                 374.09                      27,931.02
+0034 - 911 ADDRESSING                                             26,099.41                 150.00              1,719.20                      24,530.21
+0036 - FAIRGROUNDS                                              118,281.70              6,668.64           91,233.43                      33,716.91
+0037 - COUNTY HISTORICAL COMMISSION                             397,005.77                   41.00              1,857.70                    395,189.07
+0039 - BAIL BOND FUND                                             12,327.00                        -                        -                      12,327.00
+0040 - ELECTION/VOTERS GRANTS                                    (29,294.50)                        -              1,200.00                    (30,494.50) 
+0041 - CAPITAL MURDER                                           603,106.90                        -                        -                    603,106.90
+0042 - PRETRIAL INTERVENTION PROG FUND                            21,730.00                        -                        -                      21,730.00
+0043 - COURT REPORTER SERVICE                                     19,283.90              2,101.20                        -                      21,385.10
+0044 - COURTHOUSE SECURITY                                       (10,980.54)              2,593.90           11,894.48                    (20,281.12) 
+0045 - LEOSE EDUCATION GRANT-SHERIFF                              18,163.30                        -              1,829.93                      16,333.37
+0046 - ALTERNATIVE DISPUTE RESOLUTION                             55,666.67              1,705.00              1,000.00                      56,371.67
+0048 - LANGUAGE ACCESS FUND                                       14,701.52                 525.00                        -                      15,226.52
+0049 - CAPITAL PROJECTS FUND                                    100,425.25         250,000.00                        -                    350,425.25
+0051 - LEOSE EDUCATION GRANT-CONST #1                             11,622.28                        -                        -                      11,622.28
+0052 - LEOSE EDUCATION GRANT-CONST #2                             11,268.50                        -                 278.10                      10,990.40
+0053 - LEOSE EDUCATION GRANT-CONST #3                               8,864.91                        -                        -                        8,864.91
+0054 - RECORDS ARCHIVE-COUNTY CLERK                             156,062.16              7,546.00                        -                    163,608.16
+0055 - ELECTION SERVICE CONTRACT                                  21,897.52                        -           25,679.30                       (3,781.78)
+0057-  LEOSE EDUCATION GRANT-DA                                     1,617.60                        -                        -                        1,617.60
+0059 - UNCLAIMED PROPERTY                                           5,495.44                        -                        -                        5,495.44
+0061 - BVAAA-SENIOR MEALS                                        (13,553.29)              5,791.80           12,022.38                    (19,783.87) 
+0062 - OPIOID ABATEMENT                                           48,823.77                        -                        -                      48,823.77
+0076 - SENATE BILL 22                                           323,704.68                 476.72           62,707.77                    261,473.63
+0080 - DISASTER GRANTS                                           (56,869.55)                        -           74,538.95                  (131,408.50)0081-  GRANTS
+0085 - AMERICAN RESCUE PLAN (ARP)                               459,920.06                        -                        -                    459,920.06
+0086 - SCHOOL RESOURCE OFFICERS & LAW ENF                       111,108.42                        -           25,249.16                      85,859.26
+1041 - STATE GRANT-NEW SALARIES                                           45.04              1,960.70              1,915.66                              90.08
+1042 - JUVENILE PROB-STATE AID                                          475.80           24,759.56           20,937.88                        4,297.48
+1045 - JUVENILE PROB-LOCAL MATCH                                              -              5,304.28              4,151.36                        1,152.92
+GRAND TOTAL                                               38,581,446.45     1,829,894.66     2,650,184.77              37,761,156.34
+1041-1050 JUVENILE PROBATION                                   475,950.39  28,521.31           48,643.74  455,827.96 
+MAY 2026 REPORT TOTALS                                    39,057,396.84     1,858,415.97     2,698,828.51              38,216,984.30
+
+       *BALANCES SUBJECT TO CHANGE DUE TO ADJUSTMENT FROM YEAR END AUDIT
+
+       **Changes in balances "By Fund" are due to FY2026 
+        entries in for the preparation for the annual external audit which will be completed by 3/31/2026                                                                    Agenda Item Number: 10. 
+
+                                   Item Cover Page 
+
+
+ 
+Commissioners Court Agenda Item Report 
+Date:              July 1, 2026 
+Submitted By:       
+Item Type:          
+Agenda Section:    Consent Agenda Items 
+Subject:           Consider and take action to approve Budget Amendments and/or Line-Item Transfers. 
+
+ 
+Suggested Action: 
+ 
+ 
+Attachments: 
+1.    BA - 1 - 070126.SO 
+2.    BA - 2 - 070126.HR 
+3.    BA - 3 - 070126.SO.02 
+4.    BA - 4 - 070126.JAIL 
+5.    LIT - 1 - 070126.IT 
+6.    LIT - 2 - 070126.EMC 
+7.    LIT - 3 - 070126.FGROUNDS 
+8.    LIT - 4 - 070126.NONDEPT_ 
+9.    LIT - 5 - 70126.Jail 
+10.   LIT - 6 - 070126.RB 
+11.   LIT - 7 - 070126.SO.02 
+12.   LIT - 8 - 070126.JAIL.02 
+ 070126.SO                                                                    Agenda Item Number: 16. 
+
+                                   Item Cover Page 
+
+
+ 
+Commissioners Court Agenda Item Report 
+Date:              July 1, 2026 
+Submitted By:      Chad Mallett 
+Item Type:         Action Item 
+Agenda Section:    Grimes County Engineer - Jon Steiber (CM/MR) 
+Subject:           Discuss and take action to approve or deny a request for variance from the developer of 
+                   Traditions RV Park in Precinct 1. 
+
+ 
+Suggested Action: 
+ 
+ 
+Attachments: 
+1.    J STEIBER - 20260609 Traditions RV Variance Letter 
+                                                                     Agenda Item Number: 17. 
+
+                                   Item Cover Page 
+
+
+ 
+Commissioners Court Agenda Item Report 
+Date:              July 1, 2026 
+Submitted By:      Michael Raska 
+Item Type:         Action Item 
+Agenda Section:    Grimes County Engineer - Jon Steiber (CM/MR) 
+Subject:           Discuss and take action to authorize tire disposal fees at solid waste disposal site 
+
+ 
+Suggested Action: 
+ 
+ 
+Attachments: 
+1.    J STEIBER - Tire Disposal Flyer 
+ 

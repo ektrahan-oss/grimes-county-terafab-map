@@ -1,0 +1,55 @@
+GRIMES COUNTY BUDGET HEARINGS
+OFFICIAL MINUTES — MONDAY, AUGUST 3, 2026
+
+The Grimes County Budget Hearings met on Monday, August 3, 2026, at 9:00 A.M. Members Present:
+County Judge Joe Fauth, Commissioner Chad Mallett, Commissioner David Tullos, Commissioner Michael
+Raska, Commissioner Phillip Cox.
+
+Call to Order.
+County Judge Joe Fauth called the meeting to order at 9:02 AM.
+
+Discuss and review the Grimes County FY 2027 proposed budget.
+
+IT Director Gregg Cannon presented the hardware line item for the Information Technology
+department's budget, the final component of the IT budget not yet brought before the court. Cannon
+used color-coding to distinguish between new requests marked in red, items requiring detailed
+discussion highlighted in yellow, and existing budget items in black, with a notation system to identify
+new requests in the far left corner. The total hardware budget was revised downward from an initially
+proposed $1,100,000 to $743,647 after Cannon re-evaluated the requests. Assistant Auditor Sinda
+Phelps noted that items in yellow were not included in the total at the top. County Judge Joe Fauth
+asked for clarification on whether items without an "n" designation were replacements or ongoing
+expenses, and Cannon explained that blank items indicated line items that were in the previous year's
+budget. The court reviewed the extensive list line by line, including requests for laptops, software,
+cameras, servers, and network equipment. Commissioner David Tullos identified a duplication where
+both a $2,000 item for five North Barn cameras and a $1,500 item for four external North Barn cameras
+appeared on the list, which Cannon acknowledged and removed the duplicate. The discussion covered
+specialized equipment such as four new camera servers at $60,000 to address jail and justice center
+video recording capacity issues, with Cannon explaining that current systems were overloaded and
+could only retain three months of video in the jail and one month in the justice center, below the
+six-month compliance standard. A $191,279 NetApp storage system was discussed as a replacement
+for aging ArcServe equipment that had reached end of life, with Cannon noting that maintenance on
+the old system would be discontinued upon approval of the new equipment. Throughout the review,
+Judge Fauth and commissioners examined the necessity and appropriateness of various items,
+questioned pricing consistency for similar equipment like monitors and citation printers, and discussed
+dependencies between IT infrastructure decisions and other court decisions such as potential migration
+away from the Grimes County Enforcement system to e-Force. Shannon Sanders of the Grimes
+County Appraisal District was invited to address questions regarding tax rates and revenue
+implications.
+
+ADJOURN.
+
+A motion to adjourn the meeting was made, seconded, and carried. The meeting adjourned at
+12:45 PM.
+
+Motion by Commissioner Michael Raska to Adjourn today's budget meeting. Seconded by
+
+GRIMES COUNTY BUDGET HEARINGS — REGULAR MEETING — MONDAY, AUGUST 3, 2026 Page 1 of 2
+
+Commissioner Phillip Cox. Carried.
+
+THE OFFICIAL MINUTES OF THE GRIMES COUNTY BUDGET HEARINGS ON August 3rd, 2026, ARE
+HEREBY APPROVED.
+
+Barbara Kimich County Clerk
+
+GRIMES COUNTY BUDGET HEARINGS — REGULAR MEETING — MONDAY, AUGUST 3, 2026 Page 2 of 2
