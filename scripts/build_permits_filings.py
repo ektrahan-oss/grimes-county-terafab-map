@@ -107,15 +107,18 @@ NOT_FILED = [
     ("a wastewater discharge permit", date(2026, 10, 8), r"^tceq-permit:.*\|TCEQ wastewater"),
     ("a water right transfer or amendment", date(2026, 10, 8), None),
     ("a groundwater permit", date(2026, 10, 8), None),
-    ("a federal (Army Corps) permit", date(2026, 10, 8), None),
+    ("a federal (Army Corps) permit", date(2026, 10, 8), r"^corps.*\|Army Corps .*(naming the project|at the site)"),
 ]
 
 WATCH_STATE = DATA / "permit_watch.json"
 # Watch records that belong on the map: the project's own state records, and air permits and building
 # projects that name a project company or the roads at the site. Pipelines, road projects and court
 # agenda items stay in the News tab only.
-ON_THE_MAP = ("tceq-permit:", "tceq-name:", "air:", "tdlr:")
-SOURCE_NAMES = {"tceq": "TCEQ Central Registry", "air": "TCEQ air permit search", "tdlr": "Texas Department of Licensing and Regulation project registry"}
+ON_THE_MAP = ("tceq-permit:", "tceq-name:", "air:", "tdlr:", "corps:", "corps-notice:")
+SOURCE_NAMES = {"tceq": "TCEQ Central Registry", "air": "TCEQ air permit search", "tdlr": "Texas Department of Licensing and Regulation project registry",
+                "corps": "U.S. Army Corps of Engineers, Fort Worth District"}
+# Which watch source vouches for each automatic line of NOT_FILED, by the start of its pattern
+CHECKED_BY = {"^air": "air", "^tceq": "tceq", "^corps": "corps"}
 SITE = (-96.0451, 30.6089)        # where records with no coordinates are placed: project-held land south of the reservoir
 RING_DEGREES = 0.006              # about a third of a mile, so several such records do not sit on one spot
 
@@ -127,12 +130,16 @@ def long_date(day):
 def watch_items(state, checked):
     """Features for watch records that are not already covered by a hand-kept item."""
     covered = {key for _, props in ITEMS for key in props.get("watch", [])}
-    keys = sorted(k for k in state if k.startswith(ON_THE_MAP) and k not in covered and "missing_since" not in state[k])
+    # Army Corps records cover the whole county; only those that name the project or lie at the site go on the map
+    keys = sorted(k for k in state if k.startswith(ON_THE_MAP) and k not in covered and "missing_since" not in state[k]
+                  and (not k.startswith("corps") or state[k].get("at_site")))
     features = []
     for n, key in enumerate(keys):
         item = state[key]
         angle = 2 * math.pi * n / max(len(keys), 6)
-        point = [round(SITE[0] + RING_DEGREES * math.cos(angle), 5), round(SITE[1] + RING_DEGREES * math.sin(angle) * 0.86, 5)]
+        located = "lon" in item and "lat" in item
+        ring = [round(SITE[0] + RING_DEGREES * math.cos(angle), 5), round(SITE[1] + RING_DEGREES * math.sin(angle) * 0.86, 5)]
+        point = [item["lon"], item["lat"]] if located else ring
         status = item["status"].strip()
         if re.search(r"pending|review|received", status, re.I):
             shown = PENDING
@@ -145,35 +152,42 @@ def watch_items(state, checked):
         features.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": point}, "properties": {
             "name": title, "description": what, "Status": shown,
             "First seen by the daily check": long_date(date.fromisoformat(item["first_seen"])),
-            "Location": "Approximate. The record gives no coordinates, so the marker is placed at the project site.",
+            "Location": "From the coordinates in the record." if located else
+                        "Approximate. The record gives no coordinates, so the marker is placed at the project site.",
             "Source": SOURCE_NAMES[key.split(":")[0].split("-")[0]], "As of": long_date(checked),
             "url": item["link"], "link": "See the record", "id": "watch-" + key}})
     return features
 
 
-def not_filed_note(state, checked):
+def not_filed_note(state, checked, by_source):
     """The legend's dated list of filings not found, without any the watch has now seen."""
     lines = []
     for wording, by_hand, pattern in NOT_FILED:
         if pattern and any(re.search(pattern, f"{k}|{v['what']}", re.I) for k, v in state.items()):
             continue
-        lines.append(f"{wording} (none found as of {long_date(max(checked, by_hand) if pattern else by_hand)})")
+        source = next((s for start, s in CHECKED_BY.items() if pattern and pattern.startswith(start)), None)
+        last = date.fromisoformat(by_source[source]) if source in by_source else checked if source in ("air", "tceq") else by_hand
+        lines.append(f"{wording} (none found as of {long_date(max(last, by_hand))})")
     return ("Not filed yet: " + "; ".join(lines) + ".") if lines else None
 
 
-def build(state, checked):
-    """(features, legend note) from the hand-kept list plus the watch's records."""
+def build(state, checked, by_source=None):
+    """(features, legend note) from the hand-kept list plus the watch's records.
+
+    checked is the day the watch last ran in full; by_source gives the last day each of its sources answered.
+    """
     hand = [{"type": "Feature", "properties": {k: v for k, v in props.items() if k != "watch"},
              "geometry": {"type": "Point", "coordinates": list(point)}} for point, props in ITEMS]
-    return hand + watch_items(state, checked), not_filed_note(state, checked)
+    return hand + watch_items(state, checked), not_filed_note(state, checked, by_source or {})
 
 
 def main():
     state = json.loads(WATCH_STATE.read_text(encoding="utf-8")) if WATCH_STATE.exists() else {}
     state.pop("_recorded", None)
+    by_source = state.pop("_checked", {})
     meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8")).get("layers", {})
     checked = date.fromisoformat(meta["permits"]["updated"]) if "permits" in meta else date.today()
-    features, note = build(state, checked)
+    features, note = build(state, checked, by_source)
     size = publish_features("filings", "Permits and filings", OUT, features, SOURCE, ("item", "items"), key="id", note=note)
     print(f"Wrote {len(features)} items to {OUT.name} ({size / 1024:.1f} KB).")
     for f in features:

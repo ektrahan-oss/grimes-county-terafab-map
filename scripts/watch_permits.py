@@ -1,6 +1,6 @@
 """Watch state records for permits tied to the Terafab project.
 
-Six public sources are checked:
+Seven public sources are checked:
 
   TCEQ Central Registry   Every Grimes County site registered to SpaceX, and each permit on it.
                           Also any site or customer named after Terafab or WIT Tech.
@@ -11,6 +11,9 @@ Six public sources are checked:
   TxDOT project tracker   State road projects within about two miles of the reinvestment zone.
   Commissioners Court     Agenda items about permits, and plat, utility or road items that
                           name the project or the roads at the site.
+  Army Corps of Engineers Fort Worth District records in the Corps' public permit data that name
+                          a project company, the Navasota River or Gibbons Creek, or lie in Grimes
+                          County, and the district's newest public notices.
 
 SpaceX's own records are always tracked. Contractors file under their own names, so air permits
 and building projects are also tracked when their name or location points at the site (see
@@ -49,6 +52,16 @@ RRC = "https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_View
 TXDOT = "https://services.arcgis.com/KTcxiTD9dsQw4r7Z/arcgis/rest/services/TxDOT_Projects_Info/FeatureServer/0/query"
 TXDOT_MARGIN_DEGREES = 0.03                      # about two miles around the reinvestment zone
 ROUTINE_ROAD_WORK = {"seal coat", "profile markings", "preventive maintenance"}
+
+CORPS_DATA = "https://permits.ops.usace.army.mil/orm-public-api/permits/search"
+CORPS_PAGE = "https://permits.ops.usace.army.mil/orm-public"
+CORPS_NOTICES = "https://www.swf.usace.army.mil/Media/Public-Notices/"
+CORPS_FEED = "https://www.swf.usace.army.mil/DesktopModules/ArticleCS/RSS.ashx?ContentType=4&Site=436&isdashboardselected=0&max=20"
+CORPS_DISTRICT = "SWF"                           # Fort Worth District, which covers Grimes County
+CORPS_WORDS = ["GRIMES COUNTY", "NAVASOTA RIVER", "GIBBONS CREEK"]
+CORPS_KINDS = {"pending": "pending individual permit", "issued": "issued individual permit", "jds": "jurisdictional determination",
+               "nepa_ea": "environmental assessment", "nepa_eis": "environmental impact statement", "wrda": "permit action",
+               "s408": "request to alter a federal project"}
 
 AGENDA_API = "https://grimescotx.api.civicclerk.com/v1"
 AGENDA_LOOK_BACK_DAYS = 45
@@ -272,6 +285,72 @@ def check_txdot():
     return found
 
 
+# ---- U.S. Army Corps of Engineers ----
+
+def in_county(lon, lat):
+    """Is a place inside Grimes County? Uses the map's own county outline."""
+    def in_ring(ring):
+        hit = False
+        for (x1, y1), (x2, y2) in zip(ring, ring[1:] + ring[:1]):
+            if (y1 > lat) != (y2 > lat) and lon < (x2 - x1) * (lat - y1) / (y2 - y1) + x1:
+                hit = not hit
+        return hit
+    geom = json.loads((DATA / "grimes_county.geojson").read_text(encoding="utf-8"))["features"][0]["geometry"]
+    polygons = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+    return any(in_ring(p[0]) and not any(in_ring(hole) for hole in p[1:]) for p in polygons)
+
+
+def check_corps():
+    """Fort Worth District records in the Corps' public permit data, and the district's newest public notices.
+
+    A record is kept when it names a project company, lies at the site, lies anywhere in Grimes County, or names the
+    Navasota River or Gibbons Creek. "at_site" marks the first two kinds, which also go on the Permits & filings layer.
+    Most nationwide permits are never published, so their absence here proves nothing.
+    """
+    found = {}
+    west, south, east, north = zone_bounds()
+    m = TXDOT_MARGIN_DEGREES
+    since = (date.today() - timedelta(days=LOOK_BACK_DAYS)).strftime("%Y%m%d")
+    rows = fetch_json(CORPS_DATA, {"da": "true", "max": 200000, "q": f"org:{CORPS_DISTRICT}"})["results"]["features"]
+    if len(rows) < 100:
+        raise RuntimeError(f"the Corps permit data returned only {len(rows)} Fort Worth District records")
+    for row in rows:
+        p = row["properties"]
+        lon, lat = (row.get("geometry") or {}).get("coordinates") or (None, None)
+        text = " ".join(str(p.get(k) or "") for k in ("projectName", "requestName", "applicant", "locationName", "locationDesc"))
+        entity, water = matches(text, ENTITY_WORDS), matches(text, CORPS_WORDS)
+        at_site = lon is not None and west - m <= lon <= east + m and south - m <= lat <= north + m
+        county = lon is not None and in_county(lon, lat)
+        pending = p.get("vtype") == "pending" or str(p.get("pendingOrFinal") or "").lower() in ("pending", "in progress")
+        if not (entity or at_site or county or water) or not (pending or str(p.get("vdate") or "") >= since):
+            continue
+        kind = CORPS_KINDS.get(p.get("vtype"), "record")
+        name = (p.get("projectName") or p.get("requestName") or "no project name given").strip()
+        who = f", applicant {p['applicant']}" if p.get("applicant") else ""
+        where = "naming the project" if entity else "at the site" if at_site else "in Grimes County" if county else "naming the river or creek"
+        found[f"corps:{p['identifier']}"] = {
+            "what": f"Army Corps {kind} {where}: {name} ({p['identifier']}{who}). {p.get('permitType') or p.get('reviewCategory') or ''}".strip(),
+            "status": str(p.get("actionTaken") or p.get("status") or p.get("pendingOrFinal") or ("pending" if pending else "listed")).lower(),
+            "link": CORPS_PAGE, "at_site": bool(entity or at_site), **({"lon": round(lon, 5), "lat": round(lat, 5)} if lon is not None else {})}
+
+    # The district's notice pages refuse scripts, but its feed of the 20 newest notices does not. The feed gives a title and
+    # one line of text, so a notice that names neither the county nor the project in those will only be caught by the data above.
+    try:
+        feed = fetch(CORPS_FEED).decode("utf-8", "replace")
+        for item in re.findall(r"<item>(.*?)</item>", feed, re.S):
+            part = {k: clean(html.unescape((re.search(rf"<{k}>(.*?)</{k}>", item, re.S) or [None, ""])[1])) for k in ("title", "link", "description")}
+            entity = matches(f"{part['title']} {part['description']}", ENTITY_WORDS)
+            if not (entity or matches(f"{part['title']} {part['description']}", CORPS_WORDS)):
+                continue
+            number = re.search(r"/Article/(\d+)/", part["link"])
+            found[f"corps-notice:{number.group(1) if number else part['title'][:40]}"] = {
+                "what": f"Army Corps public notice {'naming the project' if entity else 'for Grimes County or its rivers'}: {part['title'][:200]}",
+                "status": "notice posted", "link": part["link"] or CORPS_NOTICES, "at_site": bool(entity)}
+    except Exception as e:                      # the feed being down should not hide what the permit data showed
+        print(f"  Army Corps notice feed could not be read ({e}). The permit data was still checked.")
+    return found
+
+
 # ---- Commissioners Court agenda items ----
 
 AGENDA_ITEM = re.compile(r"\n\s*\d{1,2}\. (.*?)(?=\n\s*\d{1,2}\. |\n\s*[A-Z][A-Z ]{6,}:|\Z)", re.S)
@@ -313,6 +392,7 @@ SOURCES = [
     ("rrc", "Railroad Commission pipeline permits", check_rrc, True),
     ("txdot", "TxDOT project tracker", check_txdot, True),
     ("county", "Commissioners Court agendas", check_county, False),
+    ("corps", "Army Corps of Engineers permits and notices", check_corps, False),
 ]
 
 
@@ -320,6 +400,7 @@ def main():
     state = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
     # A source's first run only records what is there. Files written before this list existed held three sources.
     recorded = state.pop("_recorded", ["tceq", "air", "tdlr"] if state else [])
+    checked = state.pop("_checked", {})         # source -> the last day it answered, for the map's "none found as of" dates
     seen, changes, failed = state, [], []
 
     for prefix, name, check, log_removed in SOURCES:
@@ -329,6 +410,7 @@ def main():
             failed.append(f"{name}: {e}")
             continue
         first_time = prefix not in recorded
+        checked[prefix] = date.today().isoformat()
         on_file = [k for k in seen if k.split(":")[0].split("-")[0] == prefix]
         missing = [k for k in on_file if k not in found]
         if len(on_file) >= MIN_FOR_SHORTFALL_CHECK and len(missing) > len(on_file) * MAX_SHORTFALL:
@@ -355,7 +437,7 @@ def main():
             recorded.append(prefix)
             print(f"  {name}: first run, recorded {len(found)} without logging them.")
 
-    STATE.write_text(json.dumps({"_recorded": sorted(recorded), **dict(sorted(seen.items()))}, indent=2, ensure_ascii=False) + "\n",
+    STATE.write_text(json.dumps({"_checked": dict(sorted(checked.items())), "_recorded": sorted(recorded), **dict(sorted(seen.items()))}, indent=2, ensure_ascii=False) + "\n",
                      encoding="utf-8")
     for summary, link in changes:
         log_change("permits", summary, link)
