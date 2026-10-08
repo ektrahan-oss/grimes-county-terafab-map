@@ -110,5 +110,10 @@
     "layer": "entities",
     "summary": "Entity watch: new company on the state's franchise tax list, LLZ BUILD LLC (same mailing address as SpaceX (1 Rocket Rd); out-of-state limited liability company, Hawthorne, CA, dated 2026-09-11). Link to the project: not confirmed.",
     "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108082614"
+  },
+  {
+    "date": "2026-10-07",
+    "layer": "holdings",
+    "summary": "Project-linked holdings: now 38 parcels and about 8,127 acres in 6 blocks (was 34 parcels and about 8,087 acres)"
   }
 ]
