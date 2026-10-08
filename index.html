@@ -501,7 +501,9 @@
     if (cfg.under && !map.getPane(cfg.id)) map.createPane(cfg.id).style.zIndex = 370;      // stays beneath the other layers, whichever loads first
     return L.geoJSON({ type: "FeatureCollection", features }, {
       ...(cfg.under ? { pane: cfg.id } : {}),
-      style: f => cfg.kind === "outline"
+      // Points take their look from pointToLayer below, so a style here would override it
+      style: f => /Point$/.test(f.geometry?.type) ? {}
+        : cfg.kind === "outline"
         ? { color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
         : cfg.kind === "line"
           ? { color, weight: cls.weight ?? (cfg.weightBy ? cfg.weightBy(f.properties) : cfg.weight ?? 2), dashArray: cls.dash }
