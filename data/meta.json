@@ -130,6 +130,11 @@
       "updated": "2026-10-02",
       "source": "https://data.geographic.texas.gov/ (StratMap Land Parcels, Grimes County)",
       "feature_count": 132
+    },
+    "filings": {
+      "updated": "2026-10-08",
+      "source": "TCEQ Central Registry, TCEQ air permit search, ERCOT GIS Report and Grimes Central Appraisal District records",
+      "feature_count": 5
     }
   }
 }
