@@ -293,7 +293,7 @@
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true, under: true },
     { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land listed under a company tied to the project", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false, on: true,
-      note: "Land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. The About tab shows when the records were last checked." },
+      note: "Land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. Includes about 2,480 acres once set aside for the Smith Lake Solar project. The About tab shows when the records were last checked." },
     { id: "filings", one: "permit or filing", name: "Permits & filings", desc: "State permits and filings tied to the project or nearby construction", url: "data/permits_filings.geojson", kind: "point", color: "#2E7D32",
       note: "Each point is a permit, filing or purchase checked against the record named in its pop-up. Some records describe a place without giving coordinates; those points are marked approximate.",
       classes: [
@@ -388,7 +388,7 @@
         { label: "Monitoring, testing or other", color: "#A6A6A6", radius: 3, test: () => true }
       ] },
     { id: "water_rights", one: "water right point", name: "Surface water rights", desc: "Where state water rights allow water to be taken or stored", url: "data/water_rights.geojson", kind: "point", color: "#D95F02",
-      note: "Each point is a place named in a state water right. Covers the county and five miles around it. Holders' names are not shown.",
+      note: "Each point is a place named in a state water right. Covers the county and five miles around it. Holders' names are not shown. The reservoir and river pump rights were widened in 2023 to city, farm and industrial use across the Brazos basin. As of October 6, 2026, state records still list them under the reservoir's prior owner.",
       classes: [
         { label: "Diversion point", color: "#D95F02", radius: 7, test: p => /diversion point/i.test(p["Point type"] || "") },
         { label: "Reservoir", color: "#1F78B4", radius: 6, test: p => /reservoir/i.test(p["Point type"] || "") },
