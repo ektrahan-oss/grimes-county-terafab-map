@@ -1,6 +1,7 @@
 """Run the map's data scripts from one place.
 
-    python scripts/run_all.py --frequent     daily: stream gauges, news feed and the document, permit and entity watches
+    python scripts/run_all.py --frequent     daily: stream gauges, news feed and the document, permit and entity watches,
+                                             then the Permits & filings layer, rebuilt from what the permit watch found
     python scripts/run_all.py --all          monthly: the daily ones plus every layer that refreshes itself
                                              (on GitHub the reinvestment zone is skipped)
     python scripts/run_all.py --only NAME    one layer, for example --only pipelines
@@ -82,6 +83,7 @@ LAYERS = {
     "news":      (module_main("build_news"), True, True),
     "documents": (module_main("watch_documents"), True, True),
     "permits":   (module_main("watch_permits"), True, True),
+    "filings":   (module_main("build_permits_filings"), True, True),   # after permits: puts what the watch found on the map
     "entities":  (module_main("watch_entities"), True, True),
 }
 

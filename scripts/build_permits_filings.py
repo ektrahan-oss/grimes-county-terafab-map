@@ -1,16 +1,24 @@
 """Build the Permits & filings layer in data/permits_filings.geojson.
 
-A short, hand-kept list of state permits and filings tied to the project or to construction near
-it, each checked against the record named in its Source line. Nothing is looked up when this runs:
-to add or change an item, edit ITEMS below, then run
+Two kinds of item go on the layer:
+
+  Hand-kept   ITEMS below: permits, filings and purchases checked by hand against the record named
+              in each one's Source line. Edit the list to add or change one.
+  From the    Records the daily permit watch (watch_permits.py) has found that name a project
+  watch       company or the roads at the site. They are read from data/permit_watch.json, so a
+              new filing reaches the map the day the watch first sees it. The state's records
+              give no coordinates, so these are placed at the project site and say so.
+
+NOT_FILED is the list of filings looked for and not found. A line drops off by itself when the
+watch finds that kind of filing; the others are removed by hand. Nothing is looked up when this
+script runs: it only reads the two lists.
 
     python scripts/build_permits_filings.py
-
-Each item carries its source, a link to it and the date it was last checked. Where a record gives
-a description of a place and not coordinates, the point is marked approximate and says why.
-NOT_FILED is the list of filings looked for and not found, with the date of the last look.
 """
 
+import json
+import math
+import re
 from datetime import date
 
 from common import DATA, publish_features
@@ -38,7 +46,7 @@ ITEMS = [
         "Source": "TCEQ Central Registry",
         "As of": "October 8, 2026",
         "url": REGISTRY + "RN112483532", "link": "See the TCEQ record",
-        "id": "tceq-TXR1535YT"}),
+        "id": "tceq-TXR1535YT", "watch": ["tceq-permit:RN112483532:TXR1535YT", "tceq-site:RN112483532"]}),
     ((-96.0498, 30.5945), {
         "name": "Concrete batch plant air permit, registration 184781",
         "description": "Not filed by SpaceX; a sign of heavy construction nearby.",
@@ -49,7 +57,7 @@ ITEMS = [
         "Source": "TCEQ air permit search and Central Registry",
         "As of": "October 8, 2026",
         "url": REGISTRY + "RN112495213", "link": "See the TCEQ record",
-        "id": "tceq-air-184781"}),
+        "id": "tceq-air-184781", "watch": ["air:412457"]}),
     ((-96.15967, 30.65237), {
         "name": "River pump station tracts",
         "description": "Two tracts on the Navasota River, 3.83 and 1.25 acres, listed under WIT TECH LLC.",
@@ -91,28 +99,86 @@ ITEMS = [
         "id": "ercot-27INR0115"}),
 ]
 
-# Filings looked for and not found. Remove a line when the filing appears, and add it to ITEMS.
-NOT_FILED_AS_OF = date(2026, 10, 8)
+# Filings looked for and not found: (wording, date last checked by hand, how the watch would spot one).
+# A line with a pattern is checked every day by the permit watch and drops off when a watch record matches.
+# A line with None is only checked by hand: change its date after each look, and delete it when the filing appears.
 NOT_FILED = [
-    "an air permit for the on-site power plants",
-    "a wastewater discharge permit",
-    "a water right transfer or amendment",
-    "a groundwater permit",
-    "a federal (Army Corps) permit",
+    ("an air permit for the on-site power plants", date(2026, 10, 8), r"^air:.*\|SpaceX air permit"),
+    ("a wastewater discharge permit", date(2026, 10, 8), r"^tceq-permit:.*\|TCEQ wastewater"),
+    ("a water right transfer or amendment", date(2026, 10, 8), None),
+    ("a groundwater permit", date(2026, 10, 8), None),
+    ("a federal (Army Corps) permit", date(2026, 10, 8), None),
 ]
 
+WATCH_STATE = DATA / "permit_watch.json"
+# Watch records that belong on the map: the project's own state records, and air permits and building
+# projects that name a project company or the roads at the site. Pipelines, road projects and court
+# agenda items stay in the News tab only.
+ON_THE_MAP = ("tceq-permit:", "tceq-name:", "air:", "tdlr:")
+SOURCE_NAMES = {"tceq": "TCEQ Central Registry", "air": "TCEQ air permit search", "tdlr": "Texas Department of Licensing and Regulation project registry"}
+SITE = (-96.0451, 30.6089)        # where records with no coordinates are placed: project-held land south of the reservoir
+RING_DEGREES = 0.006              # about a third of a mile, so several such records do not sit on one spot
 
-def not_filed_note():
-    when = f"{NOT_FILED_AS_OF:%B} {NOT_FILED_AS_OF.day}, {NOT_FILED_AS_OF.year}"
-    return f"Not filed yet. None found as of {when} for: " + "; ".join(NOT_FILED) + "."
+
+def long_date(day):
+    return f"{day:%B} {day.day}, {day.year}"
+
+
+def watch_items(state, checked):
+    """Features for watch records that are not already covered by a hand-kept item."""
+    covered = {key for _, props in ITEMS for key in props.get("watch", [])}
+    keys = sorted(k for k in state if k.startswith(ON_THE_MAP) and k not in covered and "missing_since" not in state[k])
+    features = []
+    for n, key in enumerate(keys):
+        item = state[key]
+        angle = 2 * math.pi * n / max(len(keys), 6)
+        point = [round(SITE[0] + RING_DEGREES * math.cos(angle), 5), round(SITE[1] + RING_DEGREES * math.sin(angle) * 0.86, 5)]
+        status = item["status"].strip()
+        if re.search(r"pending|review|received", status, re.I):
+            shown = PENDING
+        elif re.search(r"active|issued|effective|complete|registered", status, re.I):
+            shown = f"{ACTIVE} ({status.lower()})"
+        else:
+            shown = status.capitalize()
+        what = item["what"]
+        title = what if len(what) <= 70 else what.split(":")[0] if ":" in what[:70] else what[:67].rsplit(" ", 1)[0] + "..."
+        features.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": point}, "properties": {
+            "name": title, "description": what, "Status": shown,
+            "First seen by the daily check": long_date(date.fromisoformat(item["first_seen"])),
+            "Location": "Approximate. The record gives no coordinates, so the marker is placed at the project site.",
+            "Source": SOURCE_NAMES[key.split(":")[0].split("-")[0]], "As of": long_date(checked),
+            "url": item["link"], "link": "See the record", "id": "watch-" + key}})
+    return features
+
+
+def not_filed_note(state, checked):
+    """The legend's dated list of filings not found, without any the watch has now seen."""
+    lines = []
+    for wording, by_hand, pattern in NOT_FILED:
+        if pattern and any(re.search(pattern, f"{k}|{v['what']}", re.I) for k, v in state.items()):
+            continue
+        lines.append(f"{wording} (none found as of {long_date(max(checked, by_hand) if pattern else by_hand)})")
+    return ("Not filed yet: " + "; ".join(lines) + ".") if lines else None
+
+
+def build(state, checked):
+    """(features, legend note) from the hand-kept list plus the watch's records."""
+    hand = [{"type": "Feature", "properties": {k: v for k, v in props.items() if k != "watch"},
+             "geometry": {"type": "Point", "coordinates": list(point)}} for point, props in ITEMS]
+    return hand + watch_items(state, checked), not_filed_note(state, checked)
 
 
 def main():
-    features = [{"type": "Feature", "properties": props, "geometry": {"type": "Point", "coordinates": list(point)}} for point, props in ITEMS]
-    size = publish_features("filings", "Permits and filings", OUT, features, SOURCE, ("item", "items"), key="id", note=not_filed_note())
+    state = json.loads(WATCH_STATE.read_text(encoding="utf-8")) if WATCH_STATE.exists() else {}
+    state.pop("_recorded", None)
+    meta = json.loads((DATA / "meta.json").read_text(encoding="utf-8")).get("layers", {})
+    checked = date.fromisoformat(meta["permits"]["updated"]) if "permits" in meta else date.today()
+    features, note = build(state, checked)
+    size = publish_features("filings", "Permits and filings", OUT, features, SOURCE, ("item", "items"), key="id", note=note)
     print(f"Wrote {len(features)} items to {OUT.name} ({size / 1024:.1f} KB).")
     for f in features:
         print(f"  {f['properties']['Status']:34} {f['properties']['name']}")
+    print(" ", note)
 
 
 if __name__ == "__main__":
