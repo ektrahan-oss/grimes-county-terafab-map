@@ -1199,6 +1199,17 @@
       "mentions": [],
       "first_seen": "2026-10-07",
       "copy": "archive/court/2026-09-23_minutes_6632_d418f4e6.pdf"
+    },
+    "6634": {
+      "title": "9-16",
+      "kind": "Minutes",
+      "meeting": "2026-09-16",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6634,plainText=false)",
+      "sha256": "80a1b0a6fd544564d6f597a388b6a476ecd0690b98e78560eec3a3c6b4a069fa",
+      "mentions": [],
+      "first_seen": "2026-10-08",
+      "copy": "archive/court/2026-09-16_minutes_6634_80a1b0a6.pdf",
+      "text": "read from scan"
     }
   }
 }
