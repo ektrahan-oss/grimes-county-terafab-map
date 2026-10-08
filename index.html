@@ -291,8 +291,8 @@
 
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
-    { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true },
-    { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land listed under a company tied to the project", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false,
+    { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true, under: true },
+    { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land listed under a company tied to the project", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false, on: true,
       note: "Land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. The About tab shows when the records were last checked." },
     { id: "parcels", name: "Parcel lines", desc: "Property boundaries", tiles: "data/parcels", kind: "outline", color: "#7A6A55", minZoom: 13,
       note: "Parcel map as of {asOf}. Tracts split or sold since then are not shown, and owners are not named. Click inside a parcel for its property ID." },
@@ -426,9 +426,11 @@
   const map = L.map("map", { zoomControl: false }).setView(center, 10);
   L.control.zoom({ position: "topright" }).addTo(map);
 
-  const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+  // Esri's street map, not OpenStreetMap's: volunteers there had drawn a "Terafab" area that went beyond the recorded holdings
+  const streets = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    { maxZoom: 19, attribution: "Map &copy; Esri and its data providers" }
+  ).addTo(map);
   const satellite = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     { maxZoom: 19, attribution: "Imagery &copy; Esri" }
@@ -487,7 +489,9 @@
   const canvas = L.canvas({ padding: 0.3 });     // much faster than the default for layers with thousands of points
   function makeLayer(cfg, cls, features) {
     const color = cls.color || cfg.color;
+    if (cfg.under && !map.getPane(cfg.id)) map.createPane(cfg.id).style.zIndex = 370;      // stays beneath the other layers, whichever loads first
     return L.geoJSON({ type: "FeatureCollection", features }, {
+      ...(cfg.under ? { pane: cfg.id } : {}),
       style: f => cfg.kind === "outline"
         ? { color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
         : cfg.kind === "line"
