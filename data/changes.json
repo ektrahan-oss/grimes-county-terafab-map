@@ -120,5 +120,10 @@
     "date": "2026-10-08",
     "layer": "filings",
     "summary": "Permits and filings: new, with 5 items"
+  },
+  {
+    "date": "2026-10-08",
+    "layer": "holdings",
+    "summary": "Project-linked holdings: land under option is now shown: about 3,135 acres, not yet sold"
   }
 ]

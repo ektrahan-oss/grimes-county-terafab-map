@@ -7,6 +7,10 @@ reinvestment zone outline is.
 
 Only companies tied to the project are looked up. No other owner is ever requested.
 
+Land a project company holds an option on, but has not bought, is added from OPTIONS below. Its
+outline is a hand-drawn file in data/sources/ with no parcel numbers or owner names. An option is
+shown with its own status and drops off by itself once the land appears under a project company.
+
 Run by hand when you want to check for new purchases:
 
     python scripts/fetch_project_holdings.py
@@ -32,6 +36,28 @@ HOLDERS = {
     "TERAFAB": "TeraFab AI, LLC",
 }
 OUT = DATA / "project_holdings.geojson"
+CLERK = "https://grimes.tx.publicsearch.us/"       # Grimes County Clerk, official records search
+
+OWNED, OPTIONED = "Owned", "Under option (not yet sold)"
+# Options recorded with the County Clerk. Each was read at the source before it was added here.
+OPTIONS = [
+    {"outline": DATA / "sources" / "reservoir_option_tract.geojson", "acres": 3135.31,
+     "properties": {
+         "name": "Under option, not yet sold",
+         "description": "Gibbons Creek Reservoir and its shoreline. A project company holds a recorded option to buy this land. It has not been sold.",
+         "Status": OPTIONED,
+         "Option held by": "WIT TECH LLC",
+         "Acres in the option": "3,135.31",
+         "Option signed": "May 27, 2026",
+         "Recorded": "May 28, 2026, Grimes County Clerk document 2026-355105",
+         "Contract of sale effective": "February 6, 2026",
+         "Ownership": "Still owned by the reservoir's owner. Appraisal records show no sale.",
+         "Water rights": "The option does not appear to cover the state water rights, which state records list under the reservoir's owner.",
+         "Source": "Grimes County Clerk, Memorandum of Option; Grimes Central Appraisal District",
+         "As of": "October 8, 2026",
+         "url": CLERK, "link": "Search the County Clerk's records"}},
+]
+SOLD_SHARE = 0.9      # an option is dropped once this share of its land shows under a project company
 
 
 def fetch_parcels():
@@ -81,7 +107,23 @@ def outside_zone_note(parcels):
 
 
 def totals(features):
-    return (sum(f["properties"]["Parcels"] for f in features), sum(f["properties"]["Acres listed"] for f in features))
+    owned = [f for f in features if f["properties"].get("Status") != OPTIONED]
+    return (sum(f["properties"]["Parcels"] for f in owned), sum(f["properties"]["Acres listed"] for f in owned))
+
+
+def option_features(parcels):
+    """Features for recorded options whose land has not yet passed to a project company."""
+    owned = parcels.geometry.union_all()
+    out = []
+    for option in OPTIONS:
+        shape = gpd.read_file(option["outline"]).to_crs(WORK_CRS).geometry.union_all()
+        if shape.intersection(owned).area / shape.area >= SOLD_SHARE:
+            print(f"  Option left off: the land now shows under a project company ({option['properties']['Recorded']}). Remove it from OPTIONS.")
+            continue
+        g = json.loads(gpd.GeoSeries([shape], crs=WORK_CRS).to_crs(4326).to_json())["features"][0]["geometry"]
+        g["coordinates"] = _rounded(g["coordinates"])
+        out.append({"type": "Feature", "properties": dict(option["properties"]), "geometry": g})
+    return out
 
 
 def main():
@@ -89,7 +131,7 @@ def main():
     rows = []
     for holder, group in parcels.groupby("holder"):
         for shape, count, acres, mapped in blocks_for(group):
-            rows.append({"name": "Project-linked holding", "Listed under": holder, "Parcels": count,
+            rows.append({"name": "Project-linked holding", "Status": OWNED, "Listed under": holder, "Parcels": count,
                          "Acres listed": round(acres, 1), "Acres mapped": round(mapped, 1), "geometry": shape,
                          "description": "Land listed under this company in appraisal district records. "
                                         "Tract lines inside the block are merged. Listed acres are the district's figure; "
@@ -101,6 +143,8 @@ def main():
     features = json.loads(blocks.to_crs(4326).to_json(drop_id=True))["features"]
     for f in features:
         f["geometry"]["coordinates"] = _rounded(f["geometry"]["coordinates"])
+    options = option_features(parcels)
+    features += options                     # drawn after the owned blocks, with their own status
     old = json.loads(OUT.read_text(encoding="utf-8"))["features"] if OUT.exists() else None
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
     note = outside_zone_note(parcels)
@@ -108,12 +152,16 @@ def main():
     OUT.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
 
     n, acres = totals(features)
-    now = f"{n} parcels and about {acres:,.0f} acres in {len(features)} blocks"
+    now = f"{n} parcels and about {acres:,.0f} acres in {len(features) - len(options)} blocks"
     if old is None:
         summary = f"new, with {now}"
-    elif old != features:
+    elif totals(old) != totals(features):
         was_n, was_acres = totals(old)
         summary = f"now {now} (was {was_n} parcels and about {was_acres:,.0f} acres)"
+    elif len(options) != sum(1 for f in old if f["properties"].get("Status") == OPTIONED):
+        option_acres = sum(o["acres"] for o in OPTIONS)
+        summary = (f"land under option is now shown: about {option_acres:,.0f} acres, not yet sold" if options
+                   else "land that was under option now shows as owned")
     else:
         summary = None
     report_change("holdings", "Project-linked holdings", summary)
@@ -124,7 +172,10 @@ def main():
         print(f"  {note}")
     for f in features:
         p = f["properties"]
-        print(f"  {p['Acres listed']:>9,.1f} acres  {p['Parcels']:>2} parcels  {p['Listed under']}")
+        if p.get("Status") == OPTIONED:
+            print(f"  {p['Acres in the option']:>9} acres  under option to {p['Option held by']}, not yet sold")
+        else:
+            print(f"  {p['Acres listed']:>9,.1f} acres  {p['Parcels']:>2} parcels  {p['Listed under']}")
 
 
 if __name__ == "__main__":
