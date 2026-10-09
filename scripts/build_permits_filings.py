@@ -65,7 +65,7 @@ ITEMS = [
         "Listed under": "WIT TECH LLC",
         "Deed date": "May 27, 2026",
         "Improvements on the appraisal record": "None",
-        "Water rights": "State records still list the river and reservoir water rights under the reservoir's prior owner as of October 6, 2026.",
+        "Water rights": "State records still list the river and reservoir water rights under the reservoir's owner as of October 6, 2026.",
         "Source": "Grimes Central Appraisal District; TCEQ water rights records",
         "As of": "October 8, 2026",
         "url": APPRAISAL, "link": "Look it up at the appraisal district",
