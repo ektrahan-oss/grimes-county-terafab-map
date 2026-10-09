@@ -292,8 +292,12 @@
   const LAYERS = [
     { id: "county", one: "county line", name: "County boundary", desc: "Grimes County, U.S. Census Bureau", url: "data/grimes_county.geojson", kind: "outline", color: "#5F6E68", on: true },
     { id: "zone", one: "reinvestment zone", name: "Reinvestment zone", desc: "About 22,000 acres approved June 2026", url: "data/reinvestment_zone.geojson", kind: "fill", color: "#C8962E", on: true, under: true },
-    { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land listed under a company tied to the project", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false, on: true,
-      note: "Land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. Includes about 2,480 acres once set aside for the Smith Lake Solar project. The About tab shows when the records were last checked." },
+    { id: "holdings", one: "project-linked holding", name: "Project-linked holdings", desc: "Land a company tied to the project owns, or holds an option to buy", url: "data/project_holdings.geojson", kind: "fill", color: "#A63D2F", weight: 1.5, fillOpacity: 0.3, counts: false, on: true,
+      note: "Owned: land listed under WIT TECH LLC in Grimes Central Appraisal District records. Tract lines inside each block are merged. Includes about 2,480 acres once set aside for the Smith Lake Solar project. Under option: land a project company has a recorded right to buy but has not bought. It still belongs to its owner. The About tab shows when the records were last checked.",
+      classes: [
+        { label: "Under option (not yet sold)", color: "#E08A2E", dash: "6 5", test: p => /option/i.test(p.Status || "") },
+        { label: "Owned", color: "#A63D2F", test: () => true }
+      ] },
     { id: "filings", one: "permit or filing", name: "Permits & filings", desc: "State permits and filings tied to the project or nearby construction", url: "data/permits_filings.geojson", kind: "point", color: "#2E7D32",
       note: "Each point is a permit, filing or purchase checked against the record named in its pop-up. Some records describe a place without giving coordinates; those points are marked approximate.",
       classes: [
@@ -507,7 +511,7 @@
         ? { color, weight: 1.5, fill: false, interactive: false, dashArray: cfg.dash }
         : cfg.kind === "line"
           ? { color, weight: cls.weight ?? (cfg.weightBy ? cfg.weightBy(f.properties) : cfg.weight ?? 2), dashArray: cls.dash }
-          : { color: cfg.stroke || color, weight: cfg.weight ?? 2, fillColor: color, fillOpacity: cfg.fillOpacity ?? 0.2 },
+          : { color: cfg.stroke || color, weight: cfg.weight ?? 2, fillColor: color, fillOpacity: cfg.fillOpacity ?? 0.2, dashArray: cls.dash },
       pointToLayer: (f, latlng) => L.circleMarker(latlng, {
         radius: cls.radius ?? (cfg.labels ? 4 : 8), color: color === "#FFFFFF" ? "#5F6E68" : "#fff", weight: cfg.canvas ? 1 : color === "#FFFFFF" ? 1.5 : 2,
         fillColor: color, fillOpacity: 1, ...(cfg.canvas ? { renderer: canvas } : {})
@@ -1065,7 +1069,7 @@
   // id matches the layer's entry in data/meta.json, which holds its last updated date
   const SOURCES = [
     { id: "zone",      name: "Reinvestment zone",  why: "The land the county designated for the project's tax agreement.", source: "Grimes County Commissioners Court order; parcel shapes from TxGIO", url: "https://grimescountytexas.gov/index.asp?DE=41B01CCB-E7BC-4B13-AA5B-6E776B28053E&SEC=29DD23F1-21FF-472B-9DB3-CC5315345627" },
-    { id: "holdings",  name: "Project-linked holdings", why: "The zone is land the county designated; this is land a project-linked company is actually listed on, which shows where buying has gone beyond or stopped short of the zone.", source: "Grimes Central Appraisal District parcel records, merged into blocks", url: "https://gis.bisclient.com/grimescad/" },
+    { id: "holdings",  name: "Project-linked holdings", why: "The zone is land the county designated; this is land a project-linked company is actually listed on, which shows where buying has gone beyond or stopped short of the zone. Land under a recorded option is shown apart, because it has not been sold.", source: "Grimes Central Appraisal District parcel records, merged into blocks; options from Grimes County Clerk records", url: "https://gis.bisclient.com/grimescad/" },
     { id: "filings",   name: "Permits & filings",  why: "Where the paperwork stands: the permits and filings that exist for the project or for construction beside it, and a dated list of those that have not been found yet.", source: "TCEQ Central Registry and air permit search, U.S. Army Corps of Engineers permit data, ERCOT GIS Report, Grimes Central Appraisal District", url: "https://www15.tceq.texas.gov/crpub/" },
     { id: "parcels",   name: "Parcel lines",       why: "So a landowner can find their own tract and see how it sits against the zone and the other layers. Owners are not named; the appraisal district's own map is the place to look one up.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District. The layer's legend gives the date of the parcel map.", url: "https://gis.bisclient.com/grimescad/" },
     { id: "county",    name: "County boundary",    why: "For orientation.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
