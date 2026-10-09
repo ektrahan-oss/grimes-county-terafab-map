@@ -125,5 +125,11 @@
     "date": "2026-10-08",
     "layer": "holdings",
     "summary": "Project-linked holdings: land under option is now shown: about 3,135 acres, not yet sold"
+  },
+  {
+    "date": "2026-10-09",
+    "layer": "permits",
+    "summary": "Permits: new, Railroad Commission pipeline permit T-4 02160 in Grimes County, DCP INTRASTATE NETWORK, LLC (natural gas). Status: abandoned and in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/"
   }
 ]
