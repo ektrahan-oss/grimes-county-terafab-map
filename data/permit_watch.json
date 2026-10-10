@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-10-09",
-    "corps": "2026-10-09",
-    "county": "2026-10-09",
-    "rrc": "2026-10-09",
-    "tceq": "2026-10-09",
-    "tdlr": "2026-10-09",
-    "txdot": "2026-10-09"
+    "air": "2026-10-10",
+    "corps": "2026-10-10",
+    "county": "2026-10-10",
+    "rrc": "2026-10-10",
+    "tceq": "2026-10-10",
+    "tdlr": "2026-10-10",
+    "txdot": "2026-10-10"
   },
   "_recorded": [
     "air",
@@ -94,13 +94,6 @@
     "status": "abandoned and in service",
     "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
     "first_seen": "2026-10-09"
-  },
-  "rrc:02160:DCP OPERATING COMPANY, LP": {
-    "what": "Railroad Commission pipeline permit T-4 02160 in Grimes County, DCP OPERATING COMPANY, LP (natural gas)",
-    "status": "abandoned and in service",
-    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
-    "first_seen": "2026-10-01",
-    "missing_since": "2026-10-09"
   },
   "rrc:02259:ENTERPRISE PRODUCTS OPERATINGLLC": {
     "what": "Railroad Commission pipeline permit T-4 02259 in Grimes County, ENTERPRISE PRODUCTS OPERATINGLLC (highly volatile liquid)",

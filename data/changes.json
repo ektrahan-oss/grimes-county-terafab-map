@@ -131,5 +131,17 @@
     "layer": "permits",
     "summary": "Permits: new, Railroad Commission pipeline permit T-4 02160 in Grimes County, DCP INTRASTATE NETWORK, LLC (natural gas). Status: abandoned and in service",
     "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/"
+  },
+  {
+    "date": "2026-10-10",
+    "layer": "permits",
+    "summary": "Permits: no longer listed, Railroad Commission pipeline permit T-4 02160 in Grimes County, DCP OPERATING COMPANY, LP (natural gas)",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/"
+  },
+  {
+    "date": "2026-10-10",
+    "layer": "entities",
+    "summary": "Entity watch: new company on the state's franchise tax list, SUPERMAVEN, INC. (same mailing address as SpaceX (1 Rocket Rd); texas corporation, Hawthorne, CA, dated 2026-09-25). Link to the project: not confirmed.",
+    "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108308746"
   }
 ]
