@@ -143,5 +143,11 @@
     "layer": "entities",
     "summary": "Entity watch: new company on the state's franchise tax list, SUPERMAVEN, INC. (same mailing address as SpaceX (1 Rocket Rd); texas corporation, Hawthorne, CA, dated 2026-09-25). Link to the project: not confirmed.",
     "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32108308746"
+  },
+  {
+    "date": "2026-10-14",
+    "layer": "gauges",
+    "summary": "Stream gauges: Navasota River at Old San Antonio Road near Bryan is now much below normal for the time of year (was below normal)",
+    "link": "https://waterdata.usgs.gov/monitoring-location/USGS-08110800/"
   }
 ]
