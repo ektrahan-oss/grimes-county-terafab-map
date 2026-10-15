@@ -1221,6 +1221,26 @@
       "first_seen": "2026-10-09",
       "copy": "archive/court/2026-10-07_minutes_6635_656f7a84.pdf",
       "text": "read from scan"
+    },
+    "6640": {
+      "title": "Commissioners Court Regular Agenda 10/21/2023",
+      "kind": "Agenda",
+      "meeting": "2026-10-21",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6640,plainText=false)",
+      "sha256": "3e26af08c1dc9ef0228ac08a49db3be99084f13b0645b6454bec064b50c83ac2",
+      "mentions": [],
+      "first_seen": "2026-10-15",
+      "copy": "archive/court/2026-10-21_agenda_6640_3e26af08.pdf"
+    },
+    "6637": {
+      "title": "Commissioners Court Public Hearing Agenda 10/21/2026",
+      "kind": "Agenda",
+      "meeting": "2026-10-21",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6637,plainText=false)",
+      "sha256": "9db3ab2925ce92eb6ce48a046cccabc06e61052e53ac2f4a773b8392f21ea118",
+      "mentions": [],
+      "first_seen": "2026-10-15",
+      "copy": "archive/court/2026-10-21_agenda_6637_9db3ab29.pdf"
     }
   }
 }
