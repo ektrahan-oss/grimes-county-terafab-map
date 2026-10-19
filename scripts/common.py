@@ -42,11 +42,15 @@ def _open(req, timeout):
         return urllib.request.urlopen(req, timeout=timeout, context=ssl.create_default_context(cafile=certifi.where()))
 
 
-def fetch(url, params=None, timeout=120):
-    """Download a URL, trying again after a pause if the server drops the connection or is overloaded."""
+def fetch(url, params=None, timeout=120, form=None, headers=None):
+    """Download a URL, trying again after a pause if the server drops the connection or is overloaded.
+
+    form, if given, is sent as a filled-in web form (a POST), for sites that only answer searches that way.
+    """
     if params:
         url += "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    data = urllib.parse.urlencode(form).encode() if form is not None else None
+    req = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT, **(headers or {})})
     for attempt in range(1, ATTEMPTS + 1):
         try:
             with _open(req, timeout) as r:
