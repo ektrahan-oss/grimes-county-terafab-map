@@ -75,10 +75,8 @@ MAX_SHORTFALL = 0.25             # ...losing more than this share at once is tre
 
 
 def post(url, fields, headers=None):
-    req = urllib.request.Request(url, data=urllib.parse.urlencode(fields).encode(),
-                                 headers={"User-Agent": USER_AGENT, **(headers or {})})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return r.read().decode("utf-8", "replace")
+    """Send a search form. Retries like fetch(): state sites often answer "busy" (HTTP 503) for a minute or two."""
+    return fetch(url, form=fields, headers=headers).decode("utf-8", "replace")
 
 
 def clean(fragment):
