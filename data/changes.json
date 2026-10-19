@@ -166,5 +166,10 @@
     "layer": "gauges",
     "summary": "Stream gauges: Navasota River at Old San Antonio Road near Bryan is now much below normal for the time of year (was below normal)",
     "link": "https://waterdata.usgs.gov/monitoring-location/USGS-08110800/"
+  },
+  {
+    "date": "2026-10-19",
+    "layer": "holdings",
+    "summary": "Project-linked holdings: four deeds recorded with the County Clerk on October 7 and 13 (about 587 acres) and a 6.757-acre option are now shown; appraisal records do not yet show them"
   }
 ]
