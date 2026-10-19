@@ -175,5 +175,23 @@
     "summary": "KBTX aired a local pilot's video showing large burn piles across the construction site, where acres of trees have been cleared. KBTX also reported that the site now has an address on Timberwolf Trail, just off State Highway 30. The date shown is the date of the report.",
     "source": "KBTX",
     "url": "https://www.kbtx.com/2026/09/30/terafab-site-takes-shape-elon-musks-companies-face-growing-transparency-questions/"
+  },
+  {
+    "date": "2026-09-30",
+    "title": "WIT TECH buys its first land south of State Highway 30",
+    "summary": "About 195 acres on FM 244, inside the reinvestment zone and about a mile south of State Highway 30, is listed under WIT TECH LLC with a deed dated September 30, 2026. Until now all of the project's land inside the zone lay north of the highway. Appraisal records as of October 19, 2026.",
+    "source": "Grimes Central Appraisal District",
+    "url": "https://gis.bisclient.com/grimescad/",
+    "lat": 30.5811,
+    "lng": -96.0644
+  },
+  {
+    "date": "2026-09-30",
+    "title": "WIT TECH buys land beside Crutchfield Substation",
+    "summary": "About 102 acres on State Highway 30, outside the reinvestment zone and about 2.1 miles east of it, is listed under WIT TECH LLC with a deed dated September 30, 2026. It lies just south of the highway, next to Crutchfield Substation. Appraisal records as of October 19, 2026.",
+    "source": "Grimes Central Appraisal District",
+    "url": "https://gis.bisclient.com/grimescad/",
+    "lat": 30.585,
+    "lng": -95.9306
   }
 ]
