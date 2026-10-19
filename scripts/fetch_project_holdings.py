@@ -17,6 +17,7 @@ Run by hand when you want to check for new purchases:
 """
 
 import json
+from datetime import date
 import sys
 
 import geopandas as gpd
@@ -94,15 +95,35 @@ def blocks_for(parcels):
     return out
 
 
-def outside_zone_note(parcels):
-    """One sentence for the map legend: how much of the mapped land lies outside the reinvestment zone outline."""
-    path = DATA / "reinvestment_zone.geojson"
-    if not path.exists():
+ZONE_FILE = DATA / "reinvestment_zone.geojson"
+MOSTLY = 0.95           # a block with at least this share of its land in the zone is called inside it; at most 1 - MOSTLY, outside
+
+
+def zone_outline():
+    return gpd.read_file(ZONE_FILE).to_crs(WORK_CRS).geometry.union_all() if ZONE_FILE.exists() else None
+
+
+def zone_status(shape, zone):
+    """Pop-up line saying where a block sits against the reinvestment zone."""
+    if zone is None:
         return None
-    zone = gpd.read_file(path).to_crs(WORK_CRS).geometry.union_all()
+    share = shape.intersection(zone).area / shape.area
+    if share >= MOSTLY:
+        return "Inside the reinvestment zone"
+    if share <= 1 - MOSTLY:
+        return f"Outside the reinvestment zone, {shape.distance(zone) / 5280:.1f} miles from its line"
+    return f"Partly inside the reinvestment zone ({share:.0%} of its land inside)"
+
+
+def layer_note(parcels, zone):
+    """Sentences for the map legend: totals as of today, and how much of the land lies outside the zone."""
+    n, listed = len(parcels), parcels["legal_acreage"].fillna(0).sum()
+    totals = f"As of {date.today():%B} {date.today().day}, {date.today().year}: {n} parcels and about {round(listed, -1):,.0f} acres owned."
+    if zone is None:
+        return totals
     land = parcels.geometry.union_all()
     mapped, outside = land.area / 43560, land.difference(zone).area / 43560
-    return (f"About {round(outside, -1):,.0f} of the roughly {round(mapped, -1):,.0f} mapped acres "
+    return (f"{totals} About {round(outside, -1):,.0f} of the roughly {round(mapped, -1):,.0f} mapped acres "
             f"({outside / mapped:.0%}) lie outside the reinvestment zone.")
 
 
@@ -122,16 +143,21 @@ def option_features(parcels):
             continue
         g = json.loads(gpd.GeoSeries([shape], crs=WORK_CRS).to_crs(4326).to_json())["features"][0]["geometry"]
         g["coordinates"] = _rounded(g["coordinates"])
-        out.append({"type": "Feature", "properties": dict(option["properties"]), "geometry": g})
+        props = dict(option["properties"])
+        status = zone_status(shape, zone_outline())
+        props = {**{k: v for k, v in props.items() if k in ("name", "description", "Status")}, **({"Reinvestment zone": status} if status else {}),
+                 **{k: v for k, v in props.items() if k not in ("name", "description", "Status")}}
+        out.append({"type": "Feature", "properties": props, "geometry": g})
     return out
 
 
 def main():
+    zone = zone_outline()
     parcels = fetch_parcels()
     rows = []
     for holder, group in parcels.groupby("holder"):
         for shape, count, acres, mapped in blocks_for(group):
-            rows.append({"name": "Project-linked holding", "Status": OWNED, "Listed under": holder, "Parcels": count,
+            rows.append({"name": "Project-linked holding", "Status": OWNED, "Reinvestment zone": zone_status(shape, zone), "Listed under": holder, "Parcels": count,
                          "Acres listed": round(acres, 1), "Acres mapped": round(mapped, 1), "geometry": shape,
                          "description": "Land listed under this company in appraisal district records. "
                                         "Tract lines inside the block are merged. Listed acres are the district's figure; "
@@ -147,7 +173,7 @@ def main():
     features += options                     # drawn after the owned blocks, with their own status
     old = json.loads(OUT.read_text(encoding="utf-8"))["features"] if OUT.exists() else None
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
-    note = outside_zone_note(parcels)
+    note = layer_note(parcels, zone)
     head = '{\n  "type": "FeatureCollection",\n' + (f'  "note": {json.dumps(note)},\n' if note else "")
     OUT.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
 
