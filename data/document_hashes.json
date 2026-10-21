@@ -1241,6 +1241,17 @@
       "mentions": [],
       "first_seen": "2026-10-15",
       "copy": "archive/court/2026-10-21_agenda_6637_9db3ab29.pdf"
+    },
+    "6643": {
+      "title": "Commissioners Court Special Agenda 11/12/2026",
+      "kind": "Agenda",
+      "meeting": "2026-11-12",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6643,plainText=false)",
+      "sha256": "2744808bd38ecf3b9dab535b019c0f41f339829401c36d0a0ee4b1af3ed8255f",
+      "mentions": [],
+      "first_seen": "2026-10-21",
+      "copy": "archive/court/2026-11-12_agenda_6643_2744808b.pdf",
+      "text": "read from scan"
     }
   }
 }
