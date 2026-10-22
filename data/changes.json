@@ -171,5 +171,11 @@
     "date": "2026-10-19",
     "layer": "holdings",
     "summary": "Project-linked holdings: four deeds recorded with the County Clerk on October 7 and 13 (about 587 acres) and a 6.757-acre option are now shown; appraisal records do not yet show them"
+  },
+  {
+    "date": "2026-10-22",
+    "layer": "documents",
+    "summary": "Commissioners Court: new minutes mentioning Terafab, 10-21 rm",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6645,plainText=false)"
   }
 ]

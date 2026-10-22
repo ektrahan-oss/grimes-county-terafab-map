@@ -1252,6 +1252,28 @@
       "first_seen": "2026-10-21",
       "copy": "archive/court/2026-11-12_agenda_6643_2744808b.pdf",
       "text": "read from scan"
+    },
+    "6645": {
+      "title": "10-21 rm",
+      "kind": "Minutes",
+      "meeting": "2026-10-21",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6645,plainText=false)",
+      "sha256": "613c1e47b0d14065afb86ff924202e780fb69d2d0c2de2f47e13efca07d338c0",
+      "mentions": [
+        "Terafab"
+      ],
+      "first_seen": "2026-10-22",
+      "copy": "archive/court/2026-10-21_minutes_6645_613c1e47.pdf"
+    },
+    "6644": {
+      "title": "10-21 ph",
+      "kind": "Minutes",
+      "meeting": "2026-10-21",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6644,plainText=false)",
+      "sha256": "811a65aee5914c04ae3e142ff49e664ef8006f91c9567a00131410b8cca1e47b",
+      "mentions": [],
+      "first_seen": "2026-10-22",
+      "copy": "archive/court/2026-10-21_minutes_6644_811a65ae.pdf"
     }
   }
 }
