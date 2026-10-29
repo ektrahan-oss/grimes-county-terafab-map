@@ -1247,11 +1247,17 @@
       "kind": "Agenda",
       "meeting": "2026-11-12",
       "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6643,plainText=false)",
-      "sha256": "2744808bd38ecf3b9dab535b019c0f41f339829401c36d0a0ee4b1af3ed8255f",
+      "sha256": "40c5294f4d0088e4be8b633f679efac2fb4673592768ed575f07a5395b3c7fad",
       "mentions": [],
       "first_seen": "2026-10-21",
-      "copy": "archive/court/2026-11-12_agenda_6643_2744808b.pdf",
-      "text": "read from scan"
+      "copy": "archive/court/2026-11-12_agenda_6643_40c5294f.pdf",
+      "earlier": [
+        {
+          "sha256": "2744808bd38ecf3b9dab535b019c0f41f339829401c36d0a0ee4b1af3ed8255f",
+          "copy": "archive/court/2026-11-12_agenda_6643_2744808b.pdf",
+          "replaced": "2026-10-29"
+        }
+      ]
     },
     "6645": {
       "title": "10-21 rm",
@@ -1280,22 +1286,34 @@
       "kind": "Agenda",
       "meeting": "2026-11-04",
       "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6648,plainText=false)",
-      "sha256": "700d46dbe30da7176a023eacbf041ea52c82313f2fa78bd4c784f73885b8a1a5",
+      "sha256": "68d00b2e298fa156755b4453dd574b9aec2be1dd6294df2db242155fc0ff8bfb",
       "mentions": [],
       "first_seen": "2026-10-28",
-      "copy": "archive/court/2026-11-04_agenda_6648_700d46db.pdf",
-      "text": "read from scan"
+      "copy": "archive/court/2026-11-04_agenda_6648_68d00b2e.pdf",
+      "earlier": [
+        {
+          "sha256": "700d46dbe30da7176a023eacbf041ea52c82313f2fa78bd4c784f73885b8a1a5",
+          "copy": "archive/court/2026-11-04_agenda_6648_700d46db.pdf",
+          "replaced": "2026-10-29"
+        }
+      ]
     },
     "6647": {
       "title": "Commissioners Court Public Hearing Agenda 11/04/2026",
       "kind": "Agenda",
       "meeting": "2026-11-04",
       "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6647,plainText=false)",
-      "sha256": "18164e45be76e1f704763052b783c60053ae65a4cd140d70e6f5506d2d39a320",
+      "sha256": "eb10d7a6f3a0b65189c609a679463a65a9eb78aa49e7bf42da7ba97aa9336fab",
       "mentions": [],
       "first_seen": "2026-10-28",
-      "copy": "archive/court/2026-11-04_agenda_6647_18164e45.pdf",
-      "text": "read from scan"
+      "copy": "archive/court/2026-11-04_agenda_6647_eb10d7a6.pdf",
+      "earlier": [
+        {
+          "sha256": "18164e45be76e1f704763052b783c60053ae65a4cd140d70e6f5506d2d39a320",
+          "copy": "archive/court/2026-11-04_agenda_6647_18164e45.pdf",
+          "replaced": "2026-10-29"
+        }
+      ]
     }
   }
 }

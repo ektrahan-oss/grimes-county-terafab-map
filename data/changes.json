@@ -177,5 +177,11 @@
     "layer": "documents",
     "summary": "Commissioners Court: new minutes mentioning Terafab, 10-21 rm",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6645,plainText=false)"
+  },
+  {
+    "date": "2026-10-29",
+    "layer": "permits",
+    "summary": "Permits: new, Commissioners Court agenda item for 2026-11-04: Discuss and take any necessary action on maintenance, construction projects, permitting, or grants.. Status: on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6648,plainText=false)"
   }
 ]

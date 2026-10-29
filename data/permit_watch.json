@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-10-28",
-    "corps": "2026-10-28",
-    "county": "2026-10-28",
-    "rrc": "2026-10-28",
-    "tceq": "2026-10-28",
-    "tdlr": "2026-10-28",
-    "txdot": "2026-10-28"
+    "air": "2026-10-29",
+    "corps": "2026-10-29",
+    "county": "2026-10-29",
+    "rrc": "2026-10-29",
+    "tceq": "2026-10-29",
+    "tdlr": "2026-10-29",
+    "txdot": "2026-10-29"
   },
   "_recorded": [
     "air",
@@ -28,6 +28,12 @@
     "status": "on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6627,plainText=false)",
     "first_seen": "2026-10-01"
+  },
+  "county:3bc3f434e461": {
+    "what": "Commissioners Court agenda item for 2026-11-04: Discuss and take any necessary action on maintenance, construction projects, permitting, or grants.",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6648,plainText=false)",
+    "first_seen": "2026-10-29"
   },
   "county:93b6b3791f31": {
     "what": "Commissioners Court agenda item for 2026-09-16: Discuss and take action to approve a professional services agreement with 5engineering, LLC for private development permit application review, no cost to Grimes County. Grimes County Auditor - Jessi Murphy (CM)",
