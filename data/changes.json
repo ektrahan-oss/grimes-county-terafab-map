@@ -189,5 +189,15 @@
     "layer": "entities",
     "summary": "Entity watch: new company on the state's franchise tax list, SWAMY MEDICAL SERVICES, P.A. (same mailing address as SpaceX (1 Rocket Rd); comptroller type code ap, Hawthorne, CA, dated 2024-06-17). Link to the project: not confirmed.",
     "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32095565688"
+  },
+  {
+    "date": "2026-11-01",
+    "layer": "pipelines",
+    "summary": "Pipelines: 169 segments added, 168 segments removed"
+  },
+  {
+    "date": "2026-11-01",
+    "layer": "wells",
+    "summary": "Water wells: 23 wells added, 2 wells changed"
   }
 ]

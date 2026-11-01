@@ -2,27 +2,27 @@
   "updated": "2026-11-01",
   "layers": {
     "county": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query",
       "feature_count": 1
     },
     "flood": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query",
       "feature_count": 56
     },
     "pipelines": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer/13/query",
-      "feature_count": 820
+      "feature_count": 821
     },
     "power": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0/query",
       "feature_count": 52
     },
     "schools": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query",
       "feature_count": 5
     },
@@ -37,7 +37,7 @@
       "feature_count": 50
     },
     "traffic": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://services.arcgis.com/KTcxiTD9dsQw4r7Z/arcgis/rest/services/TxDOT_AADT_Annuals_(Public_View)/FeatureServer/0/query",
       "feature_count": 145
     },
@@ -52,7 +52,7 @@
       "feature_count": 1
     },
     "permits": {
-      "updated": "2026-10-31",
+      "updated": "2026-11-01",
       "source": "https://www15.tceq.texas.gov/crpub/index.cfm",
       "feature_count": 58
     },
@@ -62,32 +62,32 @@
       "feature_count": 6
     },
     "watersheds": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/5/query",
       "feature_count": 9
     },
     "streams": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query",
       "feature_count": 80
     },
     "outfalls": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://gisweb.tceq.texas.gov/arcgis/rest/services/Outfalls/Outfalls/MapServer/0/query",
       "feature_count": 61
     },
     "water_rights": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://gisweb.tceq.texas.gov/arcgis/rest/services/WaterRights/WaterRightsViewer/MapServer/3/query",
       "feature_count": 115
     },
     "wells": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://services.twdb.texas.gov/arcgis/rest/services/Public/WellReports/MapServer/0/query",
-      "feature_count": 3205
+      "feature_count": 3228
     },
     "aquifers": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://services.twdb.texas.gov/arcgis/rest/services/Base/BaseLayerQueryService/MapServer/1/query",
       "feature_count": 6
     },
@@ -122,7 +122,7 @@
       "feature_count": 240
     },
     "enrollment": {
-      "updated": "2026-10-02",
+      "updated": "2026-11-01",
       "source": "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html",
       "feature_count": 5
     },
