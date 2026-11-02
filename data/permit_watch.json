@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-11-01",
-    "corps": "2026-11-01",
-    "county": "2026-11-01",
-    "rrc": "2026-11-01",
-    "tceq": "2026-11-01",
-    "tdlr": "2026-11-01",
-    "txdot": "2026-11-01"
+    "air": "2026-11-02",
+    "corps": "2026-11-02",
+    "county": "2026-11-02",
+    "rrc": "2026-11-02",
+    "tceq": "2026-11-02",
+    "tdlr": "2026-11-02",
+    "txdot": "2026-11-02"
   },
   "_recorded": [
     "air",
@@ -34,20 +34,6 @@
     "status": "on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6648,plainText=false)",
     "first_seen": "2026-10-29"
-  },
-  "county:93b6b3791f31": {
-    "what": "Commissioners Court agenda item for 2026-09-16: Discuss and take action to approve a professional services agreement with 5engineering, LLC for private development permit application review, no cost to Grimes County. Grimes County Auditor - Jessi Murphy (CM)",
-    "status": "on the agenda",
-    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6598,plainText=false)",
-    "first_seen": "2026-10-01",
-    "missing_since": "2026-11-01"
-  },
-  "county:f2e1e9a649bd": {
-    "what": "Commissioners Court agenda item for 2026-09-16: Request authorization to negotiate a professional services contract with HR Green, Inc for pipeline permitting and inspection, no cost to Grimes County.",
-    "status": "on the agenda",
-    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6598,plainText=false)",
-    "first_seen": "2026-10-01",
-    "missing_since": "2026-11-01"
   },
   "rrc:00018:EXPLORER PIPELINE COMPANY": {
     "what": "Railroad Commission pipeline permit T-4 00018 in Grimes County, EXPLORER PIPELINE COMPANY (refined liquid product)",
