@@ -199,5 +199,23 @@
     "date": "2026-11-01",
     "layer": "wells",
     "summary": "Water wells: 23 wells added, 2 wells changed"
+  },
+  {
+    "date": "2026-11-04",
+    "layer": "gauges",
+    "summary": "Stream gauges: Navasota River at Old San Antonio Road near Bryan is now below normal for the time of year (was much below normal)",
+    "link": "https://waterdata.usgs.gov/monitoring-location/USGS-08110800/"
+  },
+  {
+    "date": "2026-11-04",
+    "layer": "documents",
+    "summary": "Commissioners Court: new agenda mentioning SpaceX, Amended Commissioners Court Special Agenda 11/12/2026",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6651,plainText=false)"
+  },
+  {
+    "date": "2026-11-04",
+    "layer": "documents",
+    "summary": "Commissioners Court: agenda no longer listed, Commissioners Court Special Agenda 11/12/2026 (a copy is kept)",
+    "link": "https://grimescotx.portal.civicclerk.com/"
   }
 ]

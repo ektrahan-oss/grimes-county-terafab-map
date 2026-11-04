@@ -1257,7 +1257,8 @@
           "copy": "archive/court/2026-11-12_agenda_6643_2744808b.pdf",
           "replaced": "2026-10-29"
         }
-      ]
+      ],
+      "removed": "2026-11-04"
     },
     "6645": {
       "title": "10-21 rm",
@@ -1314,6 +1315,30 @@
           "replaced": "2026-10-29"
         }
       ]
+    },
+    "6651": {
+      "title": "Amended Commissioners Court Special Agenda 11/12/2026",
+      "kind": "Agenda",
+      "meeting": "2026-11-12",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6651,plainText=false)",
+      "sha256": "8a0a1e7546255a350a115e39a47a54586d85c034711ad897b38a2542a1036907",
+      "mentions": [
+        "SpaceX"
+      ],
+      "first_seen": "2026-11-04",
+      "copy": "archive/court/2026-11-12_agenda_6651_8a0a1e75.pdf",
+      "text": "read from scan"
+    },
+    "6652": {
+      "title": "minutes 11-4 ph",
+      "kind": "Minutes",
+      "meeting": "2026-11-04",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6652,plainText=false)",
+      "sha256": "7f2f06913720f7a5f843a251aa858983e01e50d59d54f92ff1528d457bf53a55",
+      "mentions": [],
+      "first_seen": "2026-11-04",
+      "copy": "archive/court/2026-11-04_minutes_6652_7f2f0691.pdf",
+      "text": "read from scan"
     }
   }
 }
