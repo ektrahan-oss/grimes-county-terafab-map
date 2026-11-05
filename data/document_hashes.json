@@ -1321,13 +1321,19 @@
       "kind": "Agenda",
       "meeting": "2026-11-12",
       "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6651,plainText=false)",
-      "sha256": "8a0a1e7546255a350a115e39a47a54586d85c034711ad897b38a2542a1036907",
+      "sha256": "95437069b1d4e13238c99e97e854c38bd0da74ded4f5f4c6f077923b9b1632f2",
       "mentions": [
         "SpaceX"
       ],
       "first_seen": "2026-11-04",
-      "copy": "archive/court/2026-11-12_agenda_6651_8a0a1e75.pdf",
-      "text": "read from scan"
+      "copy": "archive/court/2026-11-12_agenda_6651_95437069.pdf",
+      "earlier": [
+        {
+          "sha256": "8a0a1e7546255a350a115e39a47a54586d85c034711ad897b38a2542a1036907",
+          "copy": "archive/court/2026-11-12_agenda_6651_8a0a1e75.pdf",
+          "replaced": "2026-11-05"
+        }
+      ]
     },
     "6652": {
       "title": "minutes 11-4 ph",
@@ -1338,6 +1344,17 @@
       "mentions": [],
       "first_seen": "2026-11-04",
       "copy": "archive/court/2026-11-04_minutes_6652_7f2f0691.pdf",
+      "text": "read from scan"
+    },
+    "6653": {
+      "title": "11-4 rm",
+      "kind": "Minutes",
+      "meeting": "2026-11-04",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6653,plainText=false)",
+      "sha256": "e799d0410a16396fa677999498251494961430742756bcd5486625522b0cc149",
+      "mentions": [],
+      "first_seen": "2026-11-05",
+      "copy": "archive/court/2026-11-04_minutes_6653_e799d041.pdf",
       "text": "read from scan"
     }
   }

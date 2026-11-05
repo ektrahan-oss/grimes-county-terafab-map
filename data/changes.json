@@ -217,5 +217,11 @@
     "layer": "documents",
     "summary": "Commissioners Court: agenda no longer listed, Commissioners Court Special Agenda 11/12/2026 (a copy is kept)",
     "link": "https://grimescotx.portal.civicclerk.com/"
+  },
+  {
+    "date": "2026-11-05",
+    "layer": "documents",
+    "summary": "Commissioners Court: agenda changed after posting, Amended Commissioners Court Special Agenda 11/12/2026 (mentions SpaceX)",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6651,plainText=false)"
   }
 ]
