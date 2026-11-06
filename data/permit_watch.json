@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-11-05",
-    "corps": "2026-11-05",
-    "county": "2026-11-05",
-    "rrc": "2026-11-05",
-    "tceq": "2026-11-05",
-    "tdlr": "2026-11-05",
-    "txdot": "2026-11-05"
+    "air": "2026-11-06",
+    "corps": "2026-11-06",
+    "county": "2026-11-06",
+    "rrc": "2026-11-06",
+    "tceq": "2026-11-06",
+    "tdlr": "2026-11-06",
+    "txdot": "2026-11-06"
   },
   "_recorded": [
     "air",
@@ -280,6 +280,12 @@
     "status": "in service",
     "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
     "first_seen": "2026-10-01"
+  },
+  "rrc:10824:PFC GRIMES COUNTY LLC": {
+    "what": "Railroad Commission pipeline permit T-4 10824 in Grimes County, PFC GRIMES COUNTY LLC (natural gas)",
+    "status": "in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/",
+    "first_seen": "2026-11-06"
   },
   "tceq-permit:RN112483532:TXR1535YT": {
     "what": "TCEQ stormwater permit TXR1535YT for SpaceX's Gibbons Creek Project Site",

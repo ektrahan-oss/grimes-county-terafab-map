@@ -223,5 +223,11 @@
     "layer": "documents",
     "summary": "Commissioners Court: agenda changed after posting, Amended Commissioners Court Special Agenda 11/12/2026 (mentions SpaceX)",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6651,plainText=false)"
+  },
+  {
+    "date": "2026-11-06",
+    "layer": "permits",
+    "summary": "Permits: new, Railroad Commission pipeline permit T-4 10824 in Grimes County, PFC GRIMES COUNTY LLC (natural gas). Status: in service",
+    "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/"
   }
 ]
