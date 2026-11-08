@@ -229,5 +229,11 @@
     "layer": "permits",
     "summary": "Permits: new, Railroad Commission pipeline permit T-4 10824 in Grimes County, PFC GRIMES COUNTY LLC (natural gas). Status: in service",
     "link": "https://www.rrc.texas.gov/resource-center/research/gis-viewer/"
+  },
+  {
+    "date": "2026-11-08",
+    "layer": "gauges",
+    "summary": "Stream gauges: Navasota River at Old San Antonio Road near Bryan is now much below normal for the time of year (was below normal)",
+    "link": "https://waterdata.usgs.gov/monitoring-location/USGS-08110800/"
   }
 ]
