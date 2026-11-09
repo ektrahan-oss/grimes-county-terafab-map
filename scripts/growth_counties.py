@@ -1,4 +1,4 @@
-"""Fetch the seven county outlines used by the growth layer and print the box to extract land cover for."""
+"""Fetch the eight county outlines used by the growth layer and print the box to extract land cover for."""
 import json
 import urllib.parse
 import urllib.request
@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / ".cache" / "nlcd" / "growth_counties.geojson"
-COUNTIES = ["Grimes", "Brazos", "Montgomery", "Waller", "Washington", "Walker", "Madison"]
+COUNTIES = ["Harris", "Montgomery", "Waller", "Brazos", "Grimes", "Walker", "Washington", "Madison"]
 URL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query"
 
 q = {"where": "STATE='48' AND BASENAME IN (" + ",".join(f"'{c}'" for c in COUNTIES) + ")",

@@ -319,7 +319,7 @@
       clickLabels: true, commas: true, popupMore: enrollmentChart, note: "Click a district's name on the map for its enrollment since 2011." },
     { id: "census", one: "census tract", name: "Population and housing", desc: "People, homes, rents and incomes in Grimes and six neighboring counties", url: "data/population_housing.geojson", kind: "fill", color: "#2C7FB8", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
       commas: true, modePicker: "select", buildModes: censusModes },
-    { id: "growth", name: "Growth since 1985", desc: "Developed land in Grimes and six neighboring counties, year by year", raster: "data/growth", kind: "fill", color: "#F07B1E", fillOpacity: 0.65,
+    { id: "growth", name: "Growth since 1985", desc: "Developed land in Grimes, Harris and six other nearby counties, year by year", raster: "data/growth", kind: "fill", color: "#F07B1E", fillOpacity: 0.65,
       classes: [{ label: "Developed by 1985", color: "#6E6E6E", key: "by1985" }, { label: "Developed since 1985", color: "#F07B1E", key: "since" }],
       note: "Developed land (homes, businesses, roads, yards and parks), from satellite images. Source: USGS Annual National Land Cover Database." },
     { id: "land", one: "land value area", name: "Land value per acre", desc: "Median appraised land value, in areas 3 miles across", url: "data/land_values.geojson", kind: "fill", color: "#D95F0E", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
@@ -650,7 +650,9 @@
     const shown = new Map();     // piece name -> image overlay
     let on = !!cfg.on, index = null, year = null, overview = null;
     map.createPane(cfg.id).style.zIndex = 340;            // under the parcel lines and every other layer
-    const overlay = (url, bounds) => L.imageOverlay(url, bounds, { pane: cfg.id, opacity: 0.85, interactive: false });
+    const SEE_THROUGH_ZOOM = 15;  // from here in, a 30 m pixel is several screen pixels wide, so let streets and parcels show through
+    const opacity = () => map.getZoom() >= SEE_THROUGH_ZOOM ? 0.45 : 0.85;
+    const overlay = (url, bounds) => L.imageOverlay(url, bounds, { pane: cfg.id, opacity: opacity(), interactive: false });
     const clear = () => { shown.forEach(o => map.removeLayer(o)); shown.clear(); if (overview) map.removeLayer(overview); };
 
     const refresh = () => {
@@ -669,6 +671,7 @@
       const wanted = new Set(pieces.filter(name => view.intersects(index.bounds[name])).map(name => `${year}/${name}`));
       shown.forEach((o, key) => { if (!wanted.has(key)) { map.removeLayer(o); shown.delete(key); } });
       wanted.forEach(key => { if (!shown.has(key)) shown.set(key, overlay(`${cfg.raster}/${key}.png`, index.bounds[key.split("/")[1]]).addTo(map)); });
+      shown.forEach(o => o.setOpacity(opacity()));
     };
 
     // Built once; moving the slider only rewrites the year and the acre counts, so a drag is never interrupted
@@ -678,7 +681,7 @@
         <input class="year-slider" type="range" min="0" max="${years.length - 1}" step="1" value="${years.indexOf(+year)}" aria-label="Year">
         <div class="year-ends"><span>${years[0]}</span><span>${years[years.length - 1]}</span></div>` +
         cfg.classes.map(cls => `<label>${symbol(cfg, cls)}<span>${esc(cls.label)}</span><em data-key="${cls.key}"></em></label>`).join("") +
-        `<p class="note">${esc(cfg.note)} Zoomed out, the smallest patch shown is about 400 feet across; zoom in for detail to about 100 feet.</p>`;
+        `<p class="note">${esc(cfg.note)} Zoomed out, the smallest patch shown is about 400 feet across; zoom in for detail to about 100 feet. Satellite data shows areas about 100 feet across, not individual properties.</p>`;
       const slider = ui.legend.querySelector(".year-slider");
       const show = () => {
         ui.legend.querySelector(".year-pick strong").textContent = year;

@@ -2,12 +2,13 @@
 
 Reads USGS Annual NLCD Collection 1.2 land cover, one lc_YYYY.npz per year (30 m, EPSG:5070), as written by
 .cache/nlcd/extract.py. Developed means classes 21 to 24. Gray is land already developed in 1985, orange is
-land developed since. Everything outside the seven counties is left clear.
+land developed since. Everything outside the eight counties is left clear.
 
 Each year gets one overview image at 120 m for zoomed-out views, and 30 m pieces the map loads only when
 zoomed in, so a phone never holds the whole area at full detail.
 
-Usage: python scripts/build_growth.py [folder with lc_YYYY.npz]   (default .cache/nlcd/seven)
+Usage: python scripts/build_growth.py [folder ...]   (default .cache/nlcd/seven and .cache/nlcd/harris)
+Several folders are joined into one grid; they are all cut from the same national 30 m grid, so pixels line up.
 """
 import json
 import sys
@@ -19,7 +20,7 @@ from PIL import Image, ImageDraw
 from pyproj import Transformer
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / ".cache" / "nlcd" / "seven"
+SRCS = [Path(a) for a in sys.argv[1:]] or [ROOT / ".cache" / "nlcd" / "seven", ROOT / ".cache" / "nlcd" / "harris"]
 COUNTIES = ROOT / ".cache" / "nlcd" / "growth_counties.geojson"
 OUT = ROOT / "data" / "growth"
 YEARS = [1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025]
@@ -35,10 +36,38 @@ to_merc = Transformer.from_crs(4326, 3857, always_xy=True)
 to_albers = Transformer.from_crs(3857, 5070, always_xy=True)
 to_lnglat = Transformer.from_crs(3857, 4326, always_xy=True)
 
-years = [y for y in YEARS if (SRC / f"lc_{y}.npz").exists()]
+years = [y for y in YEARS if all((s / f"lc_{y}.npz").exists() for s in SRCS)]
 if 1985 not in years:
-    sys.exit(f"No lc_1985.npz in {SRC}; 1985 is the baseline")
-src = {y: np.load(SRC / f"lc_{y}.npz") for y in years}
+    sys.exit(f"No lc_1985.npz in every one of {SRCS}; 1985 is the baseline")
+missing = [y for y in YEARS if y not in years]
+if missing:
+    print("Skipped, not in every folder:", missing)
+
+
+def mosaic(y):
+    """One year's land cover from every folder, joined onto a single grid. 0 means no data."""
+    parts = [np.load(s / f"lc_{y}.npz") for s in SRCS]
+    px = float(parts[0]["gt"][1])
+    for p in parts:
+        assert p["gt"][1] == px and all(abs((v - parts[0]["gt"][i]) / px - round((v - parts[0]["gt"][i]) / px)) < 1e-6
+                                        for i, v in ((0, p["gt"][0]), (2, p["gt"][2]))), "folders are not on the same grid"
+    x0 = min(float(p["gt"][0]) for p in parts)
+    y0 = max(float(p["gt"][2]) for p in parts)
+    x1 = max(float(p["gt"][0]) + p["lc"].shape[1] * px for p in parts)
+    y1 = min(float(p["gt"][2]) - p["lc"].shape[0] * px for p in parts)
+    out = np.zeros((round((y0 - y1) / px), round((x1 - x0) / px)), np.uint8)
+    for p in parts:
+        r, c = round((y0 - float(p["gt"][2])) / px), round((float(p["gt"][0]) - x0) / px)
+        lc = p["lc"]
+        view = out[r:r + lc.shape[0], c:c + lc.shape[1]]
+        np.copyto(view, lc, where=lc > 0)
+    return out, (x0, px, y0)
+
+
+src = {}
+for y in years:
+    lc, g = mosaic(y)
+    src[y] = {"lc": lc, "gt": g}
 gt = src[1985]["gt"]
 shape = src[1985]["lc"].shape
 for y in years:
@@ -62,10 +91,10 @@ mid_lat = to_lnglat.transform((west + east) / 2, (south + north) / 2)[1]
 step = GROUND_M / np.cos(np.radians(mid_lat))            # Mercator meters per target pixel
 W, H = int(np.ceil((east - west) / step)), int(np.ceil((north - south) / step))
 W, H = -(-W // SHRINK) * SHRINK, -(-H // SHRINK) * SHRINK
-print(f"target {W} x {H} pixels at {GROUND_M} m, from {SRC}")
+print(f"target {W} x {H} pixels at {GROUND_M} m, from", ", ".join(str(s) for s in SRCS))
 
 # Which source pixel each target pixel takes (nearest), worked out once for all years
-index = np.full(H * W, -1, np.int64)
+index = np.full(H * W, -1, np.int32)
 cols = west + (np.arange(W) + 0.5) * step
 for r in range(H):
     ax, ay = to_albers.transform(cols, np.full(W, north - (r + 0.5) * step))
@@ -83,6 +112,8 @@ for f in counties["features"]:
             mx, my = to_merc.transform(*np.array(ring).T)
             draw.polygon(list(zip((mx - west) / step, (north - my) / step)), fill=0 if i else 1)
 inside = (np.asarray(mask, bool).ravel()) & (index >= 0)
+gaps = int((np.asarray(mask, bool).ravel() & ((index < 0) | (src[1985]["lc"].ravel()[np.clip(index, 0, None)] == 0))).sum())
+print(f"pixels inside the counties with no land cover: {gaps:,}" + ("" if gaps < 1000 else "  <- extract a wider box"))
 
 # Ground area of one pixel on each row, for the acre counts
 row_lat = np.array(to_lnglat.transform(np.full(H, west), north - (np.arange(H) + 0.5) * step))[1]
