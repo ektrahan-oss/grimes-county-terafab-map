@@ -12,7 +12,8 @@ the state adds it.
 
 Three layers are only run by hand, with --only: holdings (when checking for new purchases),
 land (when a new parcel release is out) and drive (a one-time layer). Parcel lines have their
-own script, build_parcel_tiles.py, also run by hand.
+own script, build_parcel_tiles.py, also run by hand. So does Growth since 1985: growth_counties.py
+then build_growth.py, once a year when USGS adds a year of land cover.
 
 If one layer fails, the error is reported and the rest still run. The exit code is 1
 if anything failed, so an automated run shows up as failed while still keeping the

@@ -97,6 +97,10 @@
   .modes { display: flex; gap: 0; margin: 2px 0 6px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
   .modes button { flex: 1; font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: var(--bg); border: 0; padding: 6px 8px; cursor: pointer; }
   .modes button[aria-pressed="true"] { background: var(--pine); color: #fff; }
+  .year-pick { display: flex; align-items: baseline; gap: 8px; color: var(--muted); font-size: 0.78rem; }
+  .year-pick strong { color: var(--pine); font-size: 1rem; }
+  .legend .year-slider { display: block; width: 100%; height: 24px; margin: 4px 0 0; accent-color: var(--pine); }
+  .year-ends { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.72rem; margin-bottom: 6px; }
   .mode-select { margin: 2px 0 6px; color: var(--muted); font-size: 0.78rem; }
   .mode-select select { display: block; width: 100%; font: inherit; font-size: 0.84rem; margin-top: 2px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
 
@@ -315,6 +319,9 @@
       clickLabels: true, commas: true, popupMore: enrollmentChart, note: "Click a district's name on the map for its enrollment since 2011." },
     { id: "census", one: "census tract", name: "Population and housing", desc: "People, homes, rents and incomes in Grimes and six neighboring counties", url: "data/population_housing.geojson", kind: "fill", color: "#2C7FB8", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
       commas: true, modePicker: "select", buildModes: censusModes },
+    { id: "growth", name: "Growth since 1985", desc: "Developed land in Grimes and six neighboring counties, year by year", raster: "data/growth", kind: "fill", color: "#F07B1E", fillOpacity: 0.65,
+      classes: [{ label: "Developed by 1985", color: "#6E6E6E", key: "by1985" }, { label: "Developed since 1985", color: "#F07B1E", key: "since" }],
+      note: "Developed land (homes, businesses, roads, yards and parks), from satellite images. Source: USGS Annual National Land Cover Database." },
     { id: "land", one: "land value area", name: "Land value per acre", desc: "Median appraised land value, in areas 3 miles across", url: "data/land_values.geojson", kind: "fill", color: "#D95F0E", stroke: "#FFFFFF", weight: 0.7, fillOpacity: 0.65,
       commas: true, note: "Appraisal district estimates of land only, not sale prices, and not what any one property is worth. Each hexagon is 3 miles across and shows the middle value of its parcels of an acre or more. Gray hexagons have fewer than 5 such parcels, so no figure is shown.",
       buildClasses: features => fifths(features, { key: "Median land value per acre ($)", unit: "$" }, LAND_COLORS, "Too few parcels to show") },
@@ -636,10 +643,77 @@
       });
   }
 
+  // A layer of pre-drawn pictures, one set per year, with a slider to pick the year.
+  // Zoomed out it shows one coarse picture; zoomed in, only the full-detail pieces in view are loaded.
+  function rasterLayer(cfg, ui) {
+    const DETAIL_ZOOM = 11;      // from here in, about 65 m to a screen pixel, so the 120 m overview would look blocky
+    const shown = new Map();     // piece name -> image overlay
+    let on = !!cfg.on, index = null, year = null, overview = null;
+    map.createPane(cfg.id).style.zIndex = 340;            // under the parcel lines and every other layer
+    const overlay = (url, bounds) => L.imageOverlay(url, bounds, { pane: cfg.id, opacity: 0.85, interactive: false });
+    const clear = () => { shown.forEach(o => map.removeLayer(o)); shown.clear(); if (overview) map.removeLayer(overview); };
+
+    const refresh = () => {
+      if (!index) return;
+      ui.legend.hidden = !on;
+      if (!on) { clear(); return; }
+      const pieces = index.by_year[year].pieces;
+      if (map.getZoom() < DETAIL_ZOOM) {
+        shown.forEach(o => map.removeLayer(o)); shown.clear();
+        overview.setUrl(`${cfg.raster}/${year}/overview.png`);
+        if (!map.hasLayer(overview)) overview.addTo(map);
+        return;
+      }
+      map.removeLayer(overview);
+      const view = map.getBounds().pad(0.25);
+      const wanted = new Set(pieces.filter(name => view.intersects(index.bounds[name])).map(name => `${year}/${name}`));
+      shown.forEach((o, key) => { if (!wanted.has(key)) { map.removeLayer(o); shown.delete(key); } });
+      wanted.forEach(key => { if (!shown.has(key)) shown.set(key, overlay(`${cfg.raster}/${key}.png`, index.bounds[key.split("/")[1]]).addTo(map)); });
+    };
+
+    // Built once; moving the slider only rewrites the year and the acre counts, so a drag is never interrupted
+    const legend = () => {
+      const years = index.years;
+      ui.legend.innerHTML = `<div class="year-pick"><span>Year</span><strong></strong></div>
+        <input class="year-slider" type="range" min="0" max="${years.length - 1}" step="1" value="${years.indexOf(+year)}" aria-label="Year">
+        <div class="year-ends"><span>${years[0]}</span><span>${years[years.length - 1]}</span></div>` +
+        cfg.classes.map(cls => `<label>${symbol(cfg, cls)}<span>${esc(cls.label)}</span><em data-key="${cls.key}"></em></label>`).join("") +
+        `<p class="note">${esc(cfg.note)} Zoomed out, the smallest patch shown is about 400 feet across; zoom in for detail to about 100 feet.</p>`;
+      const slider = ui.legend.querySelector(".year-slider");
+      const show = () => {
+        ui.legend.querySelector(".year-pick strong").textContent = year;
+        slider.setAttribute("aria-valuetext", year);
+        ui.legend.querySelectorAll("em[data-key]").forEach(em => { em.textContent = `${index.by_year[year][em.dataset.key].toLocaleString()} acres`; });
+      };
+      slider.addEventListener("input", () => { year = String(years[+slider.value]); show(); refresh(); });
+      show();
+    };
+
+    fetch(`${cfg.raster}/index.json`)
+      .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
+      .then(i => {
+        index = i;
+        year = String(i.years[i.years.length - 1]);
+        overview = overlay(`${cfg.raster}/${year}/overview.png`, i.overview);
+        legend();
+        ui.box.disabled = false;
+        ui.box.addEventListener("change", () => { on = ui.box.checked; refresh(); ui.sync(); });
+        map.on("moveend", refresh);
+        refresh();
+        ui.sync();
+      })
+      .catch(() => {
+        ui.row.classList.add("unavailable");
+        ui.box.checked = false;
+        ui.small.textContent = cfg.desc + ". Coming soon.";
+        ui.sync();
+      });
+  }
+
   // Layers are listed by topic. A topic's own switch turns all of its layers on or off together.
   const TOPICS = [
     { name: "Site and boundaries", open: true, ids: ["zone", "holdings", "filings", "county", "parcels", "places", "schools"] },
-    { name: "People, housing and land", ids: ["census", "land"] },
+    { name: "People, housing and land", ids: ["census", "land", "growth"] },
     { name: "Transport", ids: ["drive", "routes", "traffic"] },
     { name: "Energy", ids: ["pipelines", "power"] },
     { name: "Water", ids: ["flood", "streams", "gauges", "watersheds", "outfalls", "water_rights", "wells", "aquifers"] }
@@ -689,6 +763,7 @@
     const small = row.querySelector("small");
     const legend = item.querySelector(".legend");
     if (cfg.tiles) { tiledLayer(cfg, { row, box, small, legend, sync }); return; }
+    if (cfg.raster) { rasterLayer(cfg, { row, box, small, legend, sync }); return; }
 
     fetch(cfg.url)
       .then(r => { if (!r.ok) throw new Error("missing"); return r.json(); })
@@ -1078,6 +1153,7 @@
     { id: "schools",   name: "School districts",   why: "Districts set their own tax agreements with the project, and enrollment follows new housing.", source: "U.S. Census Bureau TIGER", url: "https://www.census.gov/programs-surveys/geography/guidance/tiger-data-products-guide.html" },
     { id: "enrollment", name: "School enrollment", why: "A baseline of how many students each district had before the plant, so growth can be measured against it. Shown when you click a district's name.", source: "Texas Education Agency, PEIMS Student Enrollment reports", url: "https://rptsvr1.tea.texas.gov/adhocrpt/adste.html" },
     { id: "census",    name: "Population and housing", why: "A baseline of who lives here and what housing costs before the plant's workforce arrives, for the counties workers could commute from.", source: "U.S. Census Bureau, American Community Survey 5-year estimates", url: "https://www.census.gov/programs-surveys/acs" },
+    { id: "growth",    name: "Growth since 1985",  why: "How fast homes, businesses and roads have spread across the area over 40 years, so growth after the plant can be measured against the long-run pace. Developed means all four of the survey's developed classes, from roads and large yards to downtowns.", source: "U.S. Geological Survey Annual National Land Cover Database, Collection 1.2 (1985 to 2025, 30 m). Built by hand when a new year is released.", url: "https://www.usgs.gov/centers/eros/science/annual-national-land-cover-database" },
     { id: "land",      name: "Land value per acre", why: "What the appraisal district values land at across the county, and how that has moved since tax year 2025, the last full year before the project was announced. Shown only as the middle value of at least 5 parcels in an area, never for one property.", source: "TxGIO StratMap Land Parcels, from the Grimes Central Appraisal District. Rebuilt by hand when a new release is out.", url: "https://data.geographic.texas.gov/" },
     { id: "drive",     name: "Drive times",        why: "Shows where workers could plausibly commute from, and so where housing and traffic pressure may land.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
     { id: "routes",    name: "Likely routes",      why: "The roads most likely to carry commuters and deliveries to the site.", source: "OpenStreetMap roads, routed with Valhalla. Built once, not refreshed.", url: "https://valhalla1.openstreetmap.de/" },
