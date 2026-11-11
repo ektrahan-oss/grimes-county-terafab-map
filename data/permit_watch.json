@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-11-10",
-    "corps": "2026-11-10",
-    "county": "2026-11-10",
-    "rrc": "2026-11-10",
-    "tceq": "2026-11-10",
-    "tdlr": "2026-11-10",
-    "txdot": "2026-11-10"
+    "air": "2026-11-11",
+    "corps": "2026-11-11",
+    "county": "2026-11-11",
+    "rrc": "2026-11-11",
+    "tceq": "2026-11-11",
+    "tdlr": "2026-11-11",
+    "txdot": "2026-11-11"
   },
   "_recorded": [
     "air",
@@ -34,6 +34,12 @@
     "status": "on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6648,plainText=false)",
     "first_seen": "2026-10-29"
+  },
+  "county:53696e2aab96": {
+    "what": "Commissioners Court agenda item for 2026-11-18: Discuss and take action on the Grimes County Fire Marshal office implementing an Open Burn Permit. Grimes County IT Director - Gregg Cannon (JF)",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6659,plainText=false)",
+    "first_seen": "2026-11-11"
   },
   "rrc:00018:EXPLORER PIPELINE COMPANY": {
     "what": "Railroad Commission pipeline permit T-4 00018 in Grimes County, EXPLORER PIPELINE COMPANY (refined liquid product)",

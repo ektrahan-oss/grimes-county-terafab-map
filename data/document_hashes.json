@@ -1366,7 +1366,18 @@
       "mentions": [],
       "first_seen": "2026-11-10",
       "copy": "archive/court/2026-11-18_agenda_6654_3699e757.pdf",
-      "text": "read from scan"
+      "text": "read from scan",
+      "removed": "2026-11-11"
+    },
+    "6659": {
+      "title": "Amended Commissioners Court Regular Agenda 11/18/2026",
+      "kind": "Agenda",
+      "meeting": "2026-11-18",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6659,plainText=false)",
+      "sha256": "d73f71c0d50b76e4f54a916d169a08c5ccdc812aa11cc90d3a3f1d6fc241b878",
+      "mentions": [],
+      "first_seen": "2026-11-11",
+      "copy": "archive/court/2026-11-18_agenda_6659_d73f71c0.pdf"
     }
   }
 }
