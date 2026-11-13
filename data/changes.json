@@ -247,5 +247,11 @@
     "layer": "permits",
     "summary": "Permits: new, Commissioners Court agenda item for 2026-11-18: Discuss and take action on the Grimes County Fire Marshal office implementing an Open Burn Permit. Grimes County IT Director - Gregg Cannon (JF). Status: on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6659,plainText=false)"
+  },
+  {
+    "date": "2026-11-13",
+    "layer": "documents",
+    "summary": "Commissioners Court: new minutes mentioning SpaceX, minutes 11-12",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6664,plainText=false)"
   }
 ]

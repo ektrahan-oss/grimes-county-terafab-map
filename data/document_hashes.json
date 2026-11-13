@@ -1378,6 +1378,18 @@
       "mentions": [],
       "first_seen": "2026-11-11",
       "copy": "archive/court/2026-11-18_agenda_6659_d73f71c0.pdf"
+    },
+    "6664": {
+      "title": "minutes 11-12",
+      "kind": "Minutes",
+      "meeting": "2026-11-12",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6664,plainText=false)",
+      "sha256": "199c0464a9df79fb0b17584a5a81f091ff56e27394f9c1d8b4798cacd624e398",
+      "mentions": [
+        "SpaceX"
+      ],
+      "first_seen": "2026-11-13",
+      "copy": "archive/court/2026-11-12_minutes_6664_199c0464.pdf"
     }
   }
 }
