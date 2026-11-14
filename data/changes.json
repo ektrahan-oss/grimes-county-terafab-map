@@ -253,5 +253,11 @@
     "layer": "documents",
     "summary": "Commissioners Court: new minutes mentioning SpaceX, minutes 11-12",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6664,plainText=false)"
+  },
+  {
+    "date": "2026-11-14",
+    "layer": "entities",
+    "summary": "Entity watch: new company on the state's franchise tax list, ANYSPHERE, INC. (same mailing address as SpaceX (1 Rocket Rd); texas corporation, Hawthorne, CA, dated 2026-08-29). Link to the project: not confirmed.",
+    "link": "https://comptroller.texas.gov/taxes/franchise/account-status/search/32099980412"
   }
 ]
