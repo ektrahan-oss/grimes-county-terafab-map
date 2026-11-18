@@ -1390,6 +1390,17 @@
       ],
       "first_seen": "2026-11-13",
       "copy": "archive/court/2026-11-12_minutes_6664_199c0464.pdf"
+    },
+    "7666": {
+      "title": "EMERGENCY MEETING OF THE COMMISSIONERS COURT 11/18/2026",
+      "kind": "Agenda",
+      "meeting": "2026-11-18",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=7666,plainText=false)",
+      "sha256": "36bf570123f2084b4c03f9dc8ccdedaadbfbc82e99ee345e6177bb1a52bb423a",
+      "mentions": [],
+      "first_seen": "2026-11-18",
+      "copy": "archive/court/2026-11-18_agenda_7666_36bf5701.pdf",
+      "text": "read from scan"
     }
   }
 }
