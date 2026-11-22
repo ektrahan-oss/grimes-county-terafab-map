@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-11-21",
-    "corps": "2026-11-21",
-    "county": "2026-11-21",
-    "rrc": "2026-11-21",
-    "tceq": "2026-11-21",
-    "tdlr": "2026-11-21",
-    "txdot": "2026-11-21"
+    "air": "2026-11-22",
+    "corps": "2026-11-22",
+    "county": "2026-11-22",
+    "rrc": "2026-11-22",
+    "tceq": "2026-11-22",
+    "tdlr": "2026-11-22",
+    "txdot": "2026-11-22"
   },
   "_recorded": [
     "air",
@@ -27,7 +27,8 @@
     "what": "Commissioners Court agenda item for 2026-10-07: Discuss and take action to approve a professional services contract with HR Green for pipeline permitting and inspection services, no cost to Grimes County.",
     "status": "on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6627,plainText=false)",
-    "first_seen": "2026-10-01"
+    "first_seen": "2026-10-01",
+    "missing_since": "2026-11-22"
   },
   "county:3bc3f434e461": {
     "what": "Commissioners Court agenda item for 2026-11-04: Discuss and take any necessary action on maintenance, construction projects, permitting, or grants.",

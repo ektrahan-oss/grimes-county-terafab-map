@@ -271,5 +271,11 @@
     "layer": "permits",
     "summary": "Permits: status changed from pending to complete, Air permit near the site: Knife River Corporation-South, concrete batch plant (permit 184781, received 07/23/2026). Location: From the intersection of fm 244 and hwy 30 travel 1.7 mile east on hwy 30 to site on south side",
     "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start"
+  },
+  {
+    "date": "2026-11-22",
+    "layer": "gauges",
+    "summary": "Stream gauges: Navasota River at Old San Antonio Road near Bryan is now much below normal for the time of year (was below normal)",
+    "link": "https://waterdata.usgs.gov/monitoring-location/USGS-08110800/"
   }
 ]
