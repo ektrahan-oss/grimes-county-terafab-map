@@ -208,7 +208,6 @@
       <div><span class="dot done" aria-hidden="true">&#10003;</span><span>Stormwater permit is in place</span></div>
       <div><span class="dot later" aria-hidden="true"></span><span>Larger permits come later</span></div>
     </div>
-    <p class="stand-note"><strong>Nothing is late.</strong> Big projects usually file these permits in stages.</p>
   </section>
 
   <!-- 5. Permit cards. The tags are filled in from the map's permit data when the page loads. -->
@@ -218,7 +217,7 @@
       <article class="card" data-permit="a water right">
         <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/></svg></div>
         <div class="top"><div><h3>Water right</h3><div class="agency">TCEQ</div></div><span class="tag no">Not yet filed</span></div>
-        <p>Usually <strong>one notice</strong> and about <strong>30 days</strong> to comment, request a meeting or request a hearing. Some are shorter.</p>
+        <p>Usually <strong>one notice</strong> and about <strong>30 days</strong> to comment, request a meeting or request a hearing. Some are shorter, and some changes to a water right need no notice at all.</p>
       </article>
       <article class="card" data-permit="a wastewater discharge permit">
         <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h9a3 3 0 0 1 3 3v2"/><path d="M12 12h6v3"/><path d="M3 19c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0"/></svg></div>
@@ -232,11 +231,11 @@
       </article>
       <article class="card">
         <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3 5 21"/><path d="M16 3l3 18"/><path d="M12 4v3M12 10.5v3M12 17v3"/></svg></div>
-        <div class="top"><div><h3>Road access</h3><div class="agency">TxDOT</div></div><span class="tag na">Not posted publicly</span></div>
-        <p>Usually <strong>no public comment period.</strong></p>
+        <div class="top"><div><h3>Road access</h3><div class="agency">TxDOT</div></div><span class="tag na">Not posted online</span></div>
+        <p>Usually <strong>no public comment period.</strong> TxDOT does not post driveway permits online, so this is not on our daily watch. Ask the TxDOT Bryan District.</p>
       </article>
     </div>
-    <p class="checked" id="checked">State records last checked November 22, 2026 (water right: October 8, 2026). No Terafab application found for the three TCEQ permits.</p>
+    <p class="checked" id="checked">No application found in state records as of November 22, 2026. A tag changes to Filed when one shows up.</p>
   </section>
 
   <!-- 6. Timeline -->
@@ -322,12 +321,9 @@
       else { tag.textContent = "Filed"; tag.className = "tag yes"; }
     });
     if (!dates.length) return;
-    const newest = dates.slice().sort((a, b) => new Date(b) - new Date(a))[0];
-    const older = [...new Set(dates.filter(x => x !== newest))];
-    const water = document.querySelector('.card[data-permit="a water right"] .tag.no') && note.match(/a water right[^(;]*\(none found as of ([^)]+)\)/);
-    document.getElementById("checked").textContent = `State records last checked ${newest}` +
-      (water && water[1] !== newest ? ` (water right: ${water[1]})` : older.length ? ` (some: ${older.join(", ")})` : "") +
-      ". A tag changes to Filed when an application shows up.";
+    // The permits are checked on different days; show the oldest check, so the line never claims more than is true
+    const oldest = dates.slice().sort((a, b) => new Date(a) - new Date(b))[0];
+    document.getElementById("checked").textContent = `No application found in state records as of ${oldest}. A tag changes to Filed when one shows up.`;
   }).catch(() => {});
 </script>
 </body>
