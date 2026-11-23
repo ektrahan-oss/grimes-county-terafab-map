@@ -88,6 +88,9 @@
   .how p { margin: 0 0 6px; }
   .how p:last-child { margin: 0; }
   .addr { font-weight: 600; color: var(--pine); }
+  .know { margin: 10px 0 0; padding: 0 0 0 20px; font-size: 0.9rem; }
+  .know li { margin-bottom: 4px; }
+  .know li::marker { color: var(--gold); }
 
   /* 8. Notices */
   .alerts { display: grid; gap: 8px; grid-template-columns: 1fr; }
@@ -103,7 +106,7 @@
   .sources { margin: 0; padding: 0 0 0 18px; font-size: 0.86rem; }
   .sources li { margin-bottom: 4px; }
   footer { margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
-  .print-only { display: none; }
+  .print-only, .qrs { display: none; }
   .printbtn { font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--pine); background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 6px 14px; cursor: pointer; }
 
   @media (min-width: 720px) {
@@ -125,13 +128,13 @@
   @media print {
     html { font-size: 10.5px; }
     body { background: #fff; line-height: 1.32; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    header { padding: 6px 10px; border-radius: 6px; }
+    header { padding: 5px 10px; border-radius: 6px; }
     header .pill, .printbtn, .screen-only { display: none !important; }
     .print-only { display: inline; }
     main { max-width: none; padding: 0; }
-    section { margin-top: 9px; break-inside: avoid; }
-    h2 { margin-bottom: 5px; }
-    .banner { padding: 8px 0 0; }
+    section { margin-top: 7px; break-inside: avoid; }
+    h2 { margin-bottom: 4px; }
+    .banner { padding: 5px 0 0; }
     .banner h1 { font-size: 2.2rem; }
     .banner svg { width: 40px; }
     .banner figcaption { display: none; }
@@ -158,9 +161,17 @@
     .alerts { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .alert { padding: 6px 9px; }
     .alert u { text-decoration: none; }
-    .sources { columns: 2; column-gap: 24px; }
+    .know { margin-top: 5px; }
+    .know li { margin-bottom: 1px; }
+    .bottom { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: start; break-inside: avoid; }
+    .qrs { display: flex; gap: 14px; margin-top: 7px; }
+    .qrs div { display: flex; align-items: center; gap: 7px; }
+    .qrs .qr { width: 0.85in; height: 0.85in; flex: none; shape-rendering: crispEdges; }
+    .qrs p { margin: 0; color: var(--muted); font-size: 0.92em; line-height: 1.25; }
+    .qrs b { display: block; color: var(--pine); font-size: 1.1em; }
+    .note { display: none; }      /* the water right card already says to go by the dates on the notice */
     .sources li { margin-bottom: 1px; break-inside: avoid; }
-    footer { margin-top: 8px; padding-top: 6px; }
+    footer { margin-top: 5px; padding-top: 4px; }
     a { color: var(--ink); text-decoration: none; }
     .url { color: var(--muted); font-weight: 400; word-break: break-all; }
   }
@@ -197,7 +208,7 @@
   <p class="independent">This page is here so everyone, whatever their opinion, knows when and how they can weigh in. Grimes Growth Watch is independent, and my family owns land in the county.</p>
 
   <!-- 3. What this tells us -->
-  <p class="tells"><b>What this tells us:</b> <strong>the biggest permits still to come have public comment periods, and some are less than 30 days.</strong></p>
+  <p class="tells"><b>What this tells us:</b> <strong>the biggest permits still to come each have a public comment window. Watch for the notices, because some windows are short.</strong></p>
 
   <!-- 4. Where things stand -->
   <section aria-labelledby="h-stand">
@@ -213,10 +224,10 @@
   <section aria-labelledby="h-permits">
     <h2 id="h-permits">The permits to watch</h2>
     <div class="cards">
-      <article class="card" data-permit="a water right">
+      <article class="card" data-permit="a water right" data-none="None pending">
         <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/></svg></div>
-        <div class="top"><div><h3>Water right</h3><div class="agency">TCEQ</div></div><span class="tag no">Not yet filed</span></div>
-        <p>Usually <strong>one notice</strong> and about <strong>30 days</strong> to comment, request a meeting or request a hearing. Some are shorter, and some changes to a water right need no notice at all.</p>
+        <div class="top"><div><h3>Water right</h3><div class="agency">TCEQ</div></div><span class="tag no">None pending</span></div>
+        <p>The 2023 change already allows industrial use, so a new application may not be needed. If one is filed: usually <strong>one notice</strong> and about <strong>30 days</strong> to comment, request a meeting or request a hearing. Always go by the dates on the notice.</p>
       </article>
       <article class="card" data-permit="a wastewater discharge permit">
         <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h9a3 3 0 0 1 3 3v2"/><path d="M12 12h6v3"/><path d="M3 19c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0"/></svg></div>
@@ -271,6 +282,10 @@
       <p><strong>By mail:</strong> <span class="addr">Office of the Chief Clerk, MC 105, TCEQ, PO Box 13087, Austin TX 78711-3087</span></p>
       <p><strong>Include</strong> the permit number and your name and address. To ask for a meeting or hearing, use those exact words.</p>
     </div>
+    <ul class="know">
+      <li>A hearing can only cover issues you raised in your comments, so comment first.</li>
+      <li>Hearings are for people affected in a way the general public isn't.</li>
+    </ul>
   </section>
 
   <!-- 8. Don't miss a notice -->
@@ -278,18 +293,19 @@
     <h2 id="h-alerts">Don't miss a notice</h2>
     <div class="alerts">
       <a class="alert" href="https://ctaep.tceq.texas.gov/PNE/" target="_blank" rel="noopener">
-        <b>TCEQ email alerts</b><span>Notices by county (Grimes) or ZIP code.</span><br><u class="screen-only">Sign up at TCEQ</u><span class="print-only url">ctaep.tceq.texas.gov/PNE</span>
+        <b>TCEQ email alerts</b><span>Notices by county (Grimes) or ZIP code. Alerts are a courtesy. Commenting is what puts you on the official mailing list.</span><br><u class="screen-only">Sign up at TCEQ</u><span class="print-only url">ctaep.tceq.texas.gov/PNE</span>
       </a>
       <a class="alert" href="https://www.tceq.texas.gov/agency/decisions/cc/occ-mailing-lists.html" target="_blank" rel="noopener">
         <b>Permit mailing list</b><span>Notices by mail for one permit or the whole county.</span><br><u class="screen-only">How to get on the list</u><span class="print-only url">tceq.texas.gov, search "Chief Clerk mailing lists"</span>
       </a>
       <a class="alert sub" href="https://grimesgrowthwatch.beehiiv.com/subscribe" target="_blank" rel="noopener">
-        <b>Grimes Growth Watch</b><span>I'll email when a notice is published.</span><br><u class="screen-only">Subscribe</u><span class="print-only url" style="color:#fff">grimesgrowthwatch.com</span>
+        <b>Grimes Growth Watch</b><span>New notices go out in the newsletter.</span><br><u class="screen-only">Subscribe</u><span class="print-only url" style="color:#fff">grimesgrowthwatch.com</span>
       </a>
     </div>
   </section>
 
-  <!-- 9. Sources -->
+  <!-- 9. Sources, with the QR codes beside them in print -->
+  <div class="bottom">
   <section aria-labelledby="h-sources">
     <h2 id="h-sources">Sources</h2>
     <ul class="sources">
@@ -300,8 +316,15 @@
     </ul>
   </section>
 
+  <!-- QR codes, on the printed page only. Made with scripts in the build notes: one for this page, one for the newsletter. -->
+  <div class="qrs">
+    <div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" class="qr" role="img" aria-label="QR code"><path stroke="#1e3b34" d="M2 2.5h7m6 0h4m2 0h1m2 0h7m-29 1h1m5 0h1m1 0h13m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m9 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m5 0h1m1 0h2m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h2m2 0h1m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m2 0h1m5 0h2m2 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h8m1 0h1m-21 1h1m1 0h1m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m6 0h1m2 0h1m-27 1h4m8 0h1m6 0h3m2 0h1m2 0h1m-29 1h1m5 0h2m1 0h4m1 0h1m3 0h1m1 0h5m1 0h3m-29 1h1m2 0h3m1 0h2m2 0h1m1 0h5m1 0h1m4 0h1m2 0h1m-27 1h7m1 0h1m3 0h1m2 0h7m2 0h1m1 0h2m-29 1h2m1 0h2m4 0h1m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m2 0h1m-29 1h1m1 0h1m2 0h2m1 0h1m1 0h2m2 0h1m1 0h2m2 0h1m1 0h4m1 0h2m-29 1h1m4 0h1m3 0h2m2 0h2m1 0h2m1 0h2m1 0h4m1 0h1m-28 1h1m2 0h2m1 0h2m3 0h1m2 0h1m2 0h1m3 0h2m2 0h1m1 0h2m-28 1h1m1 0h1m3 0h2m1 0h1m1 0h2m2 0h2m2 0h3m2 0h2m1 0h1m-29 1h1m2 0h6m2 0h1m2 0h1m2 0h2m2 0h2m4 0h2m-28 1h2m1 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h2m1 0h1m1 0h2m1 0h1m1 0h1m-28 1h1m1 0h1m1 0h3m2 0h1m2 0h1m1 0h1m1 0h2m2 0h5m-17 1h2m2 0h1m3 0h1m3 0h1m3 0h1m1 0h3m-29 1h7m3 0h4m2 0h2m1 0h2m1 0h1m1 0h2m1 0h2m-29 1h1m5 0h1m2 0h3m3 0h1m1 0h2m1 0h1m3 0h2m1 0h1m-28 1h1m1 0h3m1 0h1m1 0h2m5 0h3m2 0h5m-25 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m3 0h1m3 0h1m1 0h3m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h1m4 0h1m1 0h1m1 0h3m2 0h1m-29 1h1m5 0h1m4 0h2m3 0h6m2 0h1m2 0h1m-28 1h7m1 0h2m3 0h8m2 0h2m2 0h2"/></svg><p><b>This page online</b>grimesgrowthwatch.com<br>/have-a-say</p></div>
+    <div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" class="qr" role="img" aria-label="QR code"><path stroke="#1e3b34" d="M2 2.5h7m1 0h3m3 0h5m2 0h3m2 0h7m-33 1h1m5 0h1m5 0h1m3 0h2m1 0h1m6 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m5 0h2m1 0h1m3 0h3m1 0h2m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h2m1 0h2m1 0h1m2 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m3 0h3m2 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h3m2 0h2m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h2m5 0h4m2 0h1m-22 1h1m3 0h1m1 0h3m2 0h2m4 0h1m1 0h1m1 0h2m1 0h6m2 0h1m-33 1h1m2 0h1m3 0h1m1 0h3m1 0h4m6 0h1m1 0h1m3 0h3m-30 1h5m1 0h1m1 0h3m2 0h1m1 0h1m4 0h3m4 0h1m-28 1h3m2 0h1m3 0h2m1 0h2m1 0h2m2 0h6m5 0h1m-30 1h1m2 0h2m2 0h5m3 0h1m1 0h4m2 0h4m2 0h1m-29 1h1m2 0h1m3 0h1m4 0h1m2 0h1m3 0h1m3 0h1m1 0h1m-29 1h6m3 0h1m1 0h3m1 0h4m3 0h4m2 0h3m-32 1h4m1 0h1m4 0h1m1 0h1m4 0h1m1 0h3m3 0h2m-27 1h4m2 0h1m2 0h2m2 0h3m1 0h1m2 0h3m1 0h1m1 0h1m1 0h1m2 0h1m-32 1h2m1 0h2m3 0h1m1 0h1m2 0h1m1 0h4m3 0h2m1 0h1m3 0h2m-31 1h1m1 0h2m1 0h2m1 0h1m1 0h2m1 0h4m1 0h1m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m-30 1h4m1 0h1m1 0h1m4 0h1m1 0h1m3 0h2m1 0h1m1 0h1m1 0h1m3 0h1m-32 1h1m1 0h2m1 0h3m1 0h4m3 0h1m2 0h1m3 0h2m1 0h1m1 0h2m1 0h1m-32 1h2m3 0h1m3 0h4m1 0h1m3 0h3m2 0h1m1 0h1m4 0h2m-30 1h2m2 0h2m2 0h6m4 0h1m1 0h4m2 0h1m1 0h2m-29 1h1m3 0h5m2 0h5m2 0h2m2 0h2m4 0h2m-33 1h2m1 0h1m1 0h3m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h5m-21 1h1m3 0h2m1 0h2m1 0h1m5 0h1m3 0h1m1 0h2m-32 1h7m1 0h1m1 0h1m2 0h1m1 0h3m2 0h3m1 0h1m1 0h1m1 0h2m1 0h1m-32 1h1m5 0h1m4 0h1m1 0h1m3 0h6m1 0h1m3 0h1m2 0h1m-32 1h1m1 0h3m1 0h1m1 0h3m1 0h4m2 0h3m3 0h6m1 0h1m-32 1h1m1 0h3m1 0h1m2 0h2m1 0h1m3 0h2m1 0h1m1 0h1m4 0h4m1 0h1m-32 1h1m1 0h3m1 0h1m2 0h2m3 0h1m1 0h2m1 0h1m3 0h1m1 0h4m1 0h1m-31 1h1m5 0h1m3 0h1m1 0h1m4 0h1m1 0h3m2 0h1m-25 1h7m1 0h3m4 0h1m1 0h2m2 0h5m6 0h1"/></svg><p><b>Get the newsletter</b>grimesgrowthwatch<br>.beehiiv.com/subscribe</p></div>
+  </div>
+  </div>
+
   <footer>
-    <span>Plain-language guide, not legal advice. <span class="print-only">grimesgrowthwatch.com/have-a-say</span></span>
+    <span>Plain-language guide, not legal advice.</span>
     <button class="printbtn" type="button" onclick="window.print()">Print this page</button>
   </footer>
 </main>
@@ -316,7 +339,7 @@
     document.querySelectorAll(".card[data-permit]").forEach(card => {
       const tag = card.querySelector(".tag");
       const hit = note.match(new RegExp(card.dataset.permit.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[^(;]*\\(none found as of ([^)]+)\\)"));
-      if (hit) { tag.textContent = "Not yet filed"; tag.className = "tag no"; dates.push(hit[1]); }
+      if (hit) { tag.textContent = card.dataset.none || "Not yet filed"; tag.className = "tag no"; dates.push(hit[1]); }
       else { tag.textContent = "Filed"; tag.className = "tag yes"; }
     });
     if (!dates.length) return;
