@@ -65,7 +65,7 @@ ITEMS = [
         "Land owned by": "WIT TECH LLC",
         "Deed date": "May 27, 2026",
         "Improvements on the appraisal record": "None",
-        "Water right to pump here": "Separate from the land, and not WIT TECH's on record. As of October 6, 2026 the state still lists the right to pump from the river under the company that owns Gibbons Creek Reservoir.",
+        "Water right to pump here": "Separate from the land, and not WIT TECH's on record. As of November 23, 2026 the state still lists the right to pump from the river under the company that owns Gibbons Creek Reservoir.",
         "Source": "Grimes Central Appraisal District; TCEQ water rights records",
         "As of": "October 8, 2026",
         "url": APPRAISAL, "link": "Look it up at the appraisal district",
@@ -105,7 +105,7 @@ ITEMS = [
 NOT_FILED = [
     ("an air permit for the on-site power plants", date(2026, 10, 8), r"^air:.*\|SpaceX air permit"),
     ("a wastewater discharge permit", date(2026, 10, 8), r"^tceq-permit:.*\|TCEQ wastewater"),
-    ("a water right transfer or amendment", date(2026, 10, 8), None),
+    ("a water right transfer or amendment", date(2026, 11, 23), None),
     ("a groundwater permit", date(2026, 10, 8), None),
     ("a federal (Army Corps) permit", date(2026, 10, 8), r"^corps.*\|Army Corps .*(naming the project|at the site)"),
 ]
