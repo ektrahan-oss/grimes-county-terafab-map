@@ -83,8 +83,8 @@ OPTIONS = [
 # matched to appraisal parcels by survey abstract and acreage, with no parcel numbers or owner names.
 RECORDED = [
     {"outline": DATA / "sources" / "deed_2026_358467.geojson", "acres": 349.15, "survey": "P O'Connor Survey, Abstract 367",
-     "recorded": "October 21, 2026", "document": "2026-358467", "unsure": "The deed covers 349.15 acres in this survey. The outline is the two "
-     "appraisal tracts that best match it, listed at 346.39 acres together. Not yet confirmed."},
+     "recorded": "October 21, 2026", "document": "2026-358467", "unsure": "A deed to WIT TECH LLC for 349.15 acres in this survey is recorded, but which land it covers is "
+     "not confirmed. The outline is the two appraisal tracts that best match it, listed at 346.39 acres together. It may be wrong."},
     {"outline": DATA / "sources" / "deed_2026_358702.geojson", "acres": 7.241, "survey": "P Goodbread Survey, Abstract 223",
      "recorded": "October 30, 2026", "document": "2026-358702"},
     {"outline": DATA / "sources" / "deed_2026_358804.geojson", "acres": 20.602, "survey": "B F Arnold Survey, Abstract 67",
@@ -210,7 +210,9 @@ def recorded_features(parcels, zone):
             "Acres in the deed": f"{deed['acres']:,}",
             "Survey": deed["survey"],
             "Recorded": f"{deed['recorded']}, Grimes County Clerk document {deed['document']}",
-            "Appraisal records": "Not yet updated. The outline is the appraisal district's tract matched to the deed by survey and acreage. Approximate, not a survey.",
+            "Appraisal records": ("Still list this land under another owner. The match between the deed and these tracts is a best guess "
+                                  "from survey and acreage, and is not confirmed." if deed.get("unsure") else
+                                  "Not yet updated. The outline is the appraisal district's tract matched to the deed by survey and acreage. Approximate, not a survey."),
             "Source": "Grimes County Clerk records; Grimes Central Appraisal District",
             "As of": CLERK_CHECKED,
             "url": CLERK, "link": "Search the County Clerk's records"}))
