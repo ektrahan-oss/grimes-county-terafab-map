@@ -1,11 +1,14 @@
 ﻿"""Pull land listed under project-linked companies into data/project_holdings.geojson.
 
-Source: Grimes Central Appraisal District, current parcel records. Parcels listed under the
-companies named in HOLDERS are merged into contiguous blocks, so the layer shows each block of
-land rather than its tract lines. Road strips between tracts are closed up the same way the
-reinvestment zone outline is.
+Source: Grimes Central Appraisal District. The list of accounts comes from the district's property
+search, which is kept more current than its map. Shapes come from the district's map service, asked
+for by account number. Accounts the map has no shape of its own for are, so far, drawn inside a
+neighboring account's shape: the map merges them. Each is counted with the shape that has room for it.
+The shapes are merged into contiguous blocks, so the layer shows each block of land rather than its
+tract lines. Road strips between tracts are closed up the same way the reinvestment zone outline is.
 
-Only companies tied to the project are looked up. No other owner is ever requested.
+Only companies tied to the project are looked up. No other owner is ever requested: the property
+search is asked for the names in HOLDERS only, and the map service for account numbers only.
 
 Land a project company holds an option on, but has not bought, is added from OPTIONS below. Its
 outline is a hand-drawn file in data/sources/ with no parcel numbers or owner names, or a single
@@ -21,6 +24,7 @@ Run by hand when you want to check for new purchases:
 """
 
 import json
+import re
 from datetime import date
 import sys
 
@@ -32,7 +36,8 @@ from common import DATA, WORK_CRS, _rounded, fetch_json, record_layer, report_ch
 
 SERVICE = ("https://utility.arcgis.com/usrsvcs/servers/c35ffea8b2da4f9a84aa5034736b026b/rest/services/"
            "GrimesCADWebService/FeatureServer/0/query")
-SOURCE = "Grimes Central Appraisal District parcel records (https://gis.bisclient.com/grimescad/)"
+PROPERTY_SEARCH = "https://grimescad.org/ProxyT/Search/Properties/"      # the district's property search; lists every account under a name
+SOURCE = "Grimes Central Appraisal District property search and parcel map (https://grimescad.org/)"
 # Name as it appears in the records (matched anywhere in the owner field) -> name shown on the map
 HOLDERS = {
     "WIT TECH": "WIT TECH LLC",
@@ -85,6 +90,8 @@ RECORDED = [
     {"outline": DATA / "sources" / "deed_2026_358467.geojson", "acres": 349.15, "survey": "P O'Connor Survey, Abstract 367",
      "recorded": "October 21, 2026", "document": "2026-358467", "unsure": "A deed to WIT TECH LLC for 349.15 acres in this survey is recorded, but which land it covers is "
      "not confirmed. The outline is the two appraisal tracts that best match it, listed at 346.39 acres together. It may be wrong."},
+    {"outline": DATA / "sources" / "deed_2026_358613.geojson", "acres": 189.32, "survey": "B F Smith Survey, Abstract 412, and Geo Galaspy Survey, Abstract 219",
+     "recorded": "October 27, 2026", "document": "2026-358613"},
     {"outline": DATA / "sources" / "deed_2026_358702.geojson", "acres": 7.241, "survey": "P Goodbread Survey, Abstract 223",
      "recorded": "October 30, 2026", "document": "2026-358702"},
     {"outline": DATA / "sources" / "deed_2026_358804.geojson", "acres": 20.602, "survey": "B F Arnold Survey, Abstract 67",
@@ -96,7 +103,6 @@ RECORDED = [
 # several properties, or an acreage that matches no tract closely. Counted in the legend, not drawn. Move each to RECORDED once located,
 # or delete it once appraisal records show the land.
 NOT_PLACED = [
-    {"recorded": "October 27, 2026", "document": "2026-358613", "index": "part of 189.32 acres, B Smith Survey, Abstract 412"},
     {"recorded": "October 30, 2026", "document": "2026-358697", "index": "several properties"},
     {"recorded": "November 3, 2026", "document": "2026-358774", "index": "part of 317.23 acres, J Massie Survey, Abstract 333"},
     {"recorded": "November 17, 2026", "document": "2026-359007", "index": "part of 99.31 acres, W Fitzgibbons Survey, Abstract 15"},
@@ -105,27 +111,89 @@ NOT_PLACED = [
 SOLD_SHARE = 0.9      # an option is dropped once this share of its land shows under a project company
 
 
+def property_accounts():
+    """Accounts the district's property search lists under the project companies: account number, holder, acres, survey.
+
+    Only the account number, owner name and legal description are kept. Values and mailing addresses are not read.
+    """
+    year, rows = date.today().year, {}
+    for name, shown in HOLDERS.items():
+        results, page = [], 1
+        while True:         # the search answers a page at a time; a short page would silently drop accounts
+            found = fetch_json(PROPERTY_SEARCH, {"f": name, "ty": year, "pvty": year, "pt": "RP;PP;MH;NR", "ps": 200, "pn": page}, timeout=180)
+            results += found.get("ResultList") or []
+            if not found.get("HasMoreData") or not found.get("ResultList"):
+                break
+            page += 1
+        if len(results) != (found.get("RecordCount") or 0):
+            sys.exit(f"The property search says {found.get('RecordCount')} accounts match {name} but returned {len(results)}. Nothing written.")
+        for r in results:
+            if name not in (r.get("OwnerName") or "").upper():       # the search also matches other fields; keep owners only
+                continue
+            text = r.get("LegalDescription") or ""
+            acres = re.search(r"ACRES\s+(\.?\d[\d.]*)", text)
+            rows[r["PropertyNumber"].strip()] = {"account": r["PropertyNumber"].strip(), "holder": shown, "acres": float(acres.group(1)) if acres else 0.0,
+                                                 "survey": text.split(" ")[0]}     # an account with no acreage is a building only, such as a mobile home
+    if not rows:
+        sys.exit("The appraisal district's property search returned no accounts for the project-linked companies. Nothing written.")
+    return list(rows.values())
+
+
 def fetch_parcels():
-    where = " OR ".join(f"UPPER(file_as_name) LIKE '%{name}%'" for name in HOLDERS)
-    found = fetch_json(SERVICE, {"where": where, "outFields": "prop_id,file_as_name,legal_acreage",
-                                 "outSR": 4326, "f": "geojson"}, timeout=300)
-    if found.get("exceededTransferLimit") or found.get("properties", {}).get("exceededTransferLimit"):
-        sys.exit("The appraisal district returned only part of the list. Nothing written.")
-    if not found.get("features"):
-        sys.exit("The appraisal district returned no parcels for the project-linked companies. Nothing written.")
-    parcels = gpd.GeoDataFrame.from_features(found["features"], crs=4326).to_crs(WORK_CRS)
-    parcels = parcels[parcels.geometry.notna() & ~parcels.geometry.is_empty].drop_duplicates(subset="prop_id")
-    listed = parcels["file_as_name"].str.upper()
-    parcels["holder"] = [next(shown for name, shown in HOLDERS.items() if name in owner) for owner in listed]
+    """Shapes for the listed accounts, with every account's acres attached to a shape.
+
+    Returns (shapes, accounts not drawn). Each shape carries its own account's acres plus those of accounts
+    drawn inside it ("extra"). An account is left as not drawn only when no shape has room for it.
+    """
+    accounts = property_accounts()
+    land = [a for a in accounts if a["acres"] > 0]
+    ids = [a["account"] for a in land]
+    variants = ids + [" " + i for i in ids]          # the map service pads some account numbers with a space
+    features = []
+    for i in range(0, len(variants), 60):
+        found = fetch_json(SERVICE, {"where": "geo_id IN ({})".format(",".join(f"'{v}'" for v in variants[i:i + 60])),
+                                     "outFields": "prop_id,geo_id", "outSR": 4326, "f": "geojson"}, timeout=300)
+        if found.get("exceededTransferLimit") or found.get("properties", {}).get("exceededTransferLimit"):
+            sys.exit("The appraisal district returned only part of the list. Nothing written.")
+        features += found.get("features") or []
+    if not features:
+        sys.exit("The appraisal district's map returned no shapes for the listed accounts. Nothing written.")
+    parcels = gpd.GeoDataFrame.from_features(features, crs=4326).to_crs(WORK_CRS)
+    parcels = parcels[parcels.geometry.notna() & ~parcels.geometry.is_empty]
+    parcels["account"] = parcels["geo_id"].str.strip()
     parcels["geometry"] = parcels.geometry.make_valid()
-    return parcels
+    parcels = parcels.dissolve("account").reset_index()
+    by_account = {a["account"]: a for a in land}
+    parcels["holder"] = [by_account[a]["holder"] for a in parcels["account"]]
+    parcels["survey"] = [by_account[a]["survey"] for a in parcels["account"]]
+    parcels["legal_acreage"] = [by_account[a]["acres"] for a in parcels["account"]]
+    parcels["extra_accounts"], parcels["extra_acres"] = 0, 0.0
+
+    # Accounts with no shape of their own: the map draws their land inside a neighbor's shape, which then measures larger
+    # than its listed acres. Give each to the shape with the most unexplained room, in its own survey first.
+    room = parcels.area / 43560 - parcels["legal_acreage"]
+    not_drawn = []
+    for a in sorted((a for a in land if a["account"] not in set(parcels["account"])), key=lambda a: -a["acres"]):
+        fits = room[room >= 0.75 * a["acres"]]
+        same = fits[parcels.loc[fits.index, "survey"] == a["survey"]]
+        pick = (same if len(same) else fits)
+        pick = pick[parcels.loc[pick.index, "holder"] == a["holder"]]
+        if not len(pick):
+            not_drawn.append(a)
+            continue
+        i = pick.idxmax()
+        parcels.loc[i, "extra_accounts"] += 1
+        parcels.loc[i, "extra_acres"] += a["acres"]
+        room[i] -= a["acres"]
+    parcels.attrs["buildings_only"] = len(accounts) - len(land)
+    return parcels, not_drawn
 
 
 def blocks_for(parcels):
     """Merge one holder's parcels into contiguous blocks.
 
-    Returns a list of (shape, parcel count, listed acres, mapped acres). Listed acres are the district's
-    figure for each parcel; mapped acres are measured from the parcel shapes. They can differ.
+    Returns a list of (shape, account count, listed acres, mapped acres). Listed acres are the district's
+    figure for each account; mapped acres are measured from the shapes. They can differ.
     """
     land = parcels.geometry.union_all()
     closed = land.buffer(CLOSE_GAPS_FEET, join_style="mitre").buffer(-CLOSE_GAPS_FEET, join_style="mitre")
@@ -135,7 +203,8 @@ def blocks_for(parcels):
     for block in polygons(merged):
         inside = parcels[middles.within(block)]
         shape = shapely.make_valid(block.simplify(SIMPLIFY_FEET, preserve_topology=True))
-        out.append((shape, len(inside), float(inside["legal_acreage"].fillna(0).sum()), float(inside.area.sum() / 43560)))
+        out.append((shape, int(len(inside) + inside["extra_accounts"].sum()), float((inside["legal_acreage"] + inside["extra_acres"]).sum()),
+                    float(inside.area.sum() / 43560)))
     return out
 
 
@@ -161,10 +230,18 @@ def zone_status(shape, zone):
     return f"Partly inside the reinvestment zone ({share:.0%} of its land inside)"
 
 
-def layer_note(parcels, zone):
+def layer_note(parcels, zone, not_drawn):
     """Sentences for the map legend: totals as of today, and how much of the land lies outside the zone."""
-    n, listed = len(parcels), parcels["legal_acreage"].fillna(0).sum()
-    totals = f"As of {date.today():%B} {date.today().day}, {date.today().year}: {n} parcels and about {round(listed, -1):,.0f} acres owned."
+    n = int(len(parcels) + parcels["extra_accounts"].sum()) + len(not_drawn)
+    listed = float((parcels["legal_acreage"] + parcels["extra_acres"]).sum()) + sum(a["acres"] for a in not_drawn)
+    totals = (f"As of {date.today():%B} {date.today().day}, {date.today().year}: {n} accounts and about {round(listed, -1):,.0f} acres owned, "
+              "from the appraisal district's property search.")
+    if parcels.attrs.get("buildings_only"):
+        k = parcels.attrs["buildings_only"]
+        totals += f" {k} more account{' is a building' if k == 1 else 's are buildings'} with no land."
+    if not_drawn:
+        totals += (f" {len(not_drawn)} of the accounts, about {sum(a['acres'] for a in not_drawn):,.0f} acres, are not drawn: "
+                   "the district's map has no shape for them yet.")
     if zone is None:
         return totals
     land = parcels.geometry.union_all()
@@ -174,8 +251,9 @@ def layer_note(parcels, zone):
 
 
 def totals(features):
-    owned = [f for f in features if f["properties"].get("Status") == OWNED and "Parcels" in f["properties"]]
-    return (sum(f["properties"]["Parcels"] for f in owned), sum(f["properties"]["Acres listed"] for f in owned))
+    count = lambda p: p.get("Accounts", p.get("Parcels"))       # blocks were counted in parcels before the property search was used
+    owned = [f for f in features if f["properties"].get("Status") == OWNED and count(f["properties"]) is not None]
+    return (sum(count(f["properties"]) for f in owned), sum(f["properties"]["Acres listed"] for f in owned))
 
 
 def feature(shape, props):
@@ -241,17 +319,17 @@ def option_features(parcels):
 
 def main():
     zone = zone_outline()
-    parcels = fetch_parcels()
+    parcels, not_drawn = fetch_parcels()
     rows = []
     for holder, group in parcels.groupby("holder"):
         for shape, count, acres, mapped in blocks_for(group):
-            rows.append({"name": "Project-linked holding", "Status": OWNED, "Reinvestment zone": zone_status(shape, zone), "Listed under": holder, "Parcels": count,
+            rows.append({"name": "Project-linked holding", "Status": OWNED, "Reinvestment zone": zone_status(shape, zone), "Listed under": holder, "Accounts": count,
                          "Acres listed": round(acres, 1), "Acres mapped": round(mapped, 1), "geometry": shape,
                          "description": "Land listed under this company in appraisal district records. "
                                         "Tract lines inside the block are merged. Listed acres are the district's figure; "
                                         "mapped acres are measured from the shapes. Approximate, not a survey."})
-    if sum(r["Parcels"] for r in rows) != len(parcels):
-        sys.exit("Some parcels did not land in a block. Nothing written.")
+    if sum(r["Accounts"] for r in rows) != len(parcels) + parcels["extra_accounts"].sum():
+        sys.exit("Some accounts did not land in a block. Nothing written.")
     blocks = gpd.GeoDataFrame(rows, crs=WORK_CRS).sort_values("Acres listed", ascending=False)
 
     features = json.loads(blocks.to_crs(4326).to_json(drop_id=True))["features"]
@@ -262,7 +340,7 @@ def main():
     features += recorded + options          # drawn after the owned blocks, with their own status
     old = json.loads(OUT.read_text(encoding="utf-8"))["features"] if OUT.exists() else None
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
-    note = layer_note(parcels, zone)
+    note = layer_note(parcels, zone, not_drawn)
     if recorded:
         acres = sum(float(f["properties"]["Acres in the deed"].replace(",", "")) for f in recorded)
         note += f" Also shown: {len(recorded)} deeds for about {acres:,.0f} acres recorded with the County Clerk that appraisal records do not yet show."
@@ -274,12 +352,12 @@ def main():
     OUT.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
 
     n, acres = totals(features)
-    now = f"{n} parcels and about {acres:,.0f} acres in {len(features) - len(options) - len(recorded)} blocks"
+    now = f"{n} accounts and about {acres:,.0f} acres in {len(features) - len(options) - len(recorded)} blocks"
     if old is None:
         summary = f"new, with {now}"
     elif totals(old) != totals(features):
         was_n, was_acres = totals(old)
-        summary = f"now {now} (was {was_n} parcels and about {was_acres:,.0f} acres)"
+        summary = f"now {now} (was {was_n} accounts and about {was_acres:,.0f} acres)"
     elif len(recorded) != sum(1 for f in old if "Acres in the deed" in f["properties"]):
         summary = (f"{len(recorded)} deeds recorded with the County Clerk, not yet in appraisal records, now shown" if recorded
                    else "recorded deeds now show in appraisal records")
@@ -302,7 +380,9 @@ def main():
         elif p.get("Status") == OPTIONED:
             print(f"  {p['Acres in the option']:>9} acres  under option to {p['Option held by']}, not yet sold")
         else:
-            print(f"  {p['Acres listed']:>9,.1f} acres  {p['Parcels']:>2} parcels  {p['Listed under']}")
+            print(f"  {p['Acres listed']:>9,.1f} acres listed  {p['Acres mapped']:>9,.1f} mapped  {p['Accounts']:>2} accounts  {p['Listed under']}")
+    for a in not_drawn:
+        print(f"  not drawn: an account of {a['acres']:,.2f} acres in survey {a['survey']}")
 
 
 if __name__ == "__main__":
