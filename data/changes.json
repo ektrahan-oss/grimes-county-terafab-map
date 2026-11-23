@@ -282,5 +282,10 @@
     "date": "2026-11-23",
     "layer": "filings",
     "summary": "Permits and filings: 1 item changed"
+  },
+  {
+    "date": "2026-11-23",
+    "layer": "holdings",
+    "summary": "Project-linked holdings: now 49 parcels and about 9,099 acres in 10 blocks (was 40 parcels and about 8,423 acres)"
   }
 ]

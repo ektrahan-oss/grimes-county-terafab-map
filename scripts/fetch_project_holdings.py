@@ -42,6 +42,7 @@ HOLDERS = {
 }
 OUT = DATA / "project_holdings.geojson"
 CLERK = "https://grimes.tx.publicsearch.us/"       # Grimes County Clerk, official records search
+CLERK_CHECKED = "November 23, 2026"                # the day the Clerk's records were last searched by hand
 
 OWNED, OPTIONED = "Owned", "Under option (not yet sold)"
 UNSURE = "Bought, exact tract not yet confirmed"
@@ -60,7 +61,7 @@ OPTIONS = [
          "Ownership": "Still owned by the reservoir's owner. Appraisal records show no sale.",
          "Water rights": "The option does not appear to cover the state water rights, which state records list under the reservoir's owner.",
          "Source": "Grimes County Clerk, Memorandum of Option; Grimes Central Appraisal District",
-         "As of": "October 8, 2026",
+         "As of": CLERK_CHECKED,
          "url": CLERK, "link": "Search the County Clerk's records"}},
     {"point": (-95.9625, 30.6501), "acres": 6.757,
      "properties": {
@@ -72,24 +73,34 @@ OPTIONS = [
          "Acres in the option": "6.757",
          "Survey": "J W Singletary Survey, Abstract 441",
          "Recorded": "October 7, 2026, Grimes County Clerk document 2026-358239",
-         "Ownership": "Still owned by its owner. Appraisal records show no sale.",
-         "Nearby": "Next to four tracts WIT TECH LLC bought in September, near State Highway 90 and FM 39. A 345 kV power line crosses the area.",
+         "Ownership": "Still owned by its owner. No deed for it has been recorded.",
+         "Nearby": "Among five tracts WIT TECH LLC bought in September and October, near State Highway 90 and FM 39. A 345 kV power line crosses the area.",
          "Source": "Grimes County Clerk records; Grimes Central Appraisal District",
-         "As of": "October 19, 2026",
+         "As of": CLERK_CHECKED,
          "url": CLERK, "link": "Search the County Clerk's records"}},
 ]
 # Deeds to a project company recorded with the County Clerk but not yet in appraisal records. Outlines in data/sources/,
 # matched to appraisal parcels by survey abstract and acreage, with no parcel numbers or owner names.
 RECORDED = [
-    {"outline": DATA / "sources" / "deed_2026_358331.geojson", "acres": 502.87, "survey": "P O'Connor Survey, Abstract 367",
-     "recorded": "October 13, 2026", "document": "2026-358331"},
-    {"outline": DATA / "sources" / "deed_2026_358325.geojson", "acres": 16.097, "survey": "H Frazier Survey, Abstract 214",
-     "recorded": "October 13, 2026", "document": "2026-358325"},
-    {"outline": DATA / "sources" / "deed_2026_358323.geojson", "acres": 5.645, "survey": "P O'Connor Survey, Abstract 367",
-     "recorded": "October 13, 2026", "document": "2026-358323"},
-    {"outline": DATA / "sources" / "deed_2026_358238_either_tract.geojson", "acres": 62.174, "survey": "W McCoy Survey, Abstract 320",
-     "recorded": "October 7, 2026", "document": "2026-358238", "unsure": "The deed covers one of the two tracts of about 62 acres "
-     "inside this outline. Which one is not yet confirmed, so both are outlined."},
+    {"outline": DATA / "sources" / "deed_2026_358467.geojson", "acres": 349.15, "survey": "P O'Connor Survey, Abstract 367",
+     "recorded": "October 21, 2026", "document": "2026-358467", "unsure": "A deed to WIT TECH LLC for 349.15 acres in this survey is recorded, but which land it covers is "
+     "not confirmed. The outline is the two appraisal tracts that best match it, listed at 346.39 acres together. It may be wrong."},
+    {"outline": DATA / "sources" / "deed_2026_358702.geojson", "acres": 7.241, "survey": "P Goodbread Survey, Abstract 223",
+     "recorded": "October 30, 2026", "document": "2026-358702"},
+    {"outline": DATA / "sources" / "deed_2026_358804.geojson", "acres": 20.602, "survey": "B F Arnold Survey, Abstract 67",
+     "recorded": "November 4, 2026", "document": "2026-358804"},
+    {"outline": DATA / "sources" / "deed_2026_358811.geojson", "acres": 1.094, "survey": "B F Arnold Survey, Abstract 67",
+     "recorded": "November 5, 2026", "document": "2026-358811"},
+]
+# Deeds to a project company in the Clerk's index that cannot be placed on the map yet: the index gives "part of" a larger tract,
+# several properties, or an acreage that matches no tract closely. Counted in the legend, not drawn. Move each to RECORDED once located,
+# or delete it once appraisal records show the land.
+NOT_PLACED = [
+    {"recorded": "October 27, 2026", "document": "2026-358613", "index": "part of 189.32 acres, B Smith Survey, Abstract 412"},
+    {"recorded": "October 30, 2026", "document": "2026-358697", "index": "several properties"},
+    {"recorded": "November 3, 2026", "document": "2026-358774", "index": "part of 317.23 acres, J Massie Survey, Abstract 333"},
+    {"recorded": "November 17, 2026", "document": "2026-359007", "index": "part of 99.31 acres, W Fitzgibbons Survey, Abstract 15"},
+    {"recorded": "November 18, 2026", "document": "2026-359047", "index": "163.65 acres, J Harris Survey, Abstract 26"},
 ]
 SOLD_SHARE = 0.9      # an option is dropped once this share of its land shows under a project company
 
@@ -176,7 +187,7 @@ def feature(shape, props):
 def sold(shape, owned):
     """True once appraisal records show the land under a project company."""
     if shape.geom_type == "Point":
-        return shape.within(owned.buffer(50))
+        return False        # an approximate point can sit inside a neighbor that was bought; remove these by hand when a deed is recorded
     return shape.intersection(owned).area / shape.area >= SOLD_SHARE
 
 
@@ -199,9 +210,11 @@ def recorded_features(parcels, zone):
             "Acres in the deed": f"{deed['acres']:,}",
             "Survey": deed["survey"],
             "Recorded": f"{deed['recorded']}, Grimes County Clerk document {deed['document']}",
-            "Appraisal records": "Not yet updated. The outline is the appraisal district's tract matched to the deed by survey and acreage. Approximate, not a survey.",
+            "Appraisal records": ("Still list this land under another owner. The match between the deed and these tracts is a best guess "
+                                  "from survey and acreage, and is not confirmed." if deed.get("unsure") else
+                                  "Not yet updated. The outline is the appraisal district's tract matched to the deed by survey and acreage. Approximate, not a survey."),
             "Source": "Grimes County Clerk records; Grimes Central Appraisal District",
-            "As of": "October 19, 2026",
+            "As of": CLERK_CHECKED,
             "url": CLERK, "link": "Search the County Clerk's records"}))
     return out
 
@@ -253,6 +266,10 @@ def main():
     if recorded:
         acres = sum(float(f["properties"]["Acres in the deed"].replace(",", "")) for f in recorded)
         note += f" Also shown: {len(recorded)} deeds for about {acres:,.0f} acres recorded with the County Clerk that appraisal records do not yet show."
+    if NOT_PLACED:
+        note += (f" {len(NOT_PLACED)} more deeds recorded from {NOT_PLACED[0]['recorded']} to {NOT_PLACED[-1]['recorded']} are not drawn yet: "
+                 "the Clerk's index does not give enough to place them.")
+    note += f" County Clerk records searched {CLERK_CHECKED}."
     head = '{\n  "type": "FeatureCollection",\n' + (f'  "note": {json.dumps(note)},\n' if note else "")
     OUT.write_text(head + '  "features": [\n' + lines + "\n  ]\n}\n", encoding="utf-8")
 
