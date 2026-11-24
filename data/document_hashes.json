@@ -1401,6 +1401,28 @@
       "first_seen": "2026-11-18",
       "copy": "archive/court/2026-11-18_agenda_7666_36bf5701.pdf",
       "text": "read from scan"
+    },
+    "8669": {
+      "title": "Commissioners Court Regular Agenda 12/02/2026",
+      "kind": "Agenda",
+      "meeting": "2026-12-02",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=8669,plainText=false)",
+      "sha256": "f9126fb7138223bdcf8636128fee4df3f5d1fb5468441c2814e36c7eed5266f0",
+      "mentions": [],
+      "first_seen": "2026-11-24",
+      "copy": "archive/court/2026-12-02_agenda_8669_f9126fb7.pdf",
+      "text": "read from scan"
+    },
+    "8667": {
+      "title": "minutes 11-18",
+      "kind": "Minutes",
+      "meeting": "2026-11-18",
+      "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=8667,plainText=false)",
+      "sha256": "342e9c1b6e69c577ac764971326e93b5071c762b8bbd436ad20eb58b1dddc232",
+      "mentions": [],
+      "first_seen": "2026-11-24",
+      "copy": "archive/court/2026-11-18_minutes_8667_342e9c1b.pdf",
+      "text": "read from scan"
     }
   }
 }
