@@ -100,6 +100,10 @@ RECORDED = [
      "recorded": "November 4, 2026", "document": "2026-358804"},
     {"outline": DATA / "sources" / "deed_2026_358811.geojson", "acres": 1.094, "survey": "B F Arnold Survey, Abstract 67",
      "recorded": "November 5, 2026", "document": "2026-358811"},
+    {"outline": DATA / "sources" / "deed_2026_358774.geojson", "acres": 306.337, "survey": "J Massie Survey, Abstract 333, J W Scott Survey, Abstract 417, and W McCoy Survey, Abstract 320",
+     "recorded": "November 3, 2026", "document": "2026-358774",
+     "note": "Deed to WIT TECH LLC recorded with the County Clerk. The appraisal district has not yet posted the sale. The deed is for 317.23 acres in all. "
+             "That includes a shared interest in a 10-acre tract, which is not drawn or counted here."},
     {"outline": DATA / "sources" / "deed_2026_359007.geojson", "part_of": 99.31, "survey": "W Fitzgibbons Survey, Abstract 15, and B F Smith Survey, Abstract 412",
      "recorded": "November 17, 2026", "document": "2026-359007", "unsure": "A deed to WIT TECH LLC for part of a 99.31-acre tract is recorded. How much of the tract "
      "it covers, and which part, is not confirmed. The outline is the appraisal tracts that best match the larger tract. It may be wrong."},
@@ -109,9 +113,7 @@ RECORDED = [
 # Deeds to a project company in the Clerk's index that cannot be placed on the map yet: the index gives "part of" a larger tract,
 # several properties, or an acreage that matches no tract closely. Counted in the legend, not drawn. Move each to RECORDED once located,
 # or delete it once appraisal records show the land.
-NOT_PLACED = [
-    {"recorded": "November 3, 2026", "document": "2026-358774", "index": "part of 317.23 acres, J Massie Survey, Abstract 333"},
-]
+NOT_PLACED = []
 SOLD_SHARE = 0.9      # an option is dropped once this share of its land shows under a project company
 
 
@@ -285,7 +287,7 @@ def recorded_features(parcels, zone):
         status = zone_status(shape, zone)
         out.append(feature(shape, {
             "name": "Project-linked holding",
-            "description": deed.get("unsure") or "Deed to WIT TECH LLC recorded with the County Clerk. The appraisal district has not yet posted the sale.",
+            "description": deed.get("unsure") or deed.get("note") or "Deed to WIT TECH LLC recorded with the County Clerk. The appraisal district has not yet posted the sale.",
             "Status": UNSURE if deed.get("unsure") else OWNED,
             **({"Reinvestment zone": status} if status else {}),
             "Bought by": "WIT TECH LLC",
