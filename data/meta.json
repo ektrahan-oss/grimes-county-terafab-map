@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "layers": {
     "county": {
       "updated": "2026-11-01",
@@ -97,9 +97,9 @@
       "feature_count": 27116
     },
     "holdings": {
-      "updated": "2026-11-23",
+      "updated": "2026-11-24",
       "source": "Grimes Central Appraisal District property search and parcel map (https://grimescad.org/)",
-      "feature_count": 17
+      "feature_count": 21
     },
     "gauges": {
       "updated": "2026-11-23",
