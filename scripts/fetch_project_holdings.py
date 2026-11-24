@@ -350,7 +350,10 @@ def main():
         stated = [float(f["properties"]["Acres in the deed"].replace(",", "")) for f in recorded if not f["properties"]["Acres in the deed"].startswith("Part")]
         parts = len(recorded) - len(stated)
         guesses = sum(1 for f in recorded if f["properties"]["Status"] == UNSURE)
-        note += f" Also shown: {len(recorded)} deeds recorded with the County Clerk that appraisal records do not yet show. {len(stated)} of them cover about {sum(stated):,.0f} acres."
+        if not parts:
+            note += f" Also shown: {len(recorded)} deeds for about {sum(stated):,.0f} acres recorded with the County Clerk that appraisal records do not yet show."
+        else:
+            note += f" Also shown: {len(recorded)} deeds recorded with the County Clerk that appraisal records do not yet show. {len(stated)} of them cover about {sum(stated):,.0f} acres."
         if parts:
             note += (" The other one covers part of a larger tract, and the amount is not confirmed." if parts == 1 else
                      f" The other {parts} cover part of larger tracts, and the amount is not confirmed.")
