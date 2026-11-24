@@ -92,22 +92,28 @@ RECORDED = [
      "not confirmed. The outline is the two appraisal tracts that best match it, listed at 346.39 acres together. It may be wrong."},
     {"outline": DATA / "sources" / "deed_2026_358613.geojson", "acres": 189.32, "survey": "B F Smith Survey, Abstract 412, and Geo Galaspy Survey, Abstract 219",
      "recorded": "October 27, 2026", "document": "2026-358613"},
+    {"outline": DATA / "sources" / "deed_2026_358697.geojson", "acres": 15.402, "survey": "B.B.B. & C. RR Survey, Abstract 139",
+     "recorded": "October 30, 2026", "document": "2026-358697", "unsure": "A deed to WIT TECH LLC for 15.402 acres on the north side of Luthe Road "
+     "is recorded. Four tracts of about 15 acres sit side by side there, and which one the deed covers is not confirmed. The outline is a best guess. It may be wrong."},
     {"outline": DATA / "sources" / "deed_2026_358702.geojson", "acres": 7.241, "survey": "P Goodbread Survey, Abstract 223",
      "recorded": "October 30, 2026", "document": "2026-358702"},
     {"outline": DATA / "sources" / "deed_2026_358804.geojson", "acres": 20.602, "survey": "B F Arnold Survey, Abstract 67",
      "recorded": "November 4, 2026", "document": "2026-358804"},
     {"outline": DATA / "sources" / "deed_2026_358811.geojson", "acres": 1.094, "survey": "B F Arnold Survey, Abstract 67",
      "recorded": "November 5, 2026", "document": "2026-358811"},
+    {"outline": DATA / "sources" / "deed_2026_358774.geojson", "part_of": 317.23, "survey": "J Massie Survey, Abstract 333, J W Scott Survey, Abstract 417, and W McCoy Survey, Abstract 320",
+     "recorded": "November 3, 2026", "document": "2026-358774", "unsure": "A deed to WIT TECH LLC for part of a 317.23-acre tract is recorded. How much of the tract "
+     "it covers, and which part, is not confirmed. The outline is the appraisal tracts that best match the larger tract. It may be wrong."},
+    {"outline": DATA / "sources" / "deed_2026_359007.geojson", "part_of": 99.31, "survey": "W Fitzgibbons Survey, Abstract 15, and B F Smith Survey, Abstract 412",
+     "recorded": "November 17, 2026", "document": "2026-359007", "unsure": "A deed to WIT TECH LLC for part of a 99.31-acre tract is recorded. How much of the tract "
+     "it covers, and which part, is not confirmed. The outline is the appraisal tracts that best match the larger tract. It may be wrong."},
+    {"outline": DATA / "sources" / "deed_2026_359047.geojson", "acres": 163.65, "survey": "J Harris Survey, Abstract 26",
+     "recorded": "November 18, 2026", "document": "2026-359047"},
 ]
 # Deeds to a project company in the Clerk's index that cannot be placed on the map yet: the index gives "part of" a larger tract,
 # several properties, or an acreage that matches no tract closely. Counted in the legend, not drawn. Move each to RECORDED once located,
 # or delete it once appraisal records show the land.
-NOT_PLACED = [
-    {"recorded": "October 30, 2026", "document": "2026-358697", "index": "several properties"},
-    {"recorded": "November 3, 2026", "document": "2026-358774", "index": "part of 317.23 acres, J Massie Survey, Abstract 333"},
-    {"recorded": "November 17, 2026", "document": "2026-359007", "index": "part of 99.31 acres, W Fitzgibbons Survey, Abstract 15"},
-    {"recorded": "November 18, 2026", "document": "2026-359047", "index": "163.65 acres, J Harris Survey, Abstract 26"},
-]
+NOT_PLACED = []
 SOLD_SHARE = 0.9      # an option is dropped once this share of its land shows under a project company
 
 
@@ -285,7 +291,7 @@ def recorded_features(parcels, zone):
             "Status": UNSURE if deed.get("unsure") else OWNED,
             **({"Reinvestment zone": status} if status else {}),
             "Bought by": "WIT TECH LLC",
-            "Acres in the deed": f"{deed['acres']:,}",
+            "Acres in the deed": f"{deed['acres']:,}" if "acres" in deed else f"Part of a {deed['part_of']:,}-acre tract. The amount is not confirmed.",
             "Survey": deed["survey"],
             "Recorded": f"{deed['recorded']}, Grimes County Clerk document {deed['document']}",
             "Appraisal records": ("Still list this land under another owner. The match between the deed and these tracts is a best guess "
@@ -342,8 +348,14 @@ def main():
     lines = ",\n".join("    " + json.dumps(f, ensure_ascii=False, separators=(", ", ": ")) for f in features)
     note = layer_note(parcels, zone, not_drawn)
     if recorded:
-        acres = sum(float(f["properties"]["Acres in the deed"].replace(",", "")) for f in recorded)
-        note += f" Also shown: {len(recorded)} deeds for about {acres:,.0f} acres recorded with the County Clerk that appraisal records do not yet show."
+        stated = [float(f["properties"]["Acres in the deed"].replace(",", "")) for f in recorded if not f["properties"]["Acres in the deed"].startswith("Part")]
+        parts = len(recorded) - len(stated)
+        guesses = sum(1 for f in recorded if f["properties"]["Status"] == UNSURE)
+        note += f" Also shown: {len(recorded)} deeds recorded with the County Clerk that appraisal records do not yet show. {len(stated)} of them cover about {sum(stated):,.0f} acres."
+        if parts:
+            note += f" The other {parts} cover part of larger tracts, and the amount is not confirmed."
+        if guesses:
+            note += f" For {guesses} of the {len(recorded)}, the exact tract is not confirmed and the outline is a best guess."
     if NOT_PLACED:
         note += (f" {len(NOT_PLACED)} more deeds recorded from {NOT_PLACED[0]['recorded']} to {NOT_PLACED[-1]['recorded']} are not drawn yet: "
                  "the Clerk's index does not give enough to place them.")
@@ -376,7 +388,7 @@ def main():
     for f in features:
         p = f["properties"]
         if "Acres in the deed" in p:
-            print(f"  {p['Acres in the deed']:>9} acres  deed recorded {p['Recorded']}, {p['Status']}")
+            print(f"  {p['Acres in the deed'][:24]:>9} acres  deed recorded {p['Recorded']}, {p['Status']}")
         elif p.get("Status") == OPTIONED:
             print(f"  {p['Acres in the option']:>9} acres  under option to {p['Option held by']}, not yet sold")
         else:
