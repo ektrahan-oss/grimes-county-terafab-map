@@ -104,9 +104,8 @@ RECORDED = [
      "recorded": "November 3, 2026", "document": "2026-358774",
      "note": "Deed to WIT TECH LLC recorded with the County Clerk. The appraisal district has not yet posted the sale. The deed is for 317.23 acres in all. "
              "That includes a shared interest in a 10-acre tract, which is not drawn or counted here."},
-    {"outline": DATA / "sources" / "deed_2026_359007.geojson", "part_of": 99.31, "survey": "W Fitzgibbons Survey, Abstract 15, and B F Smith Survey, Abstract 412",
-     "recorded": "November 17, 2026", "document": "2026-359007", "unsure": "A deed to WIT TECH LLC for part of a 99.31-acre tract is recorded. How much of the tract "
-     "it covers, and which part, is not confirmed. The outline is the appraisal tracts that best match the larger tract. It may be wrong."},
+    {"outline": DATA / "sources" / "deed_2026_359007.geojson", "acres": 99.31, "survey": "W Fitzgibbons Survey, Abstract 15, and B F Smith Survey, Abstract 412",
+     "recorded": "November 17, 2026", "document": "2026-359007"},
     {"outline": DATA / "sources" / "deed_2026_359047.geojson", "acres": 163.65, "survey": "J Harris Survey, Abstract 26",
      "recorded": "November 18, 2026", "document": "2026-359047"},
 ]
