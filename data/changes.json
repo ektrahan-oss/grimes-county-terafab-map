@@ -297,5 +297,34 @@
     "date": "2026-11-24",
     "layer": "holdings",
     "summary": "Project-linked holdings: 9 deeds recorded with the County Clerk, not yet in appraisal records, now shown"
+  },
+  {
+    "date": "2026-11-25",
+    "layer": "permits",
+    "summary": "Permits: new, SpaceX site registered with TCEQ, Gibbons Creek Concrete Batch Plant (North of sh 30 with access road located approximately 2.6 miles north-northwest of the intersection of fm 244 and sh 30 on the east side of fm 244 near anderson, grimes county, tx 77830). Status: listed",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112571021"
+  },
+  {
+    "date": "2026-11-25",
+    "layer": "permits",
+    "summary": "Permits: new, TCEQ air new source permits registration 186160L001 for SpaceX's Gibbons Creek Concrete Batch Plant. Status: pending",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112571021"
+  },
+  {
+    "date": "2026-11-25",
+    "layer": "permits",
+    "summary": "Permits: new, SpaceX air permit: Space Exploration Technologies Corp, standard permit new registration (permit 186160L001, received 11/25/2026). Location: North of sh 30 with access road located approximately 2.6 miles north-northwest of the intersection of fm 244 and sh 30 on the east side of fm 244 near anderson, grimes county, tx 77830. Status: pending",
+    "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start"
+  },
+  {
+    "date": "2026-11-25",
+    "layer": "permits",
+    "summary": "Permits: new, Commissioners Court agenda item for 2026-12-02: Discuss and take action to approve a contract with Quiddity Engineering for development of ESRI-based permit management software. Grimes County Auditor - Jessi Murphy (JF). Status: on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=8669,plainText=false)"
+  },
+  {
+    "date": "2026-11-25",
+    "layer": "filings",
+    "summary": "Permits and filings: 2 items added"
   }
 ]

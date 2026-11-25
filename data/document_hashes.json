@@ -1407,11 +1407,17 @@
       "kind": "Agenda",
       "meeting": "2026-12-02",
       "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=8669,plainText=false)",
-      "sha256": "f9126fb7138223bdcf8636128fee4df3f5d1fb5468441c2814e36c7eed5266f0",
+      "sha256": "d9934c320a31657d37acbf6b12248be030e5fdab6f79fb7a9614aa9e43cf3b5e",
       "mentions": [],
       "first_seen": "2026-11-24",
-      "copy": "archive/court/2026-12-02_agenda_8669_f9126fb7.pdf",
-      "text": "read from scan"
+      "copy": "archive/court/2026-12-02_agenda_8669_d9934c32.pdf",
+      "earlier": [
+        {
+          "sha256": "f9126fb7138223bdcf8636128fee4df3f5d1fb5468441c2814e36c7eed5266f0",
+          "copy": "archive/court/2026-12-02_agenda_8669_f9126fb7.pdf",
+          "replaced": "2026-11-25"
+        }
+      ]
     },
     "8667": {
       "title": "minutes 11-18",

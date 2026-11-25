@@ -1,12 +1,12 @@
 {
   "_checked": {
-    "air": "2026-11-24",
-    "corps": "2026-11-24",
-    "county": "2026-11-24",
-    "rrc": "2026-11-24",
-    "tceq": "2026-11-24",
-    "tdlr": "2026-11-24",
-    "txdot": "2026-11-24"
+    "air": "2026-11-25",
+    "corps": "2026-11-25",
+    "county": "2026-11-25",
+    "rrc": "2026-11-25",
+    "tceq": "2026-11-25",
+    "tdlr": "2026-11-25",
+    "txdot": "2026-11-25"
   },
   "_recorded": [
     "air",
@@ -23,6 +23,12 @@
     "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start",
     "first_seen": "2026-10-01"
   },
+  "air:418431": {
+    "what": "SpaceX air permit: Space Exploration Technologies Corp, standard permit new registration (permit 186160L001, received 11/25/2026). Location: North of sh 30 with access road located approximately 2.6 miles north-northwest of the intersection of fm 244 and sh 30 on the east side of fm 244 near anderson, grimes county, tx 77830",
+    "status": "pending",
+    "link": "https://www2.tceq.texas.gov/airperm/index.cfm?fuseaction=airpermits.start",
+    "first_seen": "2026-11-25"
+  },
   "county:3bc3f434e461": {
     "what": "Commissioners Court agenda item for 2026-11-04: Discuss and take any necessary action on maintenance, construction projects, permitting, or grants.",
     "status": "on the agenda",
@@ -34,6 +40,12 @@
     "status": "on the agenda",
     "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=6659,plainText=false)",
     "first_seen": "2026-11-11"
+  },
+  "county:7249f7dacd72": {
+    "what": "Commissioners Court agenda item for 2026-12-02: Discuss and take action to approve a contract with Quiddity Engineering for development of ESRI-based permit management software. Grimes County Auditor - Jessi Murphy (JF)",
+    "status": "on the agenda",
+    "link": "https://grimescotx.api.civicclerk.com/v1/Meetings/GetMeetingFileStream(fileId=8669,plainText=false)",
+    "first_seen": "2026-11-25"
   },
   "rrc:00018:EXPLORER PIPELINE COMPANY": {
     "what": "Railroad Commission pipeline permit T-4 00018 in Grimes County, EXPLORER PIPELINE COMPANY (refined liquid product)",
@@ -293,11 +305,23 @@
     "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
     "first_seen": "2026-10-01"
   },
+  "tceq-permit:RN112571021:186160L001": {
+    "what": "TCEQ air new source permits registration 186160L001 for SpaceX's Gibbons Creek Concrete Batch Plant",
+    "status": "pending",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112571021",
+    "first_seen": "2026-11-25"
+  },
   "tceq-site:RN112483532": {
     "what": "SpaceX site registered with TCEQ, Gibbons Creek Project Site (Located south of gibbons creek reservoir and north of state hwy 30 and east of fm 171)",
     "status": "listed",
     "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112483532",
     "first_seen": "2026-10-01"
+  },
+  "tceq-site:RN112571021": {
+    "what": "SpaceX site registered with TCEQ, Gibbons Creek Concrete Batch Plant (North of sh 30 with access road located approximately 2.6 miles north-northwest of the intersection of fm 244 and sh 30 on the east side of fm 244 near anderson, grimes county, tx 77830)",
+    "status": "listed",
+    "link": "https://www15.tceq.texas.gov/crpub/index.cfm?fuseaction=regent.validateRE&re_ref_num_txt=RN112571021",
+    "first_seen": "2026-11-25"
   },
   "txdot:021201041": {
     "what": "TxDOT project near the site: SH 30, widen road - add lanes, SH 90 to FM 2620, estimated $28,194,854",
